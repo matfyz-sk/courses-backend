@@ -1,6 +1,7 @@
 export { agent } from "./agent/agent";
 export { user } from "./agent/user";
 export { team } from "./agent/team";
+export { teamInstance } from "./agent/teamInstance";
 export { question } from "./question/question";
 export { essayQuestion } from "./question/essayQuestion";
 export { openQuestion } from "./question/openQuestion";

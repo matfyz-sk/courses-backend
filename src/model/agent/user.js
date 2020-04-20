@@ -69,7 +69,7 @@ export const user = {
          required: false,
          multiple: true,
          dataType: "node",
-         objectClass: "team",
+         objectClass: "teamInstance",
          change: ["owner", "[this].courseInstance/^studentOf.{userURI}"],
       },
       requests: {
