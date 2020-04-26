@@ -11,8 +11,6 @@ import { logger } from "./middleware/logger";
 const app = express();
 const port = 3010;
 
-console.log(2 + 2);
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
