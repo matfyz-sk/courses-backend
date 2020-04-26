@@ -228,8 +228,6 @@ export default class Resource {
             object = `<${this.user.userURI}>`;
          }
       }
-      this.db.setQueryGraph(Constants.graphURI);
-      this.db.setQueryFormat("application/json");
       try {
          const data = await this.db.query(
             `SELECT ${subject} WHERE {${subject} ${predicate} ${object}}`,
@@ -242,8 +240,6 @@ export default class Resource {
    }
 
    async _resourceExists(resourceURI, resourceClass) {
-      this.db.setQueryFormat("application/json");
-      this.db.setQueryGraph(Constants.graphURI);
       const data = await this.db.query(
          `SELECT <${resourceURI}> WHERE {<${resourceURI}> rdf:type ?type . ?type rdfs:subClassOf* ${className(
             resourceClass,
@@ -387,17 +383,11 @@ export default class Resource {
    }
 
    async completeDelete() {
-      this.db.setQueryFormat("application/json");
-      this.db.setQueryGraph(Constants.graphURI);
       await this.db.query(`DELETE WHERE {<${this.subject.iri}> ?p ?o}`, true);
-      this.db.setQueryFormat("application/json");
-      this.db.setQueryGraph(Constants.graphURI);
       await this.db.query(`DELETE WHERE {?s ?p <${this.subject.iri}>}`, true);
    }
 
    async fetch() {
-      this.db.setQueryFormat("application/json");
-      this.db.setQueryGraph(Constants.graphURI);
       const data = await this.db.query(
          `SELECT ?s ?p ?o WHERE {?s ?p ?o} VALUES ?s {<${this.subject.iri}>}`,
          true

@@ -1,7 +1,6 @@
 import RequestError from "../helpers/RequestError";
 import { DataController } from "../controllers";
 import { getResourceObject, client, className, uri2className } from "../helpers";
-import { graphURI } from "../constants";
 
 async function resolveResource(req, res, next) {
    try {
@@ -11,8 +10,6 @@ async function resolveResource(req, res, next) {
          return next();
       }
       const db = client();
-      db.setQueryFormat("application/json");
-      db.setQueryGraph(graphURI);
       const data = await db.query(
          `SELECT ?type
           WHERE {

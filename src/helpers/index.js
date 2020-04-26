@@ -68,12 +68,13 @@ export function getAllProps(resource, includeSubclasses = true) {
 
 export function client() {
    const client = new Client(Constants.virtuosoEndpoint);
-   client.addPrefixes({
-      courses: Constants.ontologyURI,
-   });
-   client.setQueryFormat("application/json");
-   client.setQueryGraph(Constants.graphURI);
-   client.setDefaultGraph(Constants.graphURI);
+   client.setOptions(
+      "application/json",
+      {
+         courses: Constants.ontologyURI,
+      },
+      Constants.graphURI
+   );
    return client;
 }
 
