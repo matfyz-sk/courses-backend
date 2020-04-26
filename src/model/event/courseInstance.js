@@ -11,5 +11,12 @@ export const courseInstance = {
          dataType: "node",
          objectClass: "course",
       },
+      hasInstructor: {
+         required: false,
+         multiple: true,
+         dataType: "node",
+         objectClass: "user",
+         show: ["admin", "superAdmin", "instructor"],
+      },
    },
 };
