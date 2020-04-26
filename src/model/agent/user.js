@@ -86,13 +86,6 @@ export const user = {
          objectClass: "courseInstance",
          change: ["[this].^instructorOf.{userURI}"],
       },
-      instructorOf: {
-         required: false,
-         multiple: true,
-         dataType: "node",
-         objectClass: "courseInstance",
-         change: ["{this}.hasAdmin.{userURI}"],
-      },
       understands: {
          required: false,
          multiple: true,

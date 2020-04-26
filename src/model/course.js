@@ -47,7 +47,14 @@ export const course = {
          multiple: true,
          dataType: "node",
          objectClass: "user",
-         change: ["superAdmin"],
+         show: ["admin", "superAdmin", "instructor"],
+      },
+      hasInstructor: {
+         required: false,
+         multiple: true,
+         dataType: "node",
+         objectClass: "user",
+         show: ["admin", "superAdmin", "instructor"],
       },
    },
 };
