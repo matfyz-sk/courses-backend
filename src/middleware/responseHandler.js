@@ -1,3 +1,3 @@
 export function responseHandler(req, res) {
-   res.status(200).send({ status: true, resource: res.locals.resource.subject });
+   res.status(200).json({ status: true, resource: res.locals.resource.subject });
 }
