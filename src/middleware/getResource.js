@@ -1,11 +1,11 @@
 import RequestError from "../helpers/RequestError";
 import { DataController } from "../controllers";
-import { getResourceObject, client, className, uri2className } from "../helpers";
+import { getResourceObject, client, className, uri2className, classPrefix } from "../helpers";
 
 async function resolveResource(req, res, next) {
    try {
       const resource = getResourceObject(req.params.className);
-      if (req.params.id == undefined || resource.subclasses == undefined) {
+      if (req.params.id == undefined) {
          res.locals.resource = resource;
          return next();
       }
@@ -21,12 +21,18 @@ async function resolveResource(req, res, next) {
       );
       const results = data.results.bindings;
       if (results.length === 0) {
-         throw new RequestError(`Resource with ID '${req.params.id}' doesn't exist.`, 404);
+         throw new RequestError(
+            `Resource with URI '${
+               classPrefix(req.params.className) + req.params.id
+            }' doesn't exist.`,
+            404
+         );
       }
       if (results.length > 1) {
          throw new RequestError(`More than one sub-resource of ID '${req.params.id}' exists.`, 400);
       }
-      res.locals.resource = getResourceObject(uri2className(results[0].type.value));
+      const name = uri2className(results[0].type.value);
+      res.locals.resource = getResourceObject(name);
       next();
    } catch (err) {
       next(err);
@@ -43,7 +49,7 @@ async function _getResource(req, res, next) {
       if (req.params.id) {
          req.query["id"] = req.params.id;
       }
-      const data = await DataController.getResource(res.locals.resource, req.query);
+      const data = await DataController.getResource(res.locals.resource, req.query, req.user);
       res.status(200).send(data);
    } catch (err) {
       next(err);

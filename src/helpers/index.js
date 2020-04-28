@@ -66,6 +66,34 @@ export function getAllProps(resource, includeSubclasses = true) {
    return props;
 }
 
+export function getResourceCourseInstance(resource) {
+   if (resource.hasOwnProperty("courseInstance")) {
+      return resource.courseInstance;
+   }
+   var r = resource.subclassOf;
+   while (r) {
+      if (r.hasOwnProperty("courseInstance")) {
+         return r.courseInstance;
+      }
+      r = r.subclassOf;
+   }
+   return null;
+}
+
+export function getResourceShowRules(resource) {
+   if (resource.hasOwnProperty("show")) {
+      return resource.show;
+   }
+   var r = resource.subclassOf;
+   while (r) {
+      if (r.hasOwnProperty("show")) {
+         return r.show;
+      }
+      r = r.subclassOf;
+   }
+   return [];
+}
+
 export function client() {
    const client = new Client(Constants.virtuosoEndpoint);
    client.setOptions(

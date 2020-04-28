@@ -13,7 +13,7 @@ import RequestError from "../helpers/RequestError";
 const sparqlOptions = {
    context: ontologyURI,
    endpoint: virtuosoEndpoint,
-   debug: false,
+   debug: true,
 };
 
 const sparqlPrefixes = {
@@ -39,9 +39,9 @@ function generateQuery(resource, filters, user) {
       query["@graph"]["@id"] = "?id";
    }
 
-      query["@graph"]["@type"] = "?type";
+   query["@graph"]["@type"] = "?type";
    query.$where.push(`${id} rdf:type ?type`);
-      query.$where.push(`?type rdfs:subClassOf* ${className(resource.obj.type, true)}`);
+   query.$where.push(`?type rdfs:subClassOf* ${className(resource.obj.type, true)}`);
 
    query["@graph"]["createdBy"] = "?createdBy";
    query["@graph"]["createdAt"] = "?createdAt";
@@ -121,52 +121,84 @@ function generateQuery(resource, filters, user) {
       query.$where.push(`${id} ^courses:${predicateName} ?${predicateName}URI`);
       query.$filter.push(`regex (?${predicateName}URI, "${filters[predicateName]}$")`);
    });
+   const authWhere = resolveAuthRules(id, resource, user);
+   if (authWhere.length > 0) {
+      query.$where.push(authWhere);
+   }
    return query;
 }
 
-function generateQueryPart(resource, query, predicateName) {
-   const queryPartResource = Resources[resource.props[predicateName].objectClass];
-   const resourceProps = getAllProps(queryPartResource);
-   const queryPart = query["@graph"][predicateName];
-   const partURI = queryPart["@id"];
+function resolveAuthRules(id, resource, user) {
+   var rules = getResourceShowRules(resource.obj);
+   var courseInstance = resource.props.courseInstance
+      ? "courseInstance"
+      : getResourceCourseInstance(resource.obj);
 
-   queryPart["@type"] = partURI + "type";
-   queryPart["createdBy"] = partURI + "createdBy";
-   queryPart["createdAt"] = partURI + "createdAt";
+   console.log(rules, courseInstance);
 
-   var where = `OPTIONAL { ${
-      resource.uri
-   } courses:${predicateName} ${partURI} . ${partURI} rdf:type ${partURI}type . ${partURI}type rdfs:subClassOf* ${className(
-      queryPartResource.type,
-      true
-   )} . OPTIONAL {${partURI} courses:createdBy ${partURI}createdBy} . OPTIONAL {${partURI} dc:created ${partURI}createdAt} . `;
+   var predicate = "";
 
-   Object.keys(resourceProps).forEach((p) => {
-      // if (resourceProps[p].dataType === "node") {
-      //     const objectVar = partURI + p + "URI";
-      //     queryPart[p] = { "@id": objectVar };
-      //     where += `OPTIONAL {${partURI} ${_build(Predicates[p])} ${objectVar}} . `;
-      //     return;
-      // }
-      queryPart[p] = `${partURI + p}`;
-      where += `OPTIONAL {${partURI} courses:${p} ${partURI + p}} . `;
-   });
+   if (courseInstance == null) {
+      if (rules.length == 0) {
+         return "";
+      }
+      return "";
+   }
 
-   where = where.substring(0, where.length - 2);
-   where += "}";
-   query.$where.push(where);
-}
+   if (rules.length == 1 && rules[0] == "all") {
+      return "";
+   }
 
-function setLimit(limit) {
-   if (limit) query["$limit"] = limit;
-}
+   if (user == undefined) {
+      throw new RequestError("You don't have access rights to this resource", 401);
+   }
 
-function setOffset(offset) {
-   if (offset) query["$offset"] = offset;
-}
+   if (rules.length == 0) {
+      predicate = `createdBy | ${courseInstance}/hasInstructor | ${courseInstance}/^studentOf | ${courseInstance}/instanceOf/hasAdmin`;
+      const regex = /([a-zA-Z]+)/gm;
+      predicate = predicate.replace(regex, "courses:$1");
+      return `${id} ${predicate} <${user.userURI}>`;
+   }
 
-function setOrderBy(orderBy) {
-   if (orderBy) query["$orderBy"] = orderBy;
+   for (let rule of rules) {
+      if (rule === "teacher") {
+         if (courseInstance == null) {
+            throw new RequestError("Bad class configuration");
+         }
+         predicate += `${courseInstance}/hasInstructor|`;
+         continue;
+      }
+      if (rule === "student") {
+         if (courseInstance == null) {
+            throw new RequestError("Bad class configuration");
+         }
+         predicate += `${courseInstance}/^studentOf|`;
+         continue;
+      }
+      if (rule === "creator") {
+         predicate += `createdBy|`;
+         continue;
+      }
+      if (rule === "admin") {
+         if (courseInstance == null) {
+            throw new RequestError("Bad class configuration");
+         }
+         predicate += `${courseInstance}/instanceOf/hasAdmin|`;
+         continue;
+      }
+      if (rule === "all") {
+         return "";
+      }
+      // special defined rule
+      predicate += `${rule}|`;
+   }
+   if (predicate.length > 0) {
+      predicate = predicate.substring(0, predicate.length - 1);
+      const regex = /([a-zA-Z]+)/gm;
+      predicate = predicate.replace(regex, "courses:$1");
+      return `${id} ${predicate} <${user.userURI}>`;
+   }
+   return "";
 }
 
 function _nodesToArray(obj) {
@@ -221,14 +253,15 @@ async function dataChain(query, propName) {
    return res;
 }
 
-export default function runQuery(_resource, filters) {
+export default function runQuery(_resource, filters, user) {
    const query = generateQuery(
       {
          obj: _resource,
          props: getAllProps(_resource),
          uri: "?resourceURI",
       },
-      filters
+      filters,
+      user
    );
    if (filters._chain == undefined) {
       return run(query);
