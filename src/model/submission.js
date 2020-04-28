@@ -1,6 +1,10 @@
 export const submission = {
    type: "submission",
-   create: ["{this}.ofAssignment/courseInstance/^studentOf.{userURI}"],
+   courseInstance: "ofAssignment/courseInstance",
+   create: ["student"],
+   change: ["teacher"],
+   show: ["teacher", "creator"],
+   // show: ["all"],
    props: {
       ofAssignment: {
          required: true,

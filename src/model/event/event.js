@@ -57,5 +57,11 @@ export const event = {
          dataType: "node",
          objectClass: "topic",
       },
+      courseInstance: {
+         required: false,
+         multiple: false,
+         dataType: "node",
+         objectClass: "courseInstance",
+      },
    },
 };

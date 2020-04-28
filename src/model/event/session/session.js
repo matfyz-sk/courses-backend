@@ -4,19 +4,13 @@ export const session = {
    type: "session",
    subclassOf: event,
    subclasses: ["lecture", "lab"],
-   create: ["[this].courseInstance/^instructorOf.{userURI}"],
+   create: ["teacher", "student"],
    props: {
       hasInstructor: {
          required: false,
          multiple: true,
          dataType: "node",
          objectClass: "user",
-      },
-      courseInstance: {
-         required: true,
-         multiple: false,
-         dataType: "node",
-         objectClass: "courseInstance",
       },
    },
 };

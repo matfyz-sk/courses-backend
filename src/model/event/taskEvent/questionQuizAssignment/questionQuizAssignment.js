@@ -1,8 +1,9 @@
-import { taskEvent } from "./taskEvent";
+import { taskEvent } from "../taskEvent";
 
-export const questionAssignment = {
-   type: "questionAssignment",
+export const questionQuizAssignment = {
+   type: "questionQuizAssignment",
    subclassOf: taskEvent,
+   subclasses: ["questionAssignment", "quizAssignment"],
    props: {
       assignedTo: {
          required: true,

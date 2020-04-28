@@ -1,24 +1,27 @@
 export const teamReview = {
    type: "teamReview",
+   courseInstance: "ofSubmission/ofAssignment/courseInstance",
+   create: [""],
+   show: ["teacher", "creator"],
    props: {
       percentage: {
          required: true,
          multiple: false,
          dataType: "float",
-         change: "[this].ofSubmission/ofAssignment/courseInstance/^instructorOf.{userURI}",
+         change: ["teacher"],
       },
       reviewedStudent: {
          required: true,
          multiple: false,
          type: "node",
          objectClass: "user",
-         change: "admin",
+         change: ["admin"],
       },
       studentComment: {
          required: false,
          multiple: false,
          type: "string",
-         change: "[this].ofSubmission/ofAssignment/courseInstance/^instructorOf.{userURI}",
+         change: ["teacher"],
       },
       privateComment: {
          required: false,
@@ -34,5 +37,4 @@ export const teamReview = {
          change: "admin",
       },
    },
-   create: [],
 };

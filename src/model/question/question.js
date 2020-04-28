@@ -1,52 +1,46 @@
 export const question = {
    type: "question",
    subclasses: ["essayQuestion", "openQuestion", "questionWithPredefinedAnswer"],
-   create: ["{this}.ofTopic/hasQuestionAssignment/assignedTo.{userURI}"],
+   create: ["ofTopic/hasQuestionAssignment/assignedTo"],
+
    props: {
       name: {
          required: false,
          multiple: false,
          dataType: "string",
-         change: ["owner"],
       },
       text: {
          required: false,
          multiple: false,
          dataType: "string",
-         change: ["owner"],
       },
       visibilityIsRestricted: {
          required: false,
          multiple: false,
          dataType: "boolean",
-         change: ["owner"],
       },
       hasQuestionState: {
          required: false,
          multiple: false,
          dataType: "string",
-         change: ["owner"],
       },
       ofTopic: {
          required: true,
          multiple: false,
          dataType: "node",
          objectClass: "topic",
-         change: ["owner"],
       },
       approver: {
          required: false,
          multiple: false,
          dataType: "node",
          objectClass: "user",
-         change: ["[this].ofTopic.^covers/courseInstance/^instructorOf.{userURI}"],
       },
       hasChangeEvent: {
          required: false,
          multiple: false,
          dataType: "node",
          objectClass: "changeEvent",
-         change: ["owner"],
       },
       comment: {
          required: false,
@@ -59,6 +53,12 @@ export const question = {
          multiple: false,
          dataType: "node",
          objectClass: "question",
+      },
+      courseInstance: {
+         required: true,
+         multiple: false,
+         dataType: "node",
+         objectClass: "courseInstance",
       },
    },
 };

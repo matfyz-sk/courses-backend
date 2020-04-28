@@ -1,16 +1,15 @@
-import { quizTake } from "./quizTake";
-
 export const quizTakePrototype = {
    type: "quizTakePrototype",
-   subclassOf: quizTake,
-   create: [""],
+   courseInstance: "^hasQuizTakePrototype/courseInstance",
+   create: ["[manualQuizAssignment]"],
+   show: ["test"],
+   change: [],
    props: {
       orderedQuestion: {
          required: true,
          multiple: true,
          dataType: "node",
          objectClass: "orderedQuestion",
-         change: ["owner"],
       },
    },
 };

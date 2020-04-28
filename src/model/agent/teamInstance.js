@@ -1,5 +1,8 @@
 export const teamInstance = {
    type: "teamInstance",
+   courseInstance: "instanceOf/courseInstance",
+   create: ["student"],
+   change: ["teacher"],
    props: {
       name: {
          required: true,

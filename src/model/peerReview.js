@@ -1,34 +1,29 @@
-export const review = {
-   type: "review",
+export const peerReview = {
+   type: "peerReview",
    props: {
       hasQuestionAnswer: {
          required: true,
          multiple: true,
          dataType: "node",
-         objectClass: "reviewQuestionAnswer"
+         objectClass: "peerReviewQuestionAnswer",
       },
       reviewedByStudent: {
          required: false,
          multiple: false,
          dataType: "node",
-         objectClass: "user"
+         objectClass: "user",
       },
       reviewedByTeam: {
          required: false,
          multiple: false,
          dataType: "node",
-         objectClass: "team"
-      },
-      submittedAt: {
-         required: false,
-         multiple: false,
-         dataType: "dateTime"
+         objectClass: "team",
       },
       ofSubmission: {
          required: true,
          multiple: false,
          dataType: "node",
-         objectClass: "submission"
-      }
-   }
+         objectClass: "submission",
+      },
+   },
 };
