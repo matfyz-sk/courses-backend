@@ -35,13 +35,6 @@ async function resolveResource(req, res, next) {
 
 async function _getResource(req, res, next) {
    try {
-      if (
-         Object.keys(req.query).length == 0 &&
-         req.params.id == undefined &&
-         !req.user.superAdmin
-      ) {
-         throw new RequestError("Request is not allowed", 401);
-      }
       if (req.query._subclasses != undefined) {
          return res
             .status(200)
