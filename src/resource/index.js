@@ -16,12 +16,14 @@ export default class Resource {
       this.resource = cfg.resource;
       this.user = cfg.user;
       this.id = cfg.id;
+      this.parent = cfg.parent;
       this.setCreator = cfg.setCreator == undefined || cfg.setCreator == true ? true : false;
       this._setSubject();
       this.triples = { toAdd: [], toUpdate: [], toRemove: [] };
       this.db = client();
       this.removeOld = true;
       this.props = getAllProps(cfg.resource, false);
+      this.nested = [];
    }
 
    setResourceObject(_res) {
@@ -43,13 +45,49 @@ export default class Resource {
       return [];
    }
 
-   async isAbleToCreate() {
-      const createRules = this._getResourceCreateRules();
-      for (var rule of createRules) {
-         const res = await this._resolveAuthRule(rule);
-         if (!res) {
-            throw new RequestError(`You can't create resource '${this.resource.type}'`, 401);
+   async _getResourceCourseInstance() {
+      if (this.props.hasOwnProperty("courseInstance")) {
+         return this.props.courseInstance.value.obj.iri;
+      }
+      var r = this.resource.subclassOf;
+      while (r) {
+         if (r.hasOwnProperty("courseInstance")) {
+            var path = r.courseInstance;
+            var propName = path.substring(0, path.indexOf("/"));
+
+            var subject = `<${this.props[propName].value.obj.iri}>`;
+            var predicate = path.substring(path.indexOf("/") + 1);
+            var object = `?courseInstanceURI`;
+
+            const data = await this.db.query(`
+               SELECT ${object} WHERE {
+                  ${subject} ${predicate} ${object}
+               }
+            `);
+            console.log(data.results.bindings);
+            return data.results.bindings[0];
          }
+         r = r.subclassOf;
+      }
+      return null;
+   }
+
+   async authorizeCreate() {
+      const createRules = this._getResourceCreateRules();
+      var res;
+      var authorized = false;
+      for (let rule of createRules) {
+         res = await this._resolveCreateAuthRule(rule);
+         if (res) {
+            authorized = true;
+            break;
+         }
+      }
+      if (!authorized) {
+         throw new RequestError(`You can't create resource '${this.resource.type}'`, 401);
+      }
+      for (var nestedInstance of this.nested) {
+         await nestedInstance.authorizeCreate();
       }
       return true;
    }
@@ -70,6 +108,9 @@ export default class Resource {
 
    async setPredicate(predicateName, value) {
       if (value == undefined) {
+         if (this.props[predicateName].required) {
+            throw new RequestError(`Attribute '${predicateName}' is required`, 422);
+         }
          return;
       }
       if (!this.props.hasOwnProperty(predicateName)) {
@@ -189,54 +230,71 @@ export default class Resource {
       }
    }
 
-   async _resolveAuthRule(rule) {
-      if (rule == "admin") {
-         return this.user.admin;
-      }
+   async _resolveCreateAuthRule(rule) {
+      var courseInstance = await this._getResourceCourseInstance();
+      console.log("courseInstance:", courseInstance);
 
-      if (rule == "superAdmin") {
-         return this.user.superAdmin;
-      }
-
-      var subject = null;
-      var predicate = null;
-      var object = null;
-      if (rule == "owner") {
-         subject = `<${this.user.userURI}>`;
-         predicate = `courses:createdBy`;
-         object = `<${this.subject.iri}>`;
-      } else {
-         const parts = rule.split(".");
-         if (parts[0] == "[this]") {
-            if (this.subject) {
-               subject = `<${this.subject.iri}>`;
-            }
-         } else if (parts[0] == "{userURI}") {
-            subject = `<${this.user.userURI}>`;
+      if (rule === "student") {
+         if (courseInstance == null) {
+            throw new RequestError("Bad class configuration");
          }
-
-         const regex = /([a-zA-Z]+)/gm;
-         predicate = parts[1].replace(regex, "courses:$1");
-
-         if (!subject) {
-            subject = this.props[parts[1].split("/")[0]].value.iri;
-         }
-
-         if (parts[2][0] == "?") {
-            object = parts[2];
-         } else {
-            object = `<${this.user.userURI}>`;
-         }
-      }
-      try {
          const data = await this.db.query(
-            `SELECT ${subject} WHERE {${subject} ${predicate} ${object}}`,
+            `ASK { <${this.user.userURI}> courses:studentOf <${courseInstance}> }`,
             true
          );
-         return data.results.bindings.length > 0;
-      } catch (err) {
-         return false;
+         return data.boolean;
       }
+
+      if (rule === "teacher") {
+         if (courseInstance == null) {
+            throw new RequestError("Bad class configuration");
+         }
+         const data = await this.db.query(
+            `ASK { <${courseInstance}> courses:hasInstructor <${this.user.userURI}> }`,
+            true
+         );
+
+         return data.boolean;
+      }
+
+      if (rule === "admin") {
+         if (courseInstance == null) {
+            throw new RequestError("Bad class configuration");
+         }
+         const data = await this.db.query(
+            `ASK { <${courseInstance}> courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`,
+            true
+         );
+         return data.boolean;
+      }
+
+      if (rule === "superAdmin") {
+         const data = await this.db.query(
+            `ASK { <${this.user.userURI}> courses:isSuperAdmin true }`,
+            true
+         );
+         return data.boolean;
+      }
+
+      if (rule.startsWith("[") && rule.endsWith("]")) {
+         rule = rule.substring(1, rule.length - 1);
+         if (this.parent == undefined || this.parent.resource.type !== rule) {
+            return false;
+         }
+         return true;
+      }
+
+      var propName = rule.substring(0, rule.indexOf("/"));
+
+      var subject = `<${this.props[propName].value.obj.iri}>`;
+      var predicate = rule.substring(rule.indexOf("/") + 1);
+      const regex = /([a-zA-Z]+)/gm;
+      predicate = predicate.replace(regex, "courses:$1");
+
+      var object = `<${this.user.userURI}>`;
+
+      const data = await this.db.query(`ASK { ${subject} ${predicate} ${object}}`, true);
+      return data.boolean;
    }
 
    async _resourceExists(resourceURI, resourceClass) {
@@ -258,14 +316,14 @@ export default class Resource {
          }
          resource = getResourceObject(nestedValue._type);
       }
-      const r = new Resource({ resource, user: this.user });
-      // await r.isAbleToCreate();
+      const r = new Resource({ resource, user: this.user, parent: this });
       await r.setInputPredicates(nestedValue);
       if (Array.isArray(this.props[propName].value)) {
          this.props[propName].value.push(r);
       } else {
          this.props[propName].value = r;
       }
+      this.nested.push(r);
    }
 
    async _setProperty(propName, propValue) {

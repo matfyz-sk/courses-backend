@@ -13,9 +13,11 @@ export async function createResource(resource, data) {
       }
       resource.setResourceObject(getResourceObject(data._type));
    }
+
    await resource.setInputPredicates(data);
-   // await resource.isAbleToCreate();
-   await resource.store();
+   const res = await resource.authorizeCreate();
+   console.log(res);
+   // await resource.store();
 }
 
 export async function updateResource(resource, data) {
@@ -34,8 +36,8 @@ export async function deleteResource(resource, attributeName, attributeValue) {
    }
 }
 
-export async function getResource(resource, filters) {
-   return await runQuery(resource, filters);
+export async function getResource(resource, filters, user) {
+   return await runQuery(resource, filters, user);
 }
 
 export function getResourceSubclasses(resource) {
