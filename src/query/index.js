@@ -1,8 +1,13 @@
 import lib from "sparql-transformer";
 import { ontologyURI, virtuosoEndpoint, dcTermsURI } from "../constants";
-import { getAllProps, classPrefix, className } from "../helpers";
-import * as Resources from "../model";
-import * as Constants from "../constants";
+import {
+   getAllProps,
+   classPrefix,
+   className,
+   getResourceCourseInstance,
+   getResourceShowRules,
+   getResourceObject,
+} from "../helpers";
 import RequestError from "../helpers/RequestError";
 
 const sparqlOptions = {
@@ -24,29 +29,28 @@ function generateQuery(resource, filters, user) {
       $prefixes: sparqlPrefixes,
    };
 
-   query["@graph"]["@id"] = resource.uri;
+   var id;
 
    if (filters.id) {
-      resource.uri = `<${classPrefix(resource.obj.type) + filters.id}>`;
+      id = `<${classPrefix(resource.obj.type) + filters.id}>`;
       query["@graph"]["@id"] = classPrefix(resource.obj.type) + filters.id;
+   } else {
+      id = "?id";
+      query["@graph"]["@id"] = "?id";
    }
 
-   if (resource.obj.hasOwnProperty("subclasses")) {
       query["@graph"]["@type"] = "?type";
-      query.$where.push(`${resource.uri} rdf:type ?type`);
+   query.$where.push(`${id} rdf:type ?type`);
       query.$where.push(`?type rdfs:subClassOf* ${className(resource.obj.type, true)}`);
-   } else {
-      query["@graph"]["@type"] = Constants.ontologyURI + className(resource.obj.type);
-      query.$where.push(`${resource.uri} rdf:type ${className(resource.obj.type, true)}`);
-   }
 
    query["@graph"]["createdBy"] = "?createdBy";
    query["@graph"]["createdAt"] = "?createdAt";
-   query.$where.push(`OPTIONAL {${resource.uri} courses:createdBy ?createdBy}`);
-   query.$where.push(`OPTIONAL {${resource.uri} dc:created ?createdAt}`);
+   query.$where.push(`OPTIONAL { ${id} courses:createdBy ?createdBy }`);
+   query.$where.push(`OPTIONAL { ${id} dc:created ?createdAt }`);
 
-   setOffset(filters._offset);
-   setLimit(filters._limit);
+   if (filters._orderBy) {
+      query.$orderby = [`?${filters._orderBy}`];
+   }
 
    const joins =
       filters.hasOwnProperty("_join") && typeof filters._join == "string"
@@ -58,45 +62,63 @@ function generateQuery(resource, filters, user) {
       if (resource.props[predicateName].dataType === "node") {
          objectVar += "URI";
          query["@graph"][predicateName] = { "@id": objectVar };
+         var where = `OPTIONAL { ${id} courses:${predicateName} ${objectVar} . `;
 
          if (joins.includes(predicateName)) {
-            generateQueryPart(resource, query, predicateName);
+            const joinResource = getResourceObject(resource.props[predicateName].objectClass);
+            const joinResourceProps = getAllProps(joinResource);
+            query["@graph"][predicateName]["@type"] = `${objectVar}type`;
+            query["@graph"][predicateName]["createdBy"] = `${objectVar}createdBy`;
+            query["@graph"][predicateName]["createdAt"] = `${objectVar}createdAt`;
+
+            where += `${objectVar} rdf:type ${objectVar}type . ${objectVar}type rdfs:subClassOf* ${className(
+               joinResource.type,
+               true
+            )} . OPTIONAL {${objectVar} courses:createdBy ${objectVar}createdBy} . OPTIONAL {${objectVar} dc:created ${objectVar}createdAt} . `;
+
+            Object.keys(joinResourceProps).forEach((joinPredicate) => {
+               query["@graph"][predicateName][joinPredicate] = `${objectVar + joinPredicate}`;
+               where += `OPTIONAL {${objectVar} courses:${joinPredicate} ${
+                  objectVar + joinPredicate
+               }} . `;
+            });
          }
+
+         where = where.substring(0, where.length - 2) + "}";
+         query.$where.push(where);
+
          if (filters.hasOwnProperty(predicateName)) {
-            query.$where.push(`${resource.uri} courses:${predicateName} ${objectVar}`);
-            const objectClass = resource.props[predicateName].objectClass;
-            query.$filter.push(
-               `${objectVar}=<${classPrefix(objectClass) + filters[predicateName]}>`
+            query.$where.push(
+               `FILTER EXISTS { ${id} courses:${predicateName} <${
+                  classPrefix(resource.props[predicateName].objectClass) + filters[predicateName]
+               }> }`
             );
-         } else {
-            query.$where.push(`OPTIONAL {${resource.uri} courses:${predicateName} ${objectVar}}`);
          }
          return;
       }
       query["@graph"][predicateName] = objectVar;
       if (filters.hasOwnProperty(predicateName)) {
-         query.$where.push(`${resource.uri} courses:${predicateName} ${objectVar}`);
+         query.$where.push(`${id} courses:${predicateName} ${objectVar}`);
          if (resource.props[predicateName].dataType == "string") {
             query.$filter.push(`${objectVar}="${filters[predicateName]}"`);
          } else {
             query.$filter.push(`${objectVar}=${filters[predicateName]}`);
          }
       } else {
-         query.$where.push(`OPTIONAL {${resource.uri} courses:${predicateName} ${objectVar}}`);
+         query.$where.push(`OPTIONAL { ${id} courses:${predicateName} ${objectVar} }`);
       }
    });
    Object.keys(filters).forEach((predicateName) => {
       if (
          predicateName === "id" ||
-         predicateName === "_offset" ||
-         predicateName === "_limit" ||
+         predicateName === "_orderBy" ||
          predicateName === "_join" ||
          predicateName === "_chain" ||
          resource.props.hasOwnProperty(predicateName)
       ) {
          return;
       }
-      query.$where.push(`${resource.uri} ^courses:${predicateName} ?${predicateName}URI`);
+      query.$where.push(`${id} ^courses:${predicateName} ?${predicateName}URI`);
       query.$filter.push(`regex (?${predicateName}URI, "${filters[predicateName]}$")`);
    });
    return query;
@@ -178,10 +200,6 @@ async function run(query) {
 async function dataChain(query, propName) {
    var res = await run({ ...query });
 
-   // console.log("query: ", query);
-   // console.log("data:", res);
-   // console.log(res["@graph"].length);
-
    if (res["@graph"].length != 1) {
       throw new RequestError("Bad length");
    }
@@ -194,7 +212,6 @@ async function dataChain(query, propName) {
       query["$where"].forEach((item, index, arr) => {
          arr[index] = item.replace(`<${inst["@id"]}>`, `<${nextURI}>`);
       });
-      // console.log("modified query:", query);
 
       var data = await run({ ...query });
 
