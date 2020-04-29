@@ -4,7 +4,6 @@ export const submission = {
    create: ["student"],
    change: ["teacher"],
    show: ["teacher", "creator"],
-   // show: ["all"],
    props: {
       ofAssignment: {
          required: true,
@@ -36,6 +35,11 @@ export const submission = {
          dataType: "string",
       },
       isComplete: {
+         required: false,
+         multiple: false,
+         dataType: "boolean",
+      },
+      isImproved: {
          required: false,
          multiple: false,
          dataType: "boolean",

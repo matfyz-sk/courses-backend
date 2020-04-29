@@ -2,7 +2,6 @@ export const task = {
    type: "task",
    subclasses: ["assignment"],
    create: ["teacher"],
-   show: ["test"],
    props: {
       name: {
          required: true,

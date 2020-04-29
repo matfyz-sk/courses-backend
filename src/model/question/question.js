@@ -2,7 +2,6 @@ export const question = {
    type: "question",
    subclasses: ["essayQuestion", "openQuestion", "questionWithPredefinedAnswer"],
    create: ["ofTopic/hasQuestionAssignment/assignedTo"],
-
    props: {
       name: {
          required: false,

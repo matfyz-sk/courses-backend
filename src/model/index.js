@@ -31,6 +31,7 @@ export { quizAssignment } from "./event/taskEvent/questionQuizAssignment/quizAss
 export { generatedQuizAssignment } from "./event/taskEvent/questionQuizAssignment/quizAssignment/generatedQuizAssignment";
 export { manualQuizAssignment } from "./event/taskEvent/questionQuizAssignment/quizAssignment/manualQuizAssignment";
 export { peerReview } from "./peerReview";
+export { peerReviewQuestion } from "./peerReviewQuestion";
 export { peerReviewQuestionAnswer } from "./peerReviewQuestionAnswer";
 export { toReview } from "./toReview";
 export { submission } from "./submission";

@@ -4,7 +4,6 @@ export const session = {
    type: "session",
    subclassOf: event,
    subclasses: ["lecture", "lab"],
-   create: ["teacher", "student"],
    props: {
       hasInstructor: {
          required: false,

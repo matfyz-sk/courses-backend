@@ -2,7 +2,6 @@ export const quizTake = {
    type: "quizTake",
    courseInstance: "quizAssignment/courseInstance",
    create: ["quizAssignment/assignedTo"],
-   show: ["test"],
    props: {
       submittedDate: {
          required: true,

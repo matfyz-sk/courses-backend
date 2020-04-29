@@ -4,7 +4,6 @@ export const taskEvent = {
    type: "taskEvent",
    subclassOf: event,
    subclasses: ["assignmentPeriod", "examinationEvent", "questionQuizAssignment"],
-   create: ["teacher"],
    props: {
       extraTime: {
          required: false,

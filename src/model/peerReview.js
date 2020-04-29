@@ -1,5 +1,6 @@
 export const peerReview = {
    type: "peerReview",
+   courseInstance: "ofSubmission/ofAssignment/courseInstance",
    props: {
       hasQuestionAnswer: {
          required: true,
