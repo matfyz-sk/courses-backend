@@ -94,6 +94,20 @@ export function getResourceShowRules(resource) {
    return [];
 }
 
+export function getResourceCreateRules(resource) {
+   if (resource.hasOwnProperty("create")) {
+      return resource.create;
+   }
+   var r = resource.subclassOf;
+   while (r) {
+      if (r.hasOwnProperty("create")) {
+         return r.create;
+      }
+      r = r.subclassOf;
+   }
+   return [];
+}
+
 export function client() {
    const client = new Client(Constants.virtuosoEndpoint);
    client.setOptions(

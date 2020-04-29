@@ -7,6 +7,7 @@ import {
    className,
    client,
    getResourceObject,
+   getResourceCreateRules,
 } from "../helpers";
 import * as Constants from "../constants";
 import RequestError from "../helpers/RequestError";
@@ -31,20 +32,6 @@ export default class Resource {
       this.props = getAllProps(_res, false);
    }
 
-   _getResourceCreateRules() {
-      if (this.resource.hasOwnProperty("create")) {
-         return this.resource.create;
-      }
-      var r = this.resource.subclassOf;
-      while (r) {
-         if (r.hasOwnProperty("create")) {
-            return r.create;
-         }
-         r = r.subclassOf;
-      }
-      return [];
-   }
-
    async _getResourceCourseInstance() {
       if (this.props.hasOwnProperty("courseInstance")) {
          return this.props.courseInstance.value.obj.iri;
@@ -64,8 +51,9 @@ export default class Resource {
                   ${subject} ${predicate} ${object}
                }
             `);
-            console.log(data.results.bindings);
-            return data.results.bindings[0];
+            if (data.results.bindings.length === 1) {
+               return data.results.bindings[0];
+            }
          }
          r = r.subclassOf;
       }
@@ -73,7 +61,7 @@ export default class Resource {
    }
 
    async authorizeCreate() {
-      const createRules = this._getResourceCreateRules();
+      const createRules = getResourceCreateRules(this.resource);
       var res;
       var authorized = false;
       for (let rule of createRules) {
@@ -231,47 +219,43 @@ export default class Resource {
    }
 
    async _resolveCreateAuthRule(rule) {
+      if (rule.length == 0) {
+         return true;
+      }
       var courseInstance = await this._getResourceCourseInstance();
-      console.log("courseInstance:", courseInstance);
+
+      if (
+         (rule === "teacher" || rule === "student" || rule === "admin") &&
+         courseInstance == null
+      ) {
+         throw new RequestError("Bad class configuration");
+      }
 
       if (rule === "student") {
-         if (courseInstance == null) {
-            throw new RequestError("Bad class configuration");
-         }
          const data = await this.db.query(
-            `ASK { <${this.user.userURI}> courses:studentOf <${courseInstance}> }`,
-            true
+            `ASK { <${this.user.userURI}> courses:studentOf <${courseInstance}> }`
          );
          return data.boolean;
       }
 
       if (rule === "teacher") {
-         if (courseInstance == null) {
-            throw new RequestError("Bad class configuration");
-         }
          const data = await this.db.query(
-            `ASK { <${courseInstance}> courses:hasInstructor <${this.user.userURI}> }`,
-            true
+            `ASK { <${courseInstance}> courses:hasInstructor <${this.user.userURI}> }`
          );
 
          return data.boolean;
       }
 
       if (rule === "admin") {
-         if (courseInstance == null) {
-            throw new RequestError("Bad class configuration");
-         }
          const data = await this.db.query(
-            `ASK { <${courseInstance}> courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`,
-            true
+            `ASK { <${courseInstance}> courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`
          );
          return data.boolean;
       }
 
       if (rule === "superAdmin") {
          const data = await this.db.query(
-            `ASK { <${this.user.userURI}> courses:isSuperAdmin true }`,
-            true
+            `ASK { <${this.user.userURI}> courses:isSuperAdmin true }`
          );
          return data.boolean;
       }
@@ -290,22 +274,20 @@ export default class Resource {
       var predicate = rule.substring(rule.indexOf("/") + 1);
       const regex = /([a-zA-Z]+)/gm;
       predicate = predicate.replace(regex, "courses:$1");
-
       var object = `<${this.user.userURI}>`;
 
-      const data = await this.db.query(`ASK { ${subject} ${predicate} ${object}}`, true);
+      const data = await this.db.query(`ASK { ${subject} ${predicate} ${object}}`);
       return data.boolean;
    }
 
    async _resourceExists(resourceURI, resourceClass) {
       const data = await this.db.query(
-         `SELECT <${resourceURI}> WHERE {<${resourceURI}> rdf:type ?type . ?type rdfs:subClassOf* ${className(
+         `ASK { <${resourceURI}> rdf:type ?type . ?type rdfs:subClassOf* ${className(
             resourceClass,
             true
-         )}}`,
-         true
+         )} }`
       );
-      return data.results.bindings.length > 0;
+      return data.boolean;
    }
 
    async _setNestedProperty(propName, nestedValue) {
