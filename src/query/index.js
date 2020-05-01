@@ -29,19 +29,14 @@ function generateQuery(resource, filters, user) {
       $prefixes: sparqlPrefixes,
    };
 
-   var id;
+   const allProps = getAllProps(resource);
 
-   if (filters.id) {
-      id = `<${classPrefix(resource.obj.type) + filters.id}>`;
-      query["@graph"]["@id"] = classPrefix(resource.obj.type) + filters.id;
-   } else {
-      id = "?id";
-      query["@graph"]["@id"] = "?id";
-   }
+   var id = filters.id ? `<${classPrefix(resource.type) + filters.id}>` : "?id";
+   query["@graph"]["@id"] = filters.id ? `${classPrefix(resource.type) + filters.id}` : "?id";
 
    query["@graph"]["@type"] = "?type";
    query.$where.push(`${id} rdf:type ?type`);
-   query.$where.push(`?type rdfs:subClassOf* ${className(resource.obj.type, true)}`);
+   query.$where.push(`?type rdfs:subClassOf* ${className(resource.type, true)}`);
 
    query["@graph"]["createdBy"] = "?createdBy";
    query["@graph"]["createdAt"] = "?createdAt";
@@ -57,15 +52,15 @@ function generateQuery(resource, filters, user) {
          ? filters._join.split(",").map((e) => e.trim())
          : [];
 
-   Object.keys(resource.props).forEach((predicateName) => {
+   Object.keys(allProps).forEach((predicateName) => {
       var objectVar = `?${predicateName}`;
-      if (resource.props[predicateName].dataType === "node") {
+      if (allProps[predicateName].dataType === "node") {
          objectVar += "URI";
          query["@graph"][predicateName] = { "@id": objectVar };
          var where = `OPTIONAL { ${id} courses:${predicateName} ${objectVar} . `;
 
          if (joins.includes(predicateName)) {
-            const joinResource = getResourceObject(resource.props[predicateName].objectClass);
+            const joinResource = getResourceObject(allProps[predicateName].objectClass);
             const joinResourceProps = getAllProps(joinResource);
             query["@graph"][predicateName]["@type"] = `${objectVar}type`;
             query["@graph"][predicateName]["createdBy"] = `${objectVar}createdBy`;
@@ -90,7 +85,7 @@ function generateQuery(resource, filters, user) {
          if (filters.hasOwnProperty(predicateName)) {
             query.$where.push(
                `FILTER EXISTS { ${id} courses:${predicateName} <${
-                  classPrefix(resource.props[predicateName].objectClass) + filters[predicateName]
+                  classPrefix(allProps[predicateName].objectClass) + filters[predicateName]
                }> }`
             );
          }
@@ -99,7 +94,7 @@ function generateQuery(resource, filters, user) {
       query["@graph"][predicateName] = objectVar;
       if (filters.hasOwnProperty(predicateName)) {
          query.$where.push(`${id} courses:${predicateName} ${objectVar}`);
-         if (resource.props[predicateName].dataType == "string") {
+         if (allProps[predicateName].dataType == "string") {
             query.$filter.push(`${objectVar}="${filters[predicateName]}"`);
          } else {
             query.$filter.push(`${objectVar}=${filters[predicateName]}`);
@@ -114,27 +109,25 @@ function generateQuery(resource, filters, user) {
          predicateName === "_orderBy" ||
          predicateName === "_join" ||
          predicateName === "_chain" ||
-         resource.props.hasOwnProperty(predicateName)
+         allProps.hasOwnProperty(predicateName)
       ) {
          return;
       }
       query.$where.push(`${id} ^courses:${predicateName} ?${predicateName}URI`);
       query.$filter.push(`regex (?${predicateName}URI, "${filters[predicateName]}$")`);
    });
-   const authWhere = resolveAuthRules(id, resource, user);
+   const authWhere = resolveAuthRules(id, resource, allProps, user);
    if (authWhere.length > 0) {
       query.$where.push(authWhere);
    }
    return query;
 }
 
-function resolveAuthRules(id, resource, user) {
-   var rules = getResourceShowRules(resource.obj);
-   var courseInstance = resource.props.courseInstance
+function resolveAuthRules(id, resource, props, user) {
+   var rules = getResourceShowRules(resource);
+   var courseInstance = props.courseInstance
       ? "courseInstance"
-      : getResourceCourseInstance(resource.obj);
-
-   console.log(rules, courseInstance);
+      : getResourceCourseInstance(resource);
 
    var predicate = "";
 
@@ -253,16 +246,8 @@ async function dataChain(query, propName) {
    return res;
 }
 
-export default function runQuery(_resource, filters, user) {
-   const query = generateQuery(
-      {
-         obj: _resource,
-         props: getAllProps(_resource),
-         uri: "?resourceURI",
-      },
-      filters,
-      user
-   );
+export default function runQuery(resource, filters, user) {
+   const query = generateQuery(resource, filters, user);
    if (filters._chain == undefined) {
       return run(query);
    }
