@@ -116,10 +116,10 @@ function generateQuery(resource, filters, user) {
       query.$where.push(`${id} ^courses:${predicateName} ?${predicateName}URI`);
       query.$filter.push(`regex (?${predicateName}URI, "${filters[predicateName]}$")`);
    });
-   const authWhere = resolveAuthRules(id, resource, allProps, user);
-   if (authWhere.length > 0) {
-      query.$where.push(authWhere);
-   }
+   // const authWhere = resolveAuthRules(id, resource, allProps, user);
+   // if (authWhere.length > 0) {
+   //    query.$where.push(authWhere);
+   // }
    return query;
 }
 

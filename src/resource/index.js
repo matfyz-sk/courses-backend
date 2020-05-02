@@ -95,17 +95,14 @@ export default class Resource {
    }
 
    async setPredicate(predicateName, value) {
+      if (!this.props.hasOwnProperty(predicateName)) {
+         return;
+      }
       if (value == undefined) {
          if (this.props[predicateName].required) {
             throw new RequestError(`Attribute '${predicateName}' is required`, 422);
          }
          return;
-      }
-      if (!this.props.hasOwnProperty(predicateName)) {
-         throw new RequestError(
-            `Attribute '${predicateName}' is not acceptable for resource '${this.resource.type}'`,
-            422
-         );
       }
       if (!this.props[predicateName].multiple) {
          if (Array.isArray(value)) {
@@ -124,14 +121,6 @@ export default class Resource {
       if (!this.props.hasOwnProperty(predicateName) || !this.props[predicateName].value) {
          return;
       }
-      // autorizacia uprav
-      // const changeRules = this.props[predicateName].change;
-      // for (var rule of changeRules) {
-      //    const res = await this._resolveAuthRule(rule);
-      //    if (!res) {
-      //       throw new RequestError(`You can't change value of attribute '${predicateName}'`, 403);
-      //    }
-      // }
       if (!this.props[predicateName].multiple) {
          // delete single predicate value
          if (this.props[predicateName].required) {
@@ -321,25 +310,10 @@ export default class Resource {
             throw new RequestError(`Resource with URI ${propValue} doesn't exist`, 400);
          }
       }
-
       const object = getTripleObjectType(this.props[propName].dataType, propValue);
-
       if (!this.props[propName].value) {
          this.props[propName].value = new Triple(this.subject, `courses:${propName}`, object);
       } else {
-         // autorizacia uprav
-         // const changeRules = this.props[predicateName].change;
-         // if (Array.isArray(changeRules)) {
-         //    for (var rule of changeRules) {
-         //       const res = await this._resolveAuthRule(rule);
-         //       if (!res) {
-         //          throw new RequestError(
-         //             `You can't change value of attribute '${predicateName}'`,
-         //             403
-         //          );
-         //       }
-         //    }
-         // }
          this.props[propName].value.setOperation(Triple.ADD);
          this.props[propName].value.updateObject(object);
       }
@@ -354,7 +328,6 @@ export default class Resource {
       if (!this.props[propName].hasOwnProperty("value")) {
          this.props[propName].value = [];
       }
-
       const propDataType = this.props[propName].dataType;
       for (let value of propValue) {
          if (propDataType === "node") {
@@ -429,8 +402,9 @@ export default class Resource {
 
    async fetch() {
       const data = await this.db.query(
-         `SELECT ?s ?p ?o WHERE {?s ?p ?o} VALUES ?s {<${this.subject.iri}>}`,
-         true
+         `SELECT ?s ?p ?o 
+          WHERE { ?s ?p ?o } 
+          VALUES ?s { <${this.subject.iri}> }`
       );
       if (data.results.bindings.length == 0) {
          throw new RequestError(`Resource with URI ${this.subject.iri} doesn't exist`, 404);

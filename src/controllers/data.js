@@ -15,9 +15,8 @@ export async function createResource(resource, data) {
    }
 
    await resource.setInputPredicates(data);
-   const res = await resource.authorizeCreate();
-   console.log(res);
-   // await resource.store();
+   // const res = await resource.authorizeCreate();
+   await resource.store();
 }
 
 export async function updateResource(resource, data) {
