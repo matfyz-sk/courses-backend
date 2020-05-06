@@ -396,8 +396,8 @@ export default class Resource {
    }
 
    async completeDelete() {
-      await this.db.query(`DELETE WHERE {<${this.subject.iri}> ?p ?o}`, true);
-      await this.db.query(`DELETE WHERE {?s ?p <${this.subject.iri}>}`, true);
+      await this.db.query(`DELETE WHERE {<${this.subject.iri}> ?p ?o}`);
+      await this.db.query(`DELETE WHERE {?s ?p <${this.subject.iri}>}`);
    }
 
    async fetch() {

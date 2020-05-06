@@ -13,7 +13,7 @@ import RequestError from "../helpers/RequestError";
 const sparqlOptions = {
    context: ontologyURI,
    endpoint: virtuosoEndpoint,
-   debug: true,
+   debug: false,
 };
 
 const sparqlPrefixes = {
@@ -194,10 +194,10 @@ function resolveAuthRules(id, resource, props, user) {
    return "";
 }
 
-function _nodesToArray(obj) {
+function nodesToArray(obj) {
    if (obj.constructor.name == "Array") {
       for (var val of obj) {
-         _nodesToArray(val);
+         nodesToArray(val);
       }
       return;
    }
@@ -209,7 +209,7 @@ function _nodesToArray(obj) {
          if (Object.keys(obj[predicateName]).length == 0) {
             obj[predicateName] = [];
          } else {
-            _nodesToArray(obj[predicateName]);
+            nodesToArray(obj[predicateName]);
             obj[predicateName] = [obj[predicateName]];
          }
       }
@@ -218,7 +218,7 @@ function _nodesToArray(obj) {
 
 async function run(query) {
    const data = await lib.default(query, sparqlOptions);
-   _nodesToArray(data["@graph"]);
+   nodesToArray(data["@graph"]);
    return data;
 }
 
