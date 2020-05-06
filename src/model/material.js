@@ -12,5 +12,10 @@ export const material = {
          dataType: "node",
          objectClass: "topic",
       },
+      URL: {
+         required: false,
+         multiple: false,
+         dataType: "string",
+      },
    },
 };
