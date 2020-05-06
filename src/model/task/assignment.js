@@ -9,12 +9,12 @@ export const assignment = {
          multiple: false,
          dataType: "string",
       },
-      // hasDocument: {
-      //    required: false,
-      //    multiple: true,
-      //    dataType: "node",
-      //    objectClass: "document"
-      // },
+      hasMaterial: {
+         required: false,
+         multiple: true,
+         dataType: "node",
+         objectClass: "material",
+      },
       hasField: {
          required: false,
          multiple: true,
@@ -107,7 +107,7 @@ export const assignment = {
       },
       reviewsQuestion: {
          required: false,
-         multiple: false,
+         multiple: true,
          dataType: "node",
          objectClass: "peerReviewQuestion",
       },
