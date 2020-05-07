@@ -77,6 +77,11 @@ function generateQuery(resource, filters, user) {
                   objectVar + joinPredicate
                }} . `;
             });
+
+            var authWhere = resolveAuthRules(objectVar, joinResource, joinResourceProps, user);
+            if (authWhere.length > 0) {
+               where += authWhere;
+            }
          }
 
          where = where.substring(0, where.length - 2) + "}";

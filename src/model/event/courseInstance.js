@@ -3,7 +3,7 @@ import { event } from "./event";
 export const courseInstance = {
    type: "courseInstance",
    subclassOf: event,
-   create: ["instanceOf/hasAdmin"],
+   create: ["admin"],
    show: ["all"],
    props: {
       instanceOf: {

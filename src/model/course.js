@@ -1,12 +1,13 @@
 export const course = {
    type: "course",
    create: ["superAdmin"],
-   change: ["superAdmin"],
+   show: ["all"],
    props: {
       name: {
          required: true,
          multiple: false,
          dataType: "string",
+         change: ["superAdmin", "admin"],
       },
       description: {
          required: false,
@@ -41,6 +42,9 @@ export const course = {
          multiple: true,
          dataType: "node",
          objectClass: "user",
+         put: [],
+         patch: [],
+         delete: [],
       },
    },
 };
