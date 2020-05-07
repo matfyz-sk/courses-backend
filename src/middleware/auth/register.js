@@ -18,6 +18,7 @@ const bodyValidation = [
    body("privacy.show_courses").exists().isBoolean(),
    body("privacy.show_badges").exists().isBoolean(),
    body("privacy.allow_contact").exists().isBoolean(),
+   body("privacy.nickNameTeamException").exists().isBoolean(),
    body("privacy.nickname")
       .if(body("privacy.use_nickname").custom((value) => value === true))
       .exists()
@@ -55,6 +56,7 @@ async function _register(req, res, next) {
       await u.setPredicate("showCourses", privacy.show_courses);
       await u.setPredicate("showBadges", privacy.show_badges);
       await u.setPredicate("allowContact", privacy.allow_contact);
+      await u.setPredicate("nickNameTeamException", privacy.nickNameTeamException);
       await u.setPredicate("isSuperAdmin", false);
    } catch (err) {
       console.log(err);
@@ -80,6 +82,7 @@ async function _register(req, res, next) {
                showCourses: privacy.show_courses,
                showBadges: privacy.show_badges,
                allowContact: privacy.allowContact,
+               nickNameTeamException: privacy.nickNameTeamException,
                isSuperAdmin: false,
                studentOf: [],
                instructorOf: [],

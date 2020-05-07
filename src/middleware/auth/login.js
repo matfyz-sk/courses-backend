@@ -40,6 +40,7 @@ function _login(req, res) {
                showCourses: userData.showCourses,
                showBadges: userData.showBadges,
                allowContact: userData.allowContact,
+               nickNameTeamException: userData.nickNameTeamException,
                isSuperAdmin: userData.isSuperAdmin,
                studentOf: userData.studentOf,
                instructorOf: userData.instructorOf,
