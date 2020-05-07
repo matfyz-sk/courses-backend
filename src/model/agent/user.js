@@ -64,13 +64,19 @@ export const user = {
          required: false,
          multiple: false,
          dataType: "boolean",
+         change: ["supeAdmin"],
+      },
+      nickNameTeamException: {
+         required: true,
+         multiple: false,
+         dataType: "boolean",
       },
       memberOf: {
          required: false,
          multiple: true,
          dataType: "node",
          objectClass: "teamInstance",
-         change: ["owner", "courseInstance/^studentOf"],
+         change: ["creator"],
       },
       requests: {
          required: false,
