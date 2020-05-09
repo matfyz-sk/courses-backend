@@ -30,6 +30,12 @@ function generateQuery(resource, filters, user) {
    };
 
    const allProps = getAllProps(resource);
+   allProps["createdBy"] = {
+      required: true,
+      multiple: false,
+      dataType: "node",
+      objectClass: "user",
+   };
 
    var id = filters.id ? `<${classPrefix(resource.type) + filters.id}>` : "?id";
    query["@graph"]["@id"] = filters.id ? `${classPrefix(resource.type) + filters.id}` : "?id";
@@ -38,9 +44,7 @@ function generateQuery(resource, filters, user) {
    query.$where.push(`${id} rdf:type ?type`);
    query.$where.push(`?type rdfs:subClassOf* ${className(resource.type, true)}`);
 
-   query["@graph"]["createdBy"] = "?createdBy";
    query["@graph"]["createdAt"] = "?createdAt";
-   query.$where.push(`OPTIONAL { ${id} courses:createdBy ?createdBy }`);
    query.$where.push(`OPTIONAL { ${id} dc:created ?createdAt }`);
 
    if (filters._orderBy) {
@@ -80,7 +84,7 @@ function generateQuery(resource, filters, user) {
 
             var authWhere = resolveAuthRules(objectVar, joinResource, joinResourceProps, user);
             if (authWhere.length > 0) {
-               where += authWhere;
+               where += authWhere + " . ";
             }
          }
 
@@ -209,6 +213,9 @@ function nodesToArray(obj) {
    for (var predicateName in obj) {
       if (obj.hasOwnProperty(predicateName)) {
          if (obj[predicateName].constructor.name != "Object") {
+            continue;
+         }
+         if (predicateName === "createdBy") {
             continue;
          }
          if (Object.keys(obj[predicateName]).length == 0) {
