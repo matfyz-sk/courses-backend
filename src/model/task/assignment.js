@@ -111,5 +111,10 @@ export const assignment = {
          dataType: "node",
          objectClass: "peerReviewQuestion",
       },
+      hasAssignedReviews: {
+         required: false,
+         multiple: false,
+         dataType: "boolean",
+      },
    },
 };

@@ -44,5 +44,10 @@ export const submission = {
          multiple: false,
          dataType: "boolean",
       },
+      teacherRating: {
+         required: false,
+         multiple: false,
+         dataType: "integer",
+      },
    },
 };

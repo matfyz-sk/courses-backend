@@ -1,5 +1,6 @@
 export const field = {
    type: "field",
+   courseInstance: "^hasField/courseInstance",
    props: {
       name: {
          required: true,
