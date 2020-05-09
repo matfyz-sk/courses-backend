@@ -66,7 +66,7 @@ export async function githubLogin(req, res) {
    try {
       await u.setPredicate("firstName", "");
       await u.setPredicate("lastName", "");
-      await u.setPredicate("email", "");
+      await u.setPredicate("email", email ? email : "");
       await u.setPredicate("password", "");
       await u.setPredicate("description", "");
       await u.setPredicate("nickname", "");
@@ -84,24 +84,24 @@ export async function githubLogin(req, res) {
    }
 
    await u.store();
-   let token = generateToken({ userURI: u.subject.iri, email: "" });
+   let token = generateToken({ userURI: u.subject.iri, email: email ? email : "" });
    res.send({
       status: true,
       _token: token,
       user: {
          id: uri2id(u.subject.iri),
          fullURI: u.subject.iri,
-         firstName: user.first_name,
-         lastName: user.last_name,
-         nickname: privacy.nickname ? privacy.nickname : null,
-         email: user.email,
-         avatar: user.avatar ? user.avatar : null,
-         useNickName: privacy.use_nickname,
-         publicProfile: privacy.public_profile,
-         showCourses: privacy.show_courses,
-         showBadges: privacy.show_badges,
-         allowContact: privacy.allowContact,
-         nickNameTeamException: privacy.nickNameTeamException,
+         firstName: "",
+         lastName: "",
+         nickname: "",
+         email: email ? email : "",
+         avatar: null,
+         useNickName: false,
+         publicProfile: false,
+         showCourses: false,
+         showBadges: false,
+         allowContact: false,
+         nickNameTeamException: false,
          isSuperAdmin: false,
          studentOf: [],
          instructorOf: [],
