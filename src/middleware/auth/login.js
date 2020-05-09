@@ -5,7 +5,10 @@ import { user } from "../../model/agent/user";
 import { generateToken, uri2id } from "../../helpers";
 import { checkValidation } from "./checkValidation";
 
-const bodyValidation = [body("email").exists(), body("password").exists()];
+const bodyValidation = [
+   body("email").exists().isEmail(),
+   body("password").exists().isString().isLength({ min: 6 }),
+];
 
 function _login(req, res) {
    runQuery(user, { email: req.body.email })

@@ -11,7 +11,7 @@ const bodyValidation = [
    body("user.first_name").exists().isString(),
    body("user.last_name").exists().isString(),
    body("user.email").exists().isEmail(),
-   body("user.password").exists().isString(),
+   body("user.password").exists().isString().isLength({ min: 6 }),
    body("privacy").exists(),
    body("privacy.use_nickname").exists().isBoolean(),
    body("privacy.public_profile").exists().isBoolean(),
