@@ -2,6 +2,7 @@ import axios from "axios";
 import { user } from "../../model/agent/user";
 import runQuery from "../../query";
 import Resource from "../../resource";
+import { generateToken, uri2id } from "../../helpers";
 
 const GITHUB_GET_TOKEN_URL = "https://github.com/login/oauth/access_token";
 const GITHUB_GET_USER_URL = "https://api.github.com/user";
