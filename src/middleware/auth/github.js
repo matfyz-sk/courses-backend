@@ -24,9 +24,11 @@ export async function githubLogin(req, res) {
    resp = await axios.get(`${GITHUB_GET_USER_URL}?access_token=${access_token}`);
 
    const email = resp.email;
+   const githubId = resp.id;
+
    var userData;
    if (!email) {
-      userData = await runQuery(user, { githubToken: access_token });
+      userData = await runQuery(user, { githubId });
    } else {
       userData = await runQuery(user, { email });
    }
@@ -40,6 +42,8 @@ export async function githubLogin(req, res) {
          user: {
             id: uri2id(userData["@id"]),
             fullURI: userData["@id"],
+            githubId,
+            githubToken: access_token,
             firstName: userData.firstName,
             lastName: userData.lastName,
             description: userData.description,
@@ -56,7 +60,6 @@ export async function githubLogin(req, res) {
             studentOf: userData.studentOf,
             instructorOf: userData.instructorOf,
             requests: userData.requests,
-            githubToken: access_token,
          },
       });
    }
@@ -77,20 +80,21 @@ export async function githubLogin(req, res) {
       await u.setPredicate("allowContact", false);
       await u.setPredicate("nickNameTeamException", false);
       await u.setPredicate("isSuperAdmin", false);
-      await u.setPredicate("githubToken", access_token);
+      await u.setPredicate("githubId", githubId);
    } catch (err) {
       console.log(err);
       return res.status(200).send({ status: false, msg: err, user: null });
    }
 
    await u.store();
-   let token = generateToken({ userURI: u.subject.iri, email: email ? email : "" });
    res.send({
       status: true,
-      _token: token,
+      _token: generateToken({ userURI: u.subject.iri, email: email ? email : "" }),
       user: {
          id: uri2id(u.subject.iri),
          fullURI: u.subject.iri,
+         githubId,
+         githubToken: access_token,
          firstName: "",
          lastName: "",
          nickname: "",
@@ -106,7 +110,6 @@ export async function githubLogin(req, res) {
          studentOf: [],
          instructorOf: [],
          requests: [],
-         githubToken: access_token,
       },
    });
 

@@ -97,10 +97,10 @@ export const user = {
          dataType: "node",
          objectClass: "topic",
       },
-      githubToken: {
+      githubId: {
          required: false,
          multiple: false,
-         dataType: "string",
+         dataType: "integer",
       },
    },
 };
