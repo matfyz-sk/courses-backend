@@ -35,7 +35,7 @@ export { peerReviewQuestion } from "./peerReviewQuestion";
 export { peerReviewQuestionAnswer } from "./peerReviewQuestionAnswer";
 export { toReview } from "./toReview";
 export { submission } from "./submission";
-export { subbmittedField } from "./submittedField";
+export { submittedField } from "./submittedField";
 export { teamReview } from "./teamReview";
 export { topicAppearance } from "./topicAppearance";
 export { task } from "./task/task";

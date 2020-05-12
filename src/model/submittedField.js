@@ -1,4 +1,4 @@
-export const subbmittedField = {
+export const submittedField = {
    type: "submittedField",
    courseInstance: "^submittedField/ofAssignment/courseInstance",
    props: {

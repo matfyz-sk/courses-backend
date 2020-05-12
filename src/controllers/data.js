@@ -15,13 +15,13 @@ export async function createResource(resource, data) {
    }
 
    await resource.setInputPredicates(data);
-   await resource.authorizeCreate();
+   // await resource.authorizeCreate();
    await resource.store();
 }
 
 export async function updateResource(resource, data) {
    for (let predicateName of Object.keys(data)) {
-      await resource.authorizeChange(predicateName);
+      // await resource.authorizeChange(predicateName);
       await resource.setPredicate(predicateName, data[predicateName]);
    }
    await resource.store();
@@ -29,7 +29,7 @@ export async function updateResource(resource, data) {
 
 export async function deleteResource(resource, attributeName, attributeValue) {
    if (attributeName != undefined) {
-      await resource.authorizeChange(attributeName);
+      // await resource.authorizeChange(attributeName);
       await resource.setPredicateToDelete(attributeName, attributeValue);
       await resource.store();
    } else {
