@@ -385,10 +385,7 @@ export default class Resource {
       if (obj1.constructor.name === "Node" && obj1.iri !== obj2.iri) {
          return false;
       }
-      if (obj1.value !== obj2.value) {
-         return false;
-      }
-      return true;
+      return obj1.value === obj2.value;
    }
 
    async _setProperty(propName, propValue) {
@@ -409,7 +406,7 @@ export default class Resource {
 
       if (!value) {
          this.props[propName].value = new Triple(this.subject, `courses:${propName}`, object);
-      } else if (this._objectCompare(value, object)) {
+      } else if (!this._objectCompare(value, object)) {
          this.props[propName].value.setOperation(Triple.ADD);
          this.props[propName].value.updateObject(object);
       }
