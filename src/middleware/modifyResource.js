@@ -5,21 +5,12 @@ import { responseHandler } from "./responseHandler";
 
 async function _modifyResource(req, res, next) {
    const resource = res.locals.resource;
+   const requestMethod = req.method;
    try {
-      switch (req.method) {
-         case "PUT":
-            resource.removeOld = false;
-            await DataController.updateResource(resource, req.body);
-            break;
-         case "PATCH":
-            resource.removeOld = true;
-            await DataController.updateResource(resource, req.body);
-            break;
-         case "DELETE":
-            await DataController.deleteResource(resource, req.params.attributeName, req.body.value);
-            break;
-         default:
-            break;
+      if (requestMethod === "PUT" || requestMethod === "PATCH") {
+         await DataController.updateResource(resource, req.body);
+      } else if (requestMethod === "DELETE") {
+         await DataController.deleteResource(resource, req.params.attributeName, req.body.value);
       }
       next();
    } catch (err) {

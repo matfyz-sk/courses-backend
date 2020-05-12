@@ -1,5 +1,5 @@
 import axios from "axios";
-import { user } from "../../model/agent/user";
+import { user } from "../../model";
 import runQuery from "../../query";
 import Resource from "../../resource";
 import { generateToken, uri2id } from "../../helpers";
@@ -112,62 +112,4 @@ export async function githubLogin(req, res) {
          requests: [],
       },
    });
-
-   // axios
-   //    .post(GITHUB_GET_TOKEN_URL, {
-   //       client_id: GITHUB_CLIENT_ID,
-   //       client_secret: GITHUB_CLIENT_SECRET,
-   //       code,
-   //    })
-   //    .then((resp) => {
-   //       const access_token = resp.data.split("&")[0].split("=")[1];
-   //       return axios.get(`${GITHUB_GET_USER_URL}?access_token=${access_token}`);
-   //    })
-   //    .then((resp) => {
-   //       const email = resp.email;
-   //       if (!email) {
-   //          return res.status(200).send({
-   //             status: false,
-   //             msg: "Empty email",
-   //          });
-   //       }
-   //       return runQuery(user, { email });
-   //    })
-   //    .then((data) => {
-   //       if (data["@graph"].length == 0) {
-   //          return res.status(200).send({
-   //             status: false,
-   //             msg: "Credentials not valid",
-   //          });
-   //       }
-   //       const userData = data["@graph"][0];
-   //       res.send({
-   //          status: true,
-   //          _token: generateToken({ userURI: userData["@id"], email: userData.email }),
-   //          user: {
-   //             id: uri2id(userData["@id"]),
-   //             fullURI: userData["@id"],
-   //             firstName: userData.firstName,
-   //             lastName: userData.lastName,
-   //             description: userData.description,
-   //             nickname: userData.nickname,
-   //             email: userData.email,
-   //             avatar: userData.avatar ? userData.avatar : null,
-   //             useNickName: userData.useNickName,
-   //             publicProfile: userData.publicProfile,
-   //             showCourses: userData.showCourses,
-   //             showBadges: userData.showBadges,
-   //             allowContact: userData.allowContact,
-   //             nickNameTeamException: userData.nickNameTeamException,
-   //             isSuperAdmin: userData.isSuperAdmin,
-   //             studentOf: userData.studentOf,
-   //             instructorOf: userData.instructorOf,
-   //             requests: userData.requests,
-   //          },
-   //       });
-   //    })
-   //    .catch((err) => {
-   //       console.log(err);
-   //       res.status(500).send({ status: false, msg: err });
-   //    });
 }

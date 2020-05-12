@@ -133,6 +133,9 @@ function generateQuery(resource, filters, user) {
 }
 
 function resolveAuthRules(id, resource, props, user) {
+   if (user != undefined && user.isSuperAdmin) {
+      return "";
+   }
    var rules = getResourceShowRules(resource);
    var courseInstance = props.courseInstance
       ? "courseInstance"
@@ -141,27 +144,21 @@ function resolveAuthRules(id, resource, props, user) {
    var predicate = "";
 
    if (courseInstance == null) {
-      if (rules.length == 0) {
-         return "";
-      }
       return "";
    }
-
    if (rules.length == 1 && rules[0] == "all") {
       return "";
    }
-
    if (user == undefined) {
       throw new RequestError("You don't have access rights to this resource", 401);
    }
-
    if (rules.length == 0) {
+      // default rules
       predicate = `createdBy | ${courseInstance}/hasInstructor | ${courseInstance}/^studentOf | ${courseInstance}/instanceOf/hasAdmin`;
       const regex = /([a-zA-Z]+)/gm;
       predicate = predicate.replace(regex, "courses:$1");
       return `${id} ${predicate} <${user.userURI}>`;
    }
-
    for (let rule of rules) {
       if (rule === "teacher") {
          if (courseInstance == null) {
@@ -187,9 +184,6 @@ function resolveAuthRules(id, resource, props, user) {
          }
          predicate += `${courseInstance}/instanceOf/hasAdmin|`;
          continue;
-      }
-      if (rule === "all") {
-         return "";
       }
       // special defined rule
       predicate += `${rule}|`;

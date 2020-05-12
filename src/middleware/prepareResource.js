@@ -7,6 +7,7 @@ export function prepareResource(req, res, next) {
          resource: getResourceObject(req.params.className),
          user: req.user,
          id: req.params.id,
+         operation: req.method,
       });
       next();
    } catch (err) {

@@ -2,7 +2,7 @@ import Resource from "../../resource";
 import { body } from "express-validator";
 import bcrypt from "bcrypt";
 import runQuery from "../../query";
-import { user as userObj } from "../../model/agent/user";
+import { user as userObj } from "../../model";
 import { generateToken, uri2id } from "../../helpers";
 import { checkValidation } from "./checkValidation";
 

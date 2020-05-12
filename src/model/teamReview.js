@@ -2,7 +2,7 @@ export const teamReview = {
    type: "teamReview",
    courseInstance: "ofSubmission/ofAssignment/courseInstance",
    create: ["student"],
-   show: ["teacher", "creator"],
+   show: ["teacher", "creator", "reviewedStudent"],
    props: {
       percentage: {
          required: true,

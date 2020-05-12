@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import bcrypt from "bcrypt";
 import runQuery from "../../query";
-import { user } from "../../model/agent/user";
+import { user } from "../../model";
 import { generateToken, uri2id } from "../../helpers";
 import { checkValidation } from "./checkValidation";
 

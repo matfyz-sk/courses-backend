@@ -9,8 +9,10 @@ import {
    getResourceObject,
    getResourceCreateRules,
 } from "../helpers";
-import * as Constants from "../constants";
 import RequestError from "../helpers/RequestError";
+
+const IMPLICIT_CREATE = ["admin", "superAdmin", "teacher"];
+const IMPLICIT_CHANGE = ["admin", "superAdmin", "teacher"];
 
 export default class Resource {
    constructor(cfg) {
@@ -18,13 +20,15 @@ export default class Resource {
       this.user = cfg.user;
       this.id = cfg.id;
       this.parent = cfg.parent;
+      this.operation = cfg.operation;
       this.setCreator = cfg.setCreator == undefined || cfg.setCreator == true ? true : false;
       this._setSubject();
       this.triples = { toAdd: [], toUpdate: [], toRemove: [] };
       this.db = client();
-      this.removeOld = true;
       this.props = getAllProps(cfg.resource, false);
       this.nested = [];
+      this.courseInstance = 0;
+      this.auth = {};
    }
 
    setResourceObject(_res) {
@@ -62,20 +66,70 @@ export default class Resource {
 
    async authorizeCreate() {
       const createRules = getResourceCreateRules(this.resource);
+      if (createRules.length === 0) {
+         createRules = IMPLICIT_CREATE;
+      }
+      if (this.courseInstance === 0) {
+         await this._getResourceCourseInstance();
+      }
       var res;
       var authorized = false;
       for (let rule of createRules) {
-         res = await this._resolveCreateAuthRule(rule);
+         res = await this._resolveAuthRule(rule);
          if (res) {
             authorized = true;
             break;
          }
       }
       if (!authorized) {
-         throw new RequestError(`You can't create resource '${this.resource.type}'`, 401);
+         throw new RequestError(
+            `You don't have access rights to create resource '${this.resource.type}'`,
+            401
+         );
       }
       for (var nestedInstance of this.nested) {
          await nestedInstance.authorizeCreate();
+      }
+      return true;
+   }
+
+   async authorizeChange(propName) {
+      var changeRules;
+      if (this.props[propName].multiple) {
+         if (this.operation === "PUT") {
+            changeRules = this.props[propName].put;
+         } else if (this.operation === "PATCH") {
+            changeRules = this.props[propName].patch;
+         } else if (this.operation === "DELETE") {
+            changeRules = this.props[propName].delete;
+         }
+      } else {
+         if (this.operation === "PUT" || this.operation === "PATCH") {
+            changeRules = this.props[propName].change;
+         } else if (this.operation === "DELETE") {
+            changeRules = this.props[propName].delete;
+         }
+      }
+      if (changeRules == undefined || changeRules.length == 0) {
+         changeRules = IMPLICIT_CHANGE;
+      }
+      if (this.courseInstance === 0) {
+         await this._getResourceCourseInstance();
+      }
+      var res;
+      var authorized = false;
+      for (let rule of changeRules) {
+         res = await this._resolveAuthRule(rule);
+         if (res) {
+            authorized = true;
+            break;
+         }
+      }
+      if (!authorized) {
+         throw new RequestError(
+            `You don't have access rights to change attribute '${propName}'`,
+            401
+         );
       }
       return true;
    }
@@ -124,7 +178,7 @@ export default class Resource {
       if (!this.props[predicateName].multiple) {
          // delete single predicate value
          if (this.props[predicateName].required) {
-            throw new RequestError(`You can't delete attribute '${predicateName}'`, 422);
+            throw new RequestError(`Attribute '${predicateName}' is required`, 422);
          }
          this.props[predicateName].value.setOperation(Triple.REMOVE);
          return;
@@ -167,9 +221,6 @@ export default class Resource {
       for (let predicateName of Object.keys(this.props)) {
          const value = this.props[predicateName].value;
          if (!value) {
-            if (this.props[predicateName].required) {
-               throw new RequestError(`Attribute '${predicateName}' is required`, 422);
-            }
             continue;
          }
          if (Array.isArray(value)) {
@@ -207,46 +258,73 @@ export default class Resource {
       }
    }
 
-   async _resolveCreateAuthRule(rule) {
+   async _resolveAuthRule(rule) {
       if (rule.length == 0) {
          return true;
       }
-      var courseInstance = await this._getResourceCourseInstance();
+      if (this.auth.hasOwnProperty(rule)) {
+         return this.auth[rule];
+      }
 
       if (
          (rule === "teacher" || rule === "student" || rule === "admin") &&
-         courseInstance == null
+         this.courseInstance == null
       ) {
          throw new RequestError("Bad class configuration");
       }
 
+      var data;
+
       if (rule === "student") {
-         const data = await this.db.query(
-            `ASK { <${this.user.userURI}> courses:studentOf <${courseInstance}> }`
-         );
+         if (this.courseInstance == null) {
+            data = await this.db.query(
+               `ASK { <${this.user.userURI}> courses:studentOf ?courseInstanceURI }`
+            );
+         } else {
+            data = await this.db.query(
+               `ASK { <${this.user.userURI}> courses:studentOf <${this.courseInstance}> }`
+            );
+         }
+         if (!this.auth.hasOwnProperty("student")) {
+            this.auth["student"] = data.boolean;
+         }
          return data.boolean;
       }
 
       if (rule === "teacher") {
-         const data = await this.db.query(
-            `ASK { <${courseInstance}> courses:hasInstructor <${this.user.userURI}> }`
-         );
-
+         if (this.courseInstance == null) {
+            data = await this.db.query(
+               `ASK { ?courseInstanceURI courses:hasInstructor <${this.user.userURI}> }`
+            );
+         } else {
+            data = await this.db.query(
+               `ASK { <${this.courseInstance}> courses:hasInstructor <${this.user.userURI}> }`
+            );
+         }
+         if (!this.auth.hasOwnProperty("teacher")) {
+            this.auth["teacher"] = data.boolean;
+         }
          return data.boolean;
       }
 
       if (rule === "admin") {
-         const data = await this.db.query(
-            `ASK { <${courseInstance}> courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`
-         );
+         if (this.courseInstance == null) {
+            data = await this.db.query(
+               `ASK { ?courseInstanceURI courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`
+            );
+         } else {
+            data = await this.db.query(
+               `ASK { <${this.courseInstance}> courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`
+            );
+         }
+         if (!this.auth.hasOwnProperty("admin")) {
+            this.auth["admin"] = data.boolean;
+         }
          return data.boolean;
       }
 
       if (rule === "superAdmin") {
-         const data = await this.db.query(
-            `ASK { <${this.user.userURI}> courses:isSuperAdmin true }`
-         );
-         return data.boolean;
+         return this.user.isSuperAdmin;
       }
 
       if (rule.startsWith("[") && rule.endsWith("]")) {
@@ -265,7 +343,10 @@ export default class Resource {
       predicate = predicate.replace(regex, "courses:$1");
       var object = `<${this.user.userURI}>`;
 
-      const data = await this.db.query(`ASK { ${subject} ${predicate} ${object}}`);
+      data = await this.db.query(`ASK { ${subject} ${predicate} ${object}}`);
+      if (!this.auth.hasOwnProperty(rule)) {
+         this.auth[rule] = data.boolean;
+      }
       return data.boolean;
    }
 
@@ -287,7 +368,7 @@ export default class Resource {
          }
          resource = getResourceObject(nestedValue._type);
       }
-      const r = new Resource({ resource, user: this.user, parent: this });
+      const r = new Resource({ resource, user: this.user, parent: this, operation: "POST" });
       await r.setInputPredicates(nestedValue);
       if (Array.isArray(this.props[propName].value)) {
          this.props[propName].value.push(r);
@@ -295,6 +376,19 @@ export default class Resource {
          this.props[propName].value = r;
       }
       this.nested.push(r);
+   }
+
+   _objectCompare(obj1, obj2) {
+      if (obj1.constructor.name !== obj2.constructor.name) {
+         return false;
+      }
+      if (obj1.constructor.name === "Node" && obj1.iri !== obj2.iri) {
+         return false;
+      }
+      if (obj1.value !== obj2.value) {
+         return false;
+      }
+      return true;
    }
 
    async _setProperty(propName, propValue) {
@@ -311,16 +405,18 @@ export default class Resource {
          }
       }
       const object = getTripleObjectType(this.props[propName].dataType, propValue);
-      if (!this.props[propName].value) {
+      const value = this.props[propName].value;
+
+      if (!value) {
          this.props[propName].value = new Triple(this.subject, `courses:${propName}`, object);
-      } else {
+      } else if (this._objectCompare(value, object)) {
          this.props[propName].value.setOperation(Triple.ADD);
          this.props[propName].value.updateObject(object);
       }
    }
 
    async _setArrayProperty(propName, propValue) {
-      if (this.props[propName].value && this.removeOld) {
+      if (this.props[propName].value && this.operation === "PATCH") {
          for (let triple of this.props[propName].value) {
             triple.setOperation(Triple.REMOVE);
          }
@@ -373,8 +469,8 @@ export default class Resource {
       }
    }
 
-   async store(post = true) {
-      await this._prepareProperties(post);
+   async store() {
+      await this._prepareProperties();
 
       if (this.triples.toRemove.length > 0) {
          this.db.getLocalStore().empty();
