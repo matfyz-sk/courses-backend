@@ -13,5 +13,10 @@ export const peerReviewQuestionAnswer = {
          multiple: false,
          dataType: "string",
       },
+      score: {
+         required: false,
+         multiple: false,
+         dataType: "integer",
+      },
    },
 };
