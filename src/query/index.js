@@ -61,7 +61,13 @@ function generateQuery(resource, filters, user) {
       if (allProps[predicateName].dataType === "node") {
          objectVar += "URI";
          query["@graph"][predicateName] = { "@id": objectVar };
-         var where = `OPTIONAL { ${id} courses:${predicateName} ${objectVar} . `;
+
+         var where = "";
+         if (filters.hasOwnProperty(predicateName) && filters[predicateName] === "iri") {
+            where = `${id} courses:${predicateName} ${objectVar} . `;
+         } else {
+            where = `OPTIONAL { ${id} courses:${predicateName} ${objectVar} . `;
+         }
 
          if (joins.includes(predicateName)) {
             const joinResource = getResourceObject(allProps[predicateName].objectClass);
@@ -88,10 +94,15 @@ function generateQuery(resource, filters, user) {
             }
          }
 
-         where = where.substring(0, where.length - 2) + "}";
+         where = where.substring(0, where.length - 2);
+
+         if (where.startsWith("OPTIONAL")) {
+            where += "}";
+         }
+
          query.$where.push(where);
 
-         if (filters.hasOwnProperty(predicateName)) {
+         if (filters.hasOwnProperty(predicateName) && filters[predicateName] != "iri") {
             query.$where.push(
                `FILTER EXISTS { ${id} courses:${predicateName} <${
                   classPrefix(allProps[predicateName].objectClass) + filters[predicateName]

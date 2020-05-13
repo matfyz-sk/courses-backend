@@ -12,18 +12,18 @@ export const teamReview = {
       reviewedStudent: {
          required: true,
          multiple: false,
-         type: "node",
+         dataType: "node",
          objectClass: "user",
       },
       studentComment: {
          required: false,
          multiple: false,
-         type: "string",
+         dataType: "string",
       },
       privateComment: {
          required: false,
          multiple: false,
-         type: "string",
+         dataType: "string",
       },
       ofSubmission: {
          required: true,
