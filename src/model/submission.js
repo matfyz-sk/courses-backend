@@ -3,7 +3,15 @@ export const submission = {
    courseInstance: "ofAssignment/courseInstance",
    create: ["student"],
    change: ["teacher"],
-   show: ["teacher", "creator"],
+   show: [
+      // "teacher",
+      // "creator",
+      // "submittedByStudent",
+      // "submittedByTeam/^instanceOf/hasUser",
+      // "^submission/student",
+      // "^submission/team/^instanceOf/hasUser",
+      "all",
+   ],
    props: {
       ofAssignment: {
          required: true,
