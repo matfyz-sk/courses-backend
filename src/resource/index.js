@@ -37,6 +37,9 @@ export default class Resource {
    }
 
    async _getResourceCourseInstance() {
+      if (this.resource.type == "courseInstance") {
+         return this.subject.iri;
+      }
       if (this.props.hasOwnProperty("courseInstance")) {
          return this.props.courseInstance.value.obj.iri;
       }
@@ -110,12 +113,14 @@ export default class Resource {
             changeRules = this.props[propName].delete;
          }
       }
+      console.log(changeRules);
       if (changeRules == undefined || changeRules.length == 0) {
          changeRules = IMPLICIT_CHANGE;
       }
       if (this.courseInstance === 0) {
-         await this._getResourceCourseInstance();
+         this.courseInstance = await this._getResourceCourseInstance();
       }
+      console.log(this.courseInstance);
       var res;
       var authorized = false;
       for (let rule of changeRules) {
@@ -413,7 +418,8 @@ export default class Resource {
    }
 
    async _setArrayProperty(propName, propValue) {
-      if (this.props[propName].value && this.operation === "PATCH") {
+      if (this.props[propName].value && this.operation == "PATCH") {
+         console.log("patch");
          for (let triple of this.props[propName].value) {
             triple.setOperation(Triple.REMOVE);
          }

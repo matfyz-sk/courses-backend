@@ -12,7 +12,7 @@ export const orderedQuestion = {
       },
       userAnswer: {
          required: true,
-         multiple: false,
+         multiple: true,
          dataType: "node",
          objectClass: "userAnswer",
       },

@@ -6,7 +6,7 @@ export const peerReviewQuestionAnswer = {
          required: true,
          multiple: false,
          dataType: "node",
-         objectClass: "questionAssignment",
+         objectClass: "peerReviewQuestion",
       },
       answer: {
          required: true,
