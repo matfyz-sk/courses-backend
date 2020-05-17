@@ -68,6 +68,16 @@ export default class Resource {
    }
 
    async authorizeCreate() {
+      if (this.user.isSuperAdmin) {
+         return true;
+      }
+      if (this.resource.type === "user" || this.resource.type === "course") {
+         // explicitly blocked for non-superadmin user
+         throw new RequestError(
+            `You don't have access rights to create resource '${this.resource.type}'`,
+            401
+         );
+      }
       const createRules = getResourceCreateRules(this.resource);
       if (createRules.length === 0) {
          createRules = IMPLICIT_CREATE;
@@ -97,6 +107,9 @@ export default class Resource {
    }
 
    async authorizeChange(propName) {
+      if (this.user.isSuperAdmin) {
+         return true;
+      }
       var changeRules;
       if (this.props[propName].multiple) {
          if (this.operation === "PUT") {
@@ -113,14 +126,12 @@ export default class Resource {
             changeRules = this.props[propName].delete;
          }
       }
-      console.log(changeRules);
       if (changeRules == undefined || changeRules.length == 0) {
          changeRules = IMPLICIT_CHANGE;
       }
       if (this.courseInstance === 0) {
          this.courseInstance = await this._getResourceCourseInstance();
       }
-      console.log(this.courseInstance);
       var res;
       var authorized = false;
       for (let rule of changeRules) {
@@ -270,16 +281,7 @@ export default class Resource {
       if (this.auth.hasOwnProperty(rule)) {
          return this.auth[rule];
       }
-
-      if (
-         (rule === "teacher" || rule === "student" || rule === "admin") &&
-         this.courseInstance == null
-      ) {
-         throw new RequestError("Bad class configuration");
-      }
-
       var data;
-
       if (rule === "student") {
          if (this.courseInstance == null) {
             data = await this.db.query(
@@ -295,7 +297,6 @@ export default class Resource {
          }
          return data.boolean;
       }
-
       if (rule === "teacher") {
          if (this.courseInstance == null) {
             data = await this.db.query(
@@ -311,7 +312,6 @@ export default class Resource {
          }
          return data.boolean;
       }
-
       if (rule === "admin") {
          if (this.courseInstance == null) {
             data = await this.db.query(
@@ -327,11 +327,9 @@ export default class Resource {
          }
          return data.boolean;
       }
-
       if (rule === "superAdmin") {
          return this.user.isSuperAdmin;
       }
-
       if (rule.startsWith("[") && rule.endsWith("]")) {
          rule = rule.substring(1, rule.length - 1);
          if (this.parent == undefined || this.parent.resource.type !== rule) {
@@ -339,15 +337,12 @@ export default class Resource {
          }
          return true;
       }
-
       var propName = rule.substring(0, rule.indexOf("/"));
-
       var subject = `<${this.props[propName].value.obj.iri}>`;
       var predicate = rule.substring(rule.indexOf("/") + 1);
       const regex = /([a-zA-Z]+)/gm;
       predicate = predicate.replace(regex, "courses:$1");
       var object = `<${this.user.userURI}>`;
-
       data = await this.db.query(`ASK { ${subject} ${predicate} ${object}}`);
       if (!this.auth.hasOwnProperty(rule)) {
          this.auth[rule] = data.boolean;

@@ -20,6 +20,7 @@ async function _changePassword(req, res) {
       `INSERT IN GRAPH <${graphURI}> { <${userURI}> courses:password "${hash}" }`,
       true
    );
+   res.send({ status: true });
 }
 
 export const changePassword = [bodyValidation, checkValidation, _changePassword];

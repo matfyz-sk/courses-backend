@@ -64,7 +64,7 @@ export const user = {
          required: false,
          multiple: false,
          dataType: "boolean",
-         change: ["supeAdmin"],
+         change: ["superAdmin"],
       },
       nickNameTeamException: {
          required: true,
@@ -76,7 +76,6 @@ export const user = {
          multiple: true,
          dataType: "node",
          objectClass: "teamInstance",
-         change: ["creator"],
       },
       requests: {
          required: false,
@@ -89,7 +88,6 @@ export const user = {
          multiple: true,
          dataType: "node",
          objectClass: "courseInstance",
-         change: ["hasInstructor"],
       },
       understands: {
          required: false,

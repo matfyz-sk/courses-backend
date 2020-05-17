@@ -22,12 +22,13 @@
       "chalk": "^4.0.0",
       "cors": "^2.8.5",
       "express": "^4.17.1",
+      "express-fileupload": "^1.1.7-alpha.3",
       "express-jwt": "^5.3.3",
       "express-validator": "^6.4.0",
       "jsonwebtoken": "^8.5.1",
       "moment": "^2.24.0",
       "moment-timezone": "^0.5.28",
-      "sparql-transformer": "^2.1.4",
+      "sparql-transformer": "2.1.4",
       "virtuoso-sparql-client": "^0.2.2"
    },
    "devDependencies": {

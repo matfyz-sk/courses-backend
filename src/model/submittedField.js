@@ -1,6 +1,7 @@
 export const submittedField = {
    type: "submittedField",
    courseInstance: "^submittedField/ofAssignment/courseInstance",
+   create: ["[submission]"],
    show: ["all"],
    props: {
       field: {

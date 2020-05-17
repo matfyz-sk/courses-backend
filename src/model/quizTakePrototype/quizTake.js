@@ -4,12 +4,12 @@ export const quizTake = {
    create: ["quizAssignment/assignedTo"],
    props: {
       submittedDate: {
-         required: true,
+         required: false,
          multiple: false,
          dataType: "dateTime",
       },
       endDate: {
-         required: true,
+         required: false,
          multiple: false,
          dataType: "dateTime",
       },

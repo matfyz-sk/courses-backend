@@ -2,6 +2,7 @@ export const question = {
    type: "question",
    subclasses: ["essayQuestion", "openQuestion", "questionWithPredefinedAnswer"],
    create: ["ofTopic/hasQuestionAssignment/assignedTo"],
+   show: ["all"],
    props: {
       name: {
          required: false,
@@ -58,6 +59,7 @@ export const question = {
          multiple: false,
          dataType: "node",
          objectClass: "courseInstance",
+         change: ["admin", "superAdmin"],
       },
    },
 };

@@ -11,12 +11,16 @@ export const courseInstance = {
          multiple: false,
          dataType: "node",
          objectClass: "course",
+         change: ["admin"],
       },
       hasInstructor: {
          required: false,
          multiple: true,
          dataType: "node",
          objectClass: "user",
+         put: ["admin"],
+         patch: ["admin"],
+         delete: ["admin"],
       },
    },
 };
