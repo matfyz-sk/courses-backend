@@ -45,3 +45,7 @@ export { comment } from "./comment/comment";
 export { examinationEvent } from "./event/taskEvent/examinationEvent/examinationEvent";
 export { oralExam } from "./event/taskEvent/examinationEvent/oralExam";
 export { testTake } from "./event/taskEvent/examinationEvent/testTake";
+export { result } from "./result";
+export { resultType } from "./resultType";
+export { courseGrading } from "./courseGrading";
+export { coursePersonalSettings } from "./coursePersonalSettings";

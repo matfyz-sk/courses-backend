@@ -22,5 +22,23 @@ export const courseInstance = {
          patch: ["admin"],
          delete: ["admin"],
       },
+      hasGrading: {
+         required: false,
+         multiple: false,
+         dataType: "node",
+         objectClass: "courseGrading",
+      },
+      hasResultType: {
+         required: false,
+         multiple: false,
+         dataType: "node",
+         objectClass: "resultType",
+      },
+      hasPersonalSettings: {
+         required: false,
+         multiple: false,
+         dataType: "node",
+         objectClass: "coursePersonalSettings",
+      },
    },
 };
