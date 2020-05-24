@@ -24,19 +24,19 @@ export const courseInstance = {
       },
       hasGrading: {
          required: false,
-         multiple: false,
+         multiple: true,
          dataType: "node",
          objectClass: "courseGrading",
       },
       hasResultType: {
          required: false,
-         multiple: false,
+         multiple: true,
          dataType: "node",
          objectClass: "resultType",
       },
       hasPersonalSettings: {
          required: false,
-         multiple: false,
+         multiple: true,
          dataType: "node",
          objectClass: "coursePersonalSettings",
       },
