@@ -11,7 +11,7 @@ export const orderedQuestion = {
          objectClass: "question",
       },
       userAnswer: {
-         required: true,
+         required: false,
          multiple: true,
          dataType: "node",
          objectClass: "userAnswer",
