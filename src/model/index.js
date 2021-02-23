@@ -2,15 +2,12 @@ export { agent } from "./agent/agent";
 export { user } from "./agent/user";
 export { team } from "./agent/team";
 export { teamInstance } from "./agent/teamInstance";
-export { question } from "./question/question";
-export { essayQuestion } from "./question/essayQuestion";
-export { openQuestion } from "./question/openQuestion";
-export { questionWithPredefinedAnswer } from "./question/questionWithPredefinedAnswer";
-export { userAnswer } from "./userAnswer/userAnswer";
-export { directAnswer } from "./userAnswer/directAnswer";
-export { orderedAnswer } from "./userAnswer/orderedAnswer";
+export * from "./question"
+export * from "./userAnswer"
 export { orderedQuestion } from "./orderedQuestion";
 export { predefinedAnswer } from "./predefinedAnswer";
+export { orderingAnswer } from "./orderingAnswer";
+export { matchPair } from "./matchPair";
 export { quizTake } from "./quizTakePrototype/quizTake";
 export { quizTakePrototype } from "./quizTakePrototype/quizTakePrototype";
 export { topic } from "./topic";

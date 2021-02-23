@@ -1,6 +1,6 @@
 export const userAnswer = {
    type: "userAnswer",
-   subclasses: ["directAnswer", "orderedAnswer"],
+   subclasses: ["directAnswer", "orderedAnswer", "orderingUserAnswer", "matchPairUserAnswer"],
    courseInstance: "^userAnswer/^orderedQuestion/^quizAssignment/courseInstance",
    create: ["[orderedQuestion]"],
    show: ["teacher", "creator"],
