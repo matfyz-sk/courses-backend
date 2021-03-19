@@ -49,3 +49,4 @@ export { result } from "./result";
 export { resultType } from "./resultType";
 export { courseGrading } from "./courseGrading";
 export { coursePersonalSettings } from "./coursePersonalSettings";
+export * from "./document";
