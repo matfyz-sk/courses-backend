@@ -21,5 +21,10 @@ export const orderedQuestion = {
          multiple: false,
          dataType: "integer",
       },
+      points: {
+         required: true,
+         multiple: false,
+         dataType: "integer",
+      },
    },
 };
