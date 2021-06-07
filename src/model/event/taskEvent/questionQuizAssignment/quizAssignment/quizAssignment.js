@@ -10,5 +10,15 @@ export const quizAssignment = {
          multiple: false,
          dataType: "integer",
       },
+      showResult: {
+         required: false,
+         multiple: false,
+         dataType: "boolean"
+      },
+      showQuestionResult: {
+         required: false,
+         multiple: false,
+         dataType: "boolean"
+      },
    },
 };
