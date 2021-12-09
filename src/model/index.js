@@ -2,16 +2,14 @@ export { agent } from "./agent/agent";
 export { user } from "./agent/user";
 export { team } from "./agent/team";
 export { teamInstance } from "./agent/teamInstance";
-export { question } from "./question/question";
-export { essayQuestion } from "./question/essayQuestion";
-export { openQuestion } from "./question/openQuestion";
-export { questionWithPredefinedAnswer } from "./question/questionWithPredefinedAnswer";
-export { userAnswer } from "./userAnswer/userAnswer";
-export { directAnswer } from "./userAnswer/directAnswer";
-export { orderedAnswer } from "./userAnswer/orderedAnswer";
+export * from "./question"
+export * from "./userAnswer"
 export { orderedQuestion } from "./orderedQuestion";
 export { predefinedAnswer } from "./predefinedAnswer";
+export { orderingAnswer } from "./orderingAnswer";
+export { matchPair } from "./matchPair";
 export { quizTake } from "./quizTakePrototype/quizTake";
+export { selfQuizTake } from "./selfQuiz/selfQuizTake"
 export { quizTakePrototype } from "./quizTakePrototype/quizTakePrototype";
 export { topic } from "./topic";
 export { event } from "./event/event";
@@ -25,7 +23,7 @@ export { codeComment } from "./comment/codeComment";
 export { course } from "./course";
 export { field } from "./field";
 export { material } from "./material";
-export { questionQuizAssignemnt } from "./event/taskEvent/questionQuizAssignment/questionQuizAssignment";
+export { questionQuizAssignment } from "./event/taskEvent/questionQuizAssignment/questionQuizAssignment";
 export { questionAssignment } from "./event/taskEvent/questionQuizAssignment/questionAssignment";
 export { quizAssignment } from "./event/taskEvent/questionQuizAssignment/quizAssignment/quizAssignment";
 export { generatedQuizAssignment } from "./event/taskEvent/questionQuizAssignment/quizAssignment/generatedQuizAssignment";
@@ -38,6 +36,7 @@ export { submission } from "./submission";
 export { submittedField } from "./submittedField";
 export { teamReview } from "./teamReview";
 export { topicAppearance } from "./topicAppearance";
+export { typeAppearance } from "./typeAppearance";
 export { task } from "./task/task";
 export { taskEvent } from "./event/taskEvent/taskEvent";
 export { assignmentPeriod } from "./event/taskEvent/assignmentPeriod";

@@ -18,6 +18,16 @@ export const quizTake = {
          multiple: false,
          dataType: "dateTime",
       },
+      publishedReview: {
+         required: false,
+         multiple: false,
+         dataType: "boolean"
+      },
+      score: {
+         required: false,
+         multiple: false,
+         dataType: "float"
+      },
       quizAssignment: {
          required: true,
          multiple: false,

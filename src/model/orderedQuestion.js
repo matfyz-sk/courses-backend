@@ -1,8 +1,10 @@
 export const orderedQuestion = {
    type: "orderedQuestion",
    courseInstance: "^orderedQuestion/ofQuizAssignment/courseInstance",
-   create: ["[quizTakePrototype]", "[quizTake]"],
-   show: ["teacher", "creator"],
+   // create: ["[quizTakePrototype]", "[quizTake]"],
+   create: ["all"],
+   // show: ["teacher", "creator"],
+   show: ["all"],
    props: {
       question: {
          required: true,
@@ -20,6 +22,21 @@ export const orderedQuestion = {
          required: true,
          multiple: false,
          dataType: "integer",
+      },
+      points: {
+         required: true,
+         multiple: false,
+         dataType: "integer",
+      },
+      score: {
+         required: false,
+         multiple: false,
+         dataType: "integer",
+      },
+      comment: {
+         required: false,
+         multiple: false,
+         dataType: "string",
       },
    },
 };
