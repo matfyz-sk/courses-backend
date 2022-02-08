@@ -17,9 +17,9 @@ jobs:
       - name: Running docker skript 
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker build -t $TAG git://github.com/matfyz-sk/courses-backend
             docker stop $CONTAINER
