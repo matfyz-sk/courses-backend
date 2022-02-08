@@ -20,6 +20,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: TAG,CONTAINER
           script: |
             docker build -t $TAG git://github.com/matfyz-sk/courses-backend
             docker stop $CONTAINER
