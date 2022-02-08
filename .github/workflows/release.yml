@@ -14,16 +14,17 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        script: |
-          docker build -t $TAG git://github.com/matfyz-sk/courses-backend
-          docker stop $CONTAINER
-          docker rm -f $CONTAINER
-          docker run -d --name=$CONTAINER -p 3010:3010 --restart=always $TAG
+      - name: Running docker skript 
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            docker build -t $TAG git://github.com/matfyz-sk/courses-backend
+            docker stop $CONTAINER
+            docker rm -f $CONTAINER
+            docker run -d --name=$CONTAINER -p 3010:3010 --restart=always $TAG
 
       
       
