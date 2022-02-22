@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run deploy workflow
-        uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml
+        uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
         with:
           TAG: courses:testing
           CONTAINER: courses-testing
