@@ -7,18 +7,15 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run deploy workflow
-        uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
-        with:
-          TAG: courses:testing
-          CONTAINER: courses-testing
-          BRANCH: master
-        secrets:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
+    uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
+    with:
+      TAG: courses:testing
+      CONTAINER: courses-testing
+      BRANCH: master
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
       
       
 
