@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Branch name
-        run: echo running on branch ${{ input.BRANCH }}
+        run: echo running on branch ${{ inputs.BRANCH }}
       - name: Running docker skript 
         uses: appleboy/ssh-action@master
         env:
-          TAG: ${{ input.TAG }}
-          CONTAINER: ${{ input.CONTAINER }}
+          TAG: ${{ inputs.TAG }}
+          CONTAINER: ${{ inputs.CONTAINER }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
