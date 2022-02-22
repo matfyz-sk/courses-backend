@@ -1,10 +1,5 @@
 name: release
 
-env:
-  TAG: courses:testing
-  CONTAINER: courses-testing
-  BRANCH: master
-
 on: 
   push:
     branches: [ main ]
@@ -14,19 +9,16 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Running docker skript 
-        uses: appleboy/ssh-action@master
+      - name: Run deploy workflow
+        uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER
-          script: |
-            docker build -t $TAG git://github.com/matfyz-sk/courses-backend
-            docker stop $CONTAINER
-            docker rm -f $CONTAINER
-            docker run -d --name=$CONTAINER -p 3010:3010 --restart=always $TAG
-
+          TAG: courses:testing
+          CONTAINER: courses-testing
+          BRANCH: master
+        secrets:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
       
       
 

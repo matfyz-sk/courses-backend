@@ -1,0 +1,43 @@
+name: Deployment of backend
+
+on:
+  workflow_call:
+    inputs:
+      TAG:
+        required: true
+        type: string
+      CONTAINER:
+        required: true
+        type: string
+      BRANCH:
+        required: true
+        type: string
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Branch name
+        run: echo running on branch ${{ input.BRANCH }}
+      - name: Running docker skript 
+        uses: appleboy/ssh-action@master
+        env:
+          TAG: ${{ input.TAG }}
+          CONTAINER: ${{ input.CONTAINER }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: TAG,CONTAINER
+          script: |
+            docker build -t $TAG git://github.com/matfyz-sk/courses-backend
+            docker stop $CONTAINER
+            docker rm -f $CONTAINER
+            docker run -d --name=$CONTAINER -p 3010:3010 --restart=always $TAG
