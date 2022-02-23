@@ -1,16 +1,16 @@
-import * as models from "../model/index.js";
+//import * as models from "../model/index.js";
+let models = require("../model/index.js");
 
-export function exportOntology() {
-    let btn = document.getElementById("export_btn");
-    btn.addEventListener("click", () => {
-        window.alert("hey");
-        console.log("here");
-        let ontology = [];
-        for (let model in models) {
-            console.log(model.type);
-        }
-        return ontology;
-    })
+const DATA_PREFIX = "";
+const ONTOLOGY_PREFIX = "";
+
+function exportOntology() {
+    console.log("here");
+    let ontology = [];
+    for (let model in models) {
+        console.log(model.type);
+    }
+    return ontology;
 }
 
-window.onload = exportOntology;
+exportOntology();
