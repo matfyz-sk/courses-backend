@@ -18,8 +18,11 @@ function firstLetterToUppercase(value) {
 }
 
 function getTypeOfProperty(dataType) {
-    if (dataType === "string") {
+    if (dataType === "string" || dataType === "dateTime") {
         return "DatatypeProperty";
+    }
+    if (dataType === "node") {
+        return "ObjectProperty";
     }
     return "ObjectProperty";
 }
@@ -38,6 +41,10 @@ function exportOntology() {
             className = firstLetterToUppercase(model.type);
             console.log(PREFIXES.courses.prefix + ":" + className + RDFS_TYPE + PREFIXES.rdfs.prefix + ":Class");
         }
+        if (model.subclassOf && model.subclassOf.type) {
+            console.log(PREFIXES.courses.prefix + ":" + className + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(model.subclassOf.type));
+        }
+
         if (model.subclasses) {
             for (let subclass of model.subclasses) {
                 console.log(PREFIXES.courses.prefix + ":" + firstLetterToUppercase(subclass) + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + className);
@@ -48,7 +55,12 @@ function exportOntology() {
                 console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":domainIncludes " + PREFIXES.courses.prefix + ":" + className);
 
                 if (propertyObject) {
-                    console.log(PREFIXES.courses.prefix + ":" + propertyName + RDFS_TYPE + PREFIXES.owl.prefix + ":" + getTypeOfProperty(propertyObject.dataType));
+                    if (propertyObject.objectClass) {
+                        console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":rangeIncludes " + PREFIXES.courses.prefix + ":" + className);
+                    }
+                    if (propertyObject.dataType) {
+                        console.log(PREFIXES.courses.prefix + ":" + propertyName + RDFS_TYPE + PREFIXES.owl.prefix + ":" + getTypeOfProperty(propertyObject.dataType));
+                    }
                 }
             });
         }
