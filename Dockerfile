@@ -2,7 +2,7 @@ FROM node:latest
 
 WORKDIR /usr/src/courses
 
-COPY package.json ./
+ADD package.json ./
 
 RUN npm install
 
