@@ -3,6 +3,11 @@ name: release
 on: 
   push:
     branches: [ master ]
+    paths:
+      - src/**
+      - Dockerfile
+      - package.json
+      - package.json.lock
   workflow_dispatch:
 
 jobs:
