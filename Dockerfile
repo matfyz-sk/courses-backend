@@ -1,6 +1,6 @@
 FROM node:latest
 
-WORKDIR /usr/src/courses-backend
+WORKDIR /home/runner/work/courses-backend/courses-backend
 
 COPY package.json ./
 
