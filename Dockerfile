@@ -1,5 +1,9 @@
 FROM node:latest
 
+WORKDIR /usr/src/courses-backend
+
+COPY package.json ./
+
 RUN npm install
 
 COPY . .
