@@ -1,5 +1,8 @@
 import * as models from "../model/index.js";
 
+//npm install && npm install -g babel-cli
+//npx babel-node src/exporter/exporter.js
+
 const PREFIXES = {
     courses: {prefix: "courses", uri: "http://www.courses.matfyz.sk/ontology#"},
     coursesData: {prefix: "courses-data", uri: "http://www.courses.matfyz.sk/data/"},
@@ -10,21 +13,16 @@ const PREFIXES = {
 
 const RDFS_TYPE = " a ";
 
-//npm install && npm install -g babel-cli
-//npx babel-node src/exporter/exporter.js
-
 function firstLetterToUppercase(value) {
     return value && value.length > 0 ? (value[0].toUpperCase() + value.slice(1)) : value;
 }
 
+//string, datetime, boolean, float, integer, node
 function getTypeOfProperty(dataType) {
-    if (dataType === "string" || dataType === "dateTime") {
-        return "DatatypeProperty";
-    }
     if (dataType === "node") {
         return "ObjectProperty";
     }
-    return "ObjectProperty";
+    return "DatatypeProperty";
 }
 
 function exportOntology() {
@@ -56,7 +54,7 @@ function exportOntology() {
 
                 if (propertyObject) {
                     if (propertyObject.objectClass) {
-                        console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":rangeIncludes " + PREFIXES.courses.prefix + ":" + className);
+                        console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":rangeIncludes " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(propertyObject.objectClass));
                     }
                     if (propertyObject.dataType) {
                         console.log(PREFIXES.courses.prefix + ":" + propertyName + RDFS_TYPE + PREFIXES.owl.prefix + ":" + getTypeOfProperty(propertyObject.dataType));
