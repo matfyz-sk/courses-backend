@@ -37,27 +37,27 @@ function exportOntology() {
         let className;
         if (model.type) {
             className = firstLetterToUppercase(model.type);
-            console.log(PREFIXES.courses.prefix + ":" + className + RDFS_TYPE + PREFIXES.rdfs.prefix + ":Class");
+            console.log(PREFIXES.courses.prefix + ":" + className + RDFS_TYPE + PREFIXES.rdfs.prefix + ":Class.");
         }
         if (model.subclassOf && model.subclassOf.type) {
-            console.log(PREFIXES.courses.prefix + ":" + className + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(model.subclassOf.type));
+            console.log(PREFIXES.courses.prefix + ":" + className + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(model.subclassOf.type)+".");
         }
 
         if (model.subclasses) {
             for (let subclass of model.subclasses) {
-                console.log(PREFIXES.courses.prefix + ":" + firstLetterToUppercase(subclass) + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + className);
+                console.log(PREFIXES.courses.prefix + ":" + firstLetterToUppercase(subclass) + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + className+".");
             }
         }
         if (model.props) {
             Object.entries(model.props).map(([propertyName, propertyObject]) => {
-                console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":domainIncludes " + PREFIXES.courses.prefix + ":" + className);
+                console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":domainIncludes " + PREFIXES.courses.prefix + ":" + className+".");
 
                 if (propertyObject) {
                     if (propertyObject.objectClass) {
-                        console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":rangeIncludes " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(propertyObject.objectClass));
+                        console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":rangeIncludes " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(propertyObject.objectClass)+".");
                     }
                     if (propertyObject.dataType) {
-                        console.log(PREFIXES.courses.prefix + ":" + propertyName + RDFS_TYPE + PREFIXES.owl.prefix + ":" + getTypeOfProperty(propertyObject.dataType));
+                        console.log(PREFIXES.courses.prefix + ":" + propertyName + RDFS_TYPE + PREFIXES.owl.prefix + ":" + getTypeOfProperty(propertyObject.dataType)+".");
                     }
                 }
             });
