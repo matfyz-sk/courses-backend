@@ -1,6 +1,6 @@
 FROM node:latest
 
-WORKDIR /usr/src/courses
+WORKDIR /src/courses
 
 COPY package.json ./
 
