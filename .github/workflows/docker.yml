@@ -9,11 +9,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Login to dockerhub
-        run: docker login -u ${{ secrets.DOCKERHUB_OWNER }} -p ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-      - name: pwd
-        run: pwd
-      - name: Build Docker image
-        run: docker build -f ./Dockerfile -t courses:testing .
-      - name: Push Docker image to DockerHub
-        run: docker push courses:testing
+      - name: Setup nodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install
+        run: npm install
