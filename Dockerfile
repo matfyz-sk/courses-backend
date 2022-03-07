@@ -1,6 +1,8 @@
 FROM node:latest
 
-COPY package.json ./
+WORKDIR /usr/src/courses
+
+COPY package*.json ./
 
 RUN npm install
 
