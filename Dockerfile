@@ -1,7 +1,5 @@
 FROM node:latest
 
-WORKDIR /src/courses
-
 COPY package.json ./
 
 RUN npm install
