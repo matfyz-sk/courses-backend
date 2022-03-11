@@ -109,21 +109,21 @@ export function getResourceCreateRules(resource) {
 }
 
 export function client() {
-   const client = new Client(Constants.virtuosoEndpoint);
+   const client = new Client(Constants.VIRTUOSO_ENDPOINT);
    client.setOptions(
       "application/json",
       {
-         courses: Constants.ontologyURI,
+         courses: Constants.ONTOLOGY_URI,
       },
-      Constants.graphURI
+      Constants.GRAPH_URI
    );
    return client;
 }
 
 export async function getNewNode(resourceURI) {
    ID.cfg({
-      endpoint: Constants.virtuosoEndpoint,
-      graph: Constants.graphURI,
+      endpoint: Constants.VIRTUOSO_ENDPOINT,
+      graph: Constants.GRAPH_URI,
       prefix: resourceURI,
    });
    let newNode;
@@ -136,7 +136,7 @@ export async function getNewNode(resourceURI) {
 }
 
 export function generateToken({ userURI, email }) {
-   let token = jwt.sign({ userURI, email }, Constants.authSecret, {
+   let token = jwt.sign({ userURI, email }, Constants.AUTH_SECRET, {
       algorithm: "HS256",
    });
    return token;
@@ -144,7 +144,7 @@ export function generateToken({ userURI, email }) {
 
 export function classPrefix(className) {
    const lowerCaseClassName = className.charAt(0).toLowerCase() + className.slice(1);
-   return Constants.graphURI + "/" + lowerCaseClassName + "/";
+   return Constants.GRAPH_URI + "/" + lowerCaseClassName + "/";
 }
 
 export function className(className, includePrefix = false) {
@@ -153,7 +153,7 @@ export function className(className, includePrefix = false) {
 }
 
 export function uri2className(uri) {
-   return className(uri.substring(Constants.ontologyURI.length));
+   return className(uri.substring(Constants.ONTOLOGY_URI.length));
 }
 
 export function uri2id(uri) {

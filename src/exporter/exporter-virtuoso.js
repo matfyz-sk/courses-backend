@@ -1,9 +1,7 @@
 import * as models from "../model/index.js";
 import bcrypt from "bcrypt";
-import { virtuosoEndpoint } from "../constants";
+import { GRAPH_URI, VIRTUOSO_ENDPOINT } from "../constants";
 import { Client, Data, Node, Triple } from "virtuoso-sparql-client";
-
-const GRAPH_NAME = "http://www.courses3.matfyz.sk/test/"
 
 const PREFIXES = {
     courses: "http://www.courses.matfyz.sk/ontology#",
@@ -41,11 +39,11 @@ function getAdminSettings() {
 const RDFS_TYPE = new Node(PREFIXES.rdf + "type");
 
 export function exportOntology() {
-    const client = new Client(virtuosoEndpoint);
+    const client = new Client(VIRTUOSO_ENDPOINT);
     client.setOptions(
         "application/json",
         PREFIXES,
-        GRAPH_NAME
+        GRAPH_URI
     );
 
     let store = client.getLocalStore();
