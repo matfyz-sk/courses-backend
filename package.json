@@ -1,6 +1,6 @@
 {
    "name": "courses-backend",
-   "version": "1.0.0",
+   "version": "22.03.01",
    "description": "Backend of web application",
    "repository": {
       "type": "git",
