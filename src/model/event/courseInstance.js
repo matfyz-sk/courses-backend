@@ -22,6 +22,16 @@ export const courseInstance = {
          patch: ["admin"],
          delete: ["admin"],
       },
+      hasDocument: {
+         required: false,
+         multiple: true,
+         dataType: "node",
+         objectClass: "document",
+         // TODO permissions might need to change...
+         put: ["admin"],
+         patch: ["admin"],
+         delete: ["admin"],
+      },
       hasGrading: {
          required: false,
          multiple: true,

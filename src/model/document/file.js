@@ -1,19 +1,19 @@
 import { document } from "./document";
 
-export const internalDocument = {
-    type: "internalDocument",
+export const file = {
+    type: "file",
     subclassOf: document,
     props: {
-        mimeType: {
+        filename: {
             required: true,
             multiple: false,
             dataType: 'string',
         },
-        // content: {
-        //     required: true,
-        //     multiple: false,
-        //     dataType: 'string',
-        // }
+        mimeType: {  
+            required: true,
+            multiple: false,
+            dataType: 'string',
+        },
         payload: {
             required: true,
             multiple: false,

@@ -1,6 +1,6 @@
 export const document = {
     type: "document",
-    subclasses: ['internalDocument'],
+    subclasses: ['internalDocument', 'externalDocument', 'file'],
     create: ["all"],
     show: ["all"],
     props: {
