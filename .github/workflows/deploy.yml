@@ -12,6 +12,9 @@ on:
       BRANCH:
         required: true
         type: string
+      PORT:
+        required: true
+        type: string
     secrets:
       SSH_PRIVATE_KEY:
         required: true
@@ -31,13 +34,14 @@ jobs:
         env:
           TAG: ${{ inputs.TAG }}
           CONTAINER: ${{ inputs.CONTAINER }}
+          PORT: ${{ inputs.PORT }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER
+          envs: TAG,CONTAINER,PORT
           script: |
             docker build -t $TAG git://github.com/matfyz-sk/courses-backend
             docker stop $CONTAINER
             docker rm -f $CONTAINER
-            docker run -d --name=$CONTAINER -p 3010:3010 --restart=always $TAG
+            docker run -d --name=$CONTAINER -p $PORT --restart=always $TAG

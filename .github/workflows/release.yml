@@ -14,9 +14,10 @@ jobs:
   release:
     uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
     with:
-      TAG: courses:testing
-      CONTAINER: courses-testing
+      TAG: courses:production
+      CONTAINER: courses-production
       BRANCH: master
+      PORT: 3030:3030
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
