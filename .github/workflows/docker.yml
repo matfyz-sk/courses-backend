@@ -21,3 +21,18 @@ jobs:
         with:
           push: true
           tags: ricsitoth/courses:testing
+      - name: Running docker skript 
+        uses: appleboy/ssh-action@master
+        env:
+          USERNAME: ${{ secrets.DOCKERHUB_OWNER }}
+          PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: USERNAME,PASSWORD
+          script: |
+            docker login --username $USERNAME --password $PASSWORD
+            docker pull ricsitoth/courses:testing
+            docker run -d --name=courses-testing --publish 5000:3010 --restart=always courses:testing
+
