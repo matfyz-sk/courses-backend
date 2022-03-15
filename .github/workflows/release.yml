@@ -14,8 +14,8 @@ jobs:
   release:
     uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
     with:
-      TAG: courses:production
-      CONTAINER: courses-production
+      TAG: courses:master
+      CONTAINER: courses-master
       BRANCH: master
       PORT: 3030:3010
     secrets:
@@ -25,7 +25,7 @@ jobs:
   database:
     uses: matfyz-sk/courses-backend/.github/workflows/deployDatabase.yml@master
     with:
-      NAME: courses3-production
+      NAME: virtuoso-master
       PORT: 9000:9000
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
