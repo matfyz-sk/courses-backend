@@ -23,6 +23,7 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
   database:
+    need: [release]
     uses: matfyz-sk/courses-backend/.github/workflows/deployDatabase.yml@master
     with:
       NAME: virtuoso-master
