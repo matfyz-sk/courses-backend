@@ -34,7 +34,7 @@ jobs:
           script: |
             docker pull openlink/virtuoso-opensource-7
             mkdir /home/virtuoso/$NAME
-            docker run -d --name $NAME --interactive --tty --publish $VIRTUOSO_PORT:$VIRTUOSO_PORT --volume /home/virtuoso/$NAME:/database openlink/virtuoso-opensource-7:latest
+            docker run -d --name $NAME --interactive --publish $VIRTUOSO_PORT:$VIRTUOSO_PORT --volume /home/virtuoso/$NAME:/database openlink/virtuoso-opensource-7:latest
             passwd=`(docker exec -i $NAME cat /settings/dba_password)`
             echo $passwd
             echo 'grant SPARQL_UPDATE to "SPARQL";' | docker exec -i $NAME isql 1111 dba $passwd
