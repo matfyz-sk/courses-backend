@@ -35,7 +35,7 @@ jobs:
             docker pull openlink/virtuoso-opensource-7
             mkdir /home/virtuoso/$NAME
             cd /home/virtuoso/$NAME
-            docker run --name $NAME --interactive --tty --publish 9000:9000 --volume /home/virtuoso/$NAME:/database openlink/virtuoso-opensource-7:latest
+            docker run --name $NAME --interactive --tty --publish $VIRTUOSO_PORT:$VIRTUOSO_PORT --volume /home/virtuoso/$NAME:/database openlink/virtuoso-opensource-7:latest
             passwd=`(docker exec -i -t $NAME cat /settings/dba_password)`
             docker exec -i -t $NAME isql 1111 dba $passwd
             grant SPARQL_UPDATE to "SPARQL";
