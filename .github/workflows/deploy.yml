@@ -12,7 +12,7 @@ on:
       BRANCH:
         required: true
         type: string
-      PORT:
+      BACKEND_PORT:
         required: true
         type: number 
     secrets:
@@ -34,12 +34,12 @@ jobs:
         env:
           TAG: ${{ inputs.TAG }}
           CONTAINER: ${{ inputs.CONTAINER }}
-          PORT: ${{ inputs.PORT }}
+          BACKEND_PORT: ${{ inputs.BACKEND_PORT }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER,PORT
+          envs: TAG,CONTAINER,BACKEND_PORT
           script: |
             docker build -t $TAG git://github.com/matfyz-sk/courses-backend
             docker stop $CONTAINER

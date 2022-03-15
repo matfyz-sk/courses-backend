@@ -6,7 +6,7 @@ on:
       NAME:
         required: true
         type: string
-      PORT:
+      VIRTUOSO_PORT:
         required: true
         type: number
     secrets:
@@ -25,12 +25,12 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           NAME: ${{ inputs.NAME }}
-          PORT: ${{ inputs.PORT }}
+          VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: NAME,PORT
+          envs: NAME,VIRTUOSO_PORT
           script: |
             docker pull openlink/virtuoso-opensource-7
             mkdir /home/virtuoso/$NAME

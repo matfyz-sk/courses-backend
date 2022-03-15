@@ -17,7 +17,7 @@ jobs:
       TAG: courses:master
       CONTAINER: courses-master
       BRANCH: master
-      PORT: 3030
+      BACKEND_PORT: 3030
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -27,7 +27,7 @@ jobs:
     uses: matfyz-sk/courses-backend/.github/workflows/deployDatabase.yml@master
     with:
       NAME: virtuoso-master
-      PORT: 9000
+      VIRTUOSO_PORT: 9000
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
