@@ -42,4 +42,6 @@ jobs:
           envs: TAG,CONTAINER,BACKEND_PORT
           script: |
             docker build -t $TAG https://github.com/matfyz-sk/courses-backend.git
+            docker stop $CONTAINER
+            docker rm -f $CONTAINER
             docker run -d --name=$CONTAINER --publish $BACKEND_PORT:3010 --restart=always $TAG
