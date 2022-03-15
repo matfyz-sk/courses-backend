@@ -41,5 +41,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: TAG,CONTAINER,BACKEND_PORT
           script: |
-            docker build -t $TAG git://github.com/matfyz-sk/courses-backend
+            docker build -t $TAG https://github.com/matfyz-sk/courses-backend.git
             docker run -d --name=$CONTAINER --publish $BACKEND_PORT:3010 --restart=always $TAG
