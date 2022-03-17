@@ -3,7 +3,7 @@ name: Deployment of database
 on:
   workflow_call:
     inputs:
-      NAME:
+      VIRTUOSO_NAME:
         required: true
         type: string
       VIRTUOSO_PORT:
@@ -24,18 +24,18 @@ jobs:
       - name: Running docker skript 
         uses: appleboy/ssh-action@master
         env:
-          NAME: ${{ inputs.NAME }}
+          VIRTUOSO_NAME: ${{ inputs.VIRTUOSO_NAME }}
           VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: NAME,VIRTUOSO_PORT
+          envs: VIRTUOSO_NAME,VIRTUOSO_PORT
           script: |
             docker pull openlink/virtuoso-opensource-7
-            mkdir /home/virtuoso/$NAME
-            docker run -d --name $NAME --interactive --tty --publish $VIRTUOSO_PORT:$VIRTUOSO_PORT --volume /home/virtuoso/$NAME:/database openlink/virtuoso-opensource-7:latest
+            mkdir /home/virtuoso/$VIRTUOSO_NAME
+            docker run --detach --name $VIRTUOSO_NAME --interactive --tty --publish $VIRTUOSO_PORT:8890 --volume /home/virtuoso/$VIRTUOSO_NAME:/database openlink/virtuoso-opensource-7:latest
             sleep 60
-            passwd="$(docker exec -i $NAME cat /settings/dba_password)"
-            echo 'grant SPARQL_UPDATE to "SPARQL";' | docker exec -i $NAME isql 1111 dba $passwd
+            passwd="$(docker exec -i $VIRTUOSO_NAME cat /settings/dba_password)"
+            echo 'grant SPARQL_UPDATE to "SPARQL";' | docker exec -i $VIRTUOSO_NAME isql 1111 dba $passwd
             
