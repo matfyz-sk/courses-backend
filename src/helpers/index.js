@@ -5,6 +5,7 @@ import * as Resources from "../model";
 import moment from "moment-timezone";
 import RequestError from "./RequestError";
 import jwt from "jsonwebtoken";
+import { GRAPH_NAME } from "../constants";
 
 export function getTripleObjectType(objectTypeName, objectValue) {
    switch (objectTypeName) {
@@ -115,7 +116,7 @@ export function client() {
       {
          courses: Constants.ONTOLOGY_URI,
       },
-      Constants.GRAPH_URI
+       GRAPH_NAME
    );
    return client;
 }
@@ -123,7 +124,7 @@ export function client() {
 export async function getNewNode(resourceURI) {
    ID.cfg({
       endpoint: Constants.SPARQL_ENDPOINT,
-      graph: Constants.GRAPH_URI,
+      graph: GRAPH_NAME,
       prefix: resourceURI,
    });
    let newNode;
@@ -144,7 +145,7 @@ export function generateToken({ userURI, email }) {
 
 export function classPrefix(className) {
    const lowerCaseClassName = className.charAt(0).toLowerCase() + className.slice(1);
-   return Constants.GRAPH_URI + "/" + lowerCaseClassName + "/";
+   return Constants.DATA_URI + "/" + lowerCaseClassName + "/";
 }
 
 export function className(className, includePrefix = false) {
