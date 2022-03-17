@@ -1,110 +1,140 @@
-import * as models from "../model/index.js";
 import bcrypt from "bcrypt";
+import * as models from "../model";
+import { DATA_URI, ONTOLOGY_URI } from "../constants";
 
-//npm install && npm install -g babel-cli
-//npx babel-node src/exporter/exporter.js
-
-const PREFIXES = {
-    courses: {prefix: "courses", uri: "http://www.courses.matfyz.sk/ontology#"},
-    coursesData: {prefix: "courses-data", uri: "http://www.courses.matfyz.sk/data"},
-    rdfs: {prefix: "rdfs", uri: "http://www.w3.org/2000/01/rdf-schema#"},
-    rdf: {prefix: "rdf", uri: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
-    schema: {prefix: "schema", uri: "http://schema.org/"},
-    owl: {prefix: "owl", uri: "http://www.w3.org/2002/07/owl#"},
-    xsd: {prefix: "xsd", uri: "http://www.w3.org/2001/XMLSchema#"},
+export const PREFIXES = {
+    courses: ONTOLOGY_URI,
+    coursesData: DATA_URI,
+    rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+    rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    schema: "http://schema.org/",
+    owl: "http://www.w3.org/2002/07/owl#",
+    xsd: "http://www.w3.org/2001/XMLSchema#"
 };
 
-const RDFS_TYPE = " a ";
+const ADMIN_IDENTIFIER = "s3MzY";
 
-function getAdminSettings() {
-    const PASSWORD = "admin123";
-    const NAME = "Admin";
-    const hash = bcrypt.hashSync(PASSWORD, 10);
+export class Exporter {
 
-    return {
-        firstName: NAME,
-        lastName: NAME,
-        email: "admin@admin.admin",
-        password: hash,
-        description: "",
-        nickname: NAME,
-        useNickName: true,
-        publicProfile: false,
-        showCourses: false,
-        showBadges: false,
-        allowContact: false,
-        nickNameTeamException: true,
-        isSuperAdmin: true,
-        identifier: "s3MzY"
-    }
-}
-
-function getSchemaLiteral(object) {
-    if (typeof object == "boolean") {
-        return "\"" + object.toString() + "\"^^" + PREFIXES.xsd.prefix + ":boolean";
-    }
-    return "\"" + object + "\"";
-}
-
-function firstLetterToUppercase(value) {
-    return value && value.length > 0 ? (value[0].toUpperCase() + value.slice(1)) : value;
-}
-
-//string, datetime, boolean, float, integer, node
-function getTypeOfProperty(dataType) {
-    if (dataType === "node") {
-        return "ObjectProperty";
-    }
-    return "DatatypeProperty";
-}
-
-function exportOntology() {
-
-    Object.values(PREFIXES).map((prefixItem) => {
-        console.log("PREFIX " + prefixItem.prefix + ": <" + prefixItem.uri + ">");
-    });
-
-    console.log("");
-
-    Object.values(models).map((model) => {
-        let className;
-        if (model.type) {
-            className = firstLetterToUppercase(model.type);
-            console.log(PREFIXES.courses.prefix + ":" + className + RDFS_TYPE + PREFIXES.rdfs.prefix + ":Class .");
+    constructor() {
+        if(this.constructor === Exporter) {
+            throw new Error("Abstract classes can't be instantiated.");
         }
-        if (model.subclassOf && model.subclassOf.type) {
-            console.log(PREFIXES.courses.prefix + ":" + className + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(model.subclassOf.type) + " .");
-        }
+    }
 
-        if (model.subclasses) {
-            for (let subclass of model.subclasses) {
-                console.log(PREFIXES.courses.prefix + ":" + firstLetterToUppercase(subclass) + " " + PREFIXES.rdfs.prefix + ":subClassOf " + PREFIXES.courses.prefix + ":" + className + " .");
+    getAdminSettings() {
+        const PASSWORD = "admin123";
+        const NAME = "Admin";
+        const hash = bcrypt.hashSync(PASSWORD, 10);
+
+        return {
+            firstName: NAME,
+            lastName: NAME,
+            email: "admin@admin.admin",
+            password: hash,
+            description: "",
+            nickname: NAME,
+            useNickName: true,
+            publicProfile: false,
+            showCourses: false,
+            showBadges: false,
+            allowContact: false,
+            nickNameTeamException: true,
+            isSuperAdmin: true,
+        }
+    };
+
+    exportOntology() {
+        throw new Error("Method 'exportOntology()' must be implemented.");
+    }
+
+    getCommonOntology() {
+        let ontologyArray = [];
+
+        Object.values(models).map((model) => {
+            let className;
+            if(model.type) {
+                className = this.firstLetterToUppercase(model.type);
+                ontologyArray.push(this.getTriple(PREFIXES.courses, className, PREFIXES.rdf, "type", PREFIXES.rdfs, "Class"));
             }
-        }
-        if (model.props) {
-            Object.entries(model.props).map(([propertyName, propertyObject]) => {
-                console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":domainIncludes " + PREFIXES.courses.prefix + ":" + className + " .");
+            if(model.subclassOf && model.subclassOf.type) {
+                ontologyArray.push(this.getTriple(PREFIXES.courses, className, PREFIXES.rdfs, "subClassOf", PREFIXES.courses, this.firstLetterToUppercase(model.subclassOf.type)));
+            }
 
-                if (propertyObject) {
-                    if (propertyObject.objectClass) {
-                        console.log(PREFIXES.courses.prefix + ":" + propertyName + " " + PREFIXES.schema.prefix + ":rangeIncludes " + PREFIXES.courses.prefix + ":" + firstLetterToUppercase(propertyObject.objectClass) + " .");
-                    }
-                    if (propertyObject.dataType) {
-                        console.log(PREFIXES.courses.prefix + ":" + propertyName + RDFS_TYPE + PREFIXES.owl.prefix + ":" + getTypeOfProperty(propertyObject.dataType) + " .");
-                    }
+            if(model.subclasses) {
+                for(let subclass of model.subclasses) {
+                    ontologyArray.push(this.getTriple(PREFIXES.courses, this.firstLetterToUppercase(subclass), PREFIXES.rdfs, "subClassOf", PREFIXES.courses, className));
                 }
-            });
+            }
+            if(model.props) {
+                Object.entries(model.props).map(([ propertyName, propertyObject ]) => {
+                    ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className));
+                    if(propertyObject) {
+                        if(propertyObject.objectClass) {
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
+                        }
+                        if(propertyObject.dataType) {
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
+                        }
+                    }
+                });
+            }
+        });
+
+        return ontologyArray;
+    }
+
+    getUserOntology() {
+        let userArray = [];
+        let userIri = this.getUserIri();
+        let adminSettings = this.getAdminSettings();
+
+        userArray.push(this.getUserTypeTriple());
+
+        Object.entries(adminSettings).map(([ fieldName, fieldValue ]) => {
+            userArray.push(this.getAdminTriple(userIri, fieldName, fieldValue));
+        });
+        return userArray;
+    }
+
+    getUserIriPart() {
+        return PREFIXES.coursesData + (PREFIXES.coursesData.lastIndexOf("/") === (PREFIXES.coursesData.length - 1) ? "" : "/") + "user/" + ADMIN_IDENTIFIER;
+    }
+
+    //string, datetime, boolean, float, integer, node
+    getTypeOfProperty(dataType) {
+        if(dataType === "node") {
+            return "ObjectProperty";
         }
-        console.log("");
-    });
+        return "DatatypeProperty";
+    }
 
-    let adminSettings = getAdminSettings();
-    let userIri = "<" + PREFIXES.coursesData.uri + (PREFIXES.coursesData.uri.lastIndexOf("/") === (PREFIXES.coursesData.uri.length - 1) ? "" : "/") + "user/" + adminSettings.identifier + ">";
+    firstLetterToUppercase(value) {
+        return value && value.length > 0 ? (value[0].toUpperCase() + value.slice(1)) : value;
+    }
 
-    console.log(userIri + RDFS_TYPE + PREFIXES.courses.prefix + ":User" + " .");
-    Object.entries(adminSettings).map(([fieldName, fieldValue]) => {
-        console.log(userIri + " " + PREFIXES.courses.prefix + ":" + fieldName + " " + getSchemaLiteral(fieldValue) + " .");
-    })
+    getTriple(sprefix, s, pprefix, p, oprefix, o) {
+        throw new Error("Method 'exportTriple(sprefix, s, pprefix, p, oprefix, o)' must be implemented.");
+    };
+
+    getUserTypeTriple() {
+        throw new Error("Method 'getUserTriple()' must be implemented.");
+    }
+
+    getAdminTriple(userIri, fieldName, fieldValue) {
+        throw new Error("Method ' exportAdminSettings(userIri, fieldName, fieldValue)' must be implemented.");
+    }
+
+    getPrefixes() {
+        throw new Error("Method 'getPrefixes()' must be implemented.");
+    }
+
+    getUserIri() {
+        throw new Error("Method 'getUserIri()' must be implemented.");
+    }
+
+    getSchemaLiteral(object) {
+        throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
+    }
+
 }
-
-exportOntology();

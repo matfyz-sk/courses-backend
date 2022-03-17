@@ -7,7 +7,7 @@ import authRouter from "./routes/auth";
 import { errorHandler } from "./middleware";
 import { dateTime } from "./helpers";
 import { logger } from "./middleware/logger";
-import { exportOntology } from "./exporter/exporter-virtuoso";
+import { ExporterSparql } from "./exporter/exporter-sparql";
 
 const app = express();
 const port = 3010;
@@ -22,7 +22,8 @@ app.use(errorHandler);
 
 app.listen(port, () => {
         console.log(chalk.green(`[${ dateTime() }]`), `Server running on port ${ port }`);
-        exportOntology();
+        let exporterSparql = new ExporterSparql();
+        exporterSparql.exportOntology();
     }
 )
 

@@ -109,7 +109,7 @@ export function getResourceCreateRules(resource) {
 }
 
 export function client() {
-   const client = new Client(Constants.VIRTUOSO_ENDPOINT);
+   const client = new Client(Constants.SPARQL_ENDPOINT);
    client.setOptions(
       "application/json",
       {
@@ -122,7 +122,7 @@ export function client() {
 
 export async function getNewNode(resourceURI) {
    ID.cfg({
-      endpoint: Constants.VIRTUOSO_ENDPOINT,
+      endpoint: Constants.SPARQL_ENDPOINT,
       graph: Constants.GRAPH_URI,
       prefix: resourceURI,
    });

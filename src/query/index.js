@@ -1,5 +1,5 @@
 import lib from "sparql-transformer";
-import { ONTOLOGY_URI, VIRTUOSO_ENDPOINT, DC_TERMS_URI } from "../constants";
+import { ONTOLOGY_URI, SPARQL_ENDPOINT, DC_TERMS_URI } from "../constants";
 import {
    getAllProps,
    classPrefix,
@@ -12,7 +12,7 @@ import RequestError from "../helpers/RequestError";
 
 const sparqlOptions = {
    context: ONTOLOGY_URI,
-   endpoint: VIRTUOSO_ENDPOINT,
+   endpoint: SPARQL_ENDPOINT,
    debug: false,
 };
 
