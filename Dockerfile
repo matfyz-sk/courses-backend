@@ -14,4 +14,4 @@ RUN npm prune --production
 
 EXPOSE 3010
 
-CMD ["npm", "run", "prod"]
+CMD ["npm", "run", "prod"] 

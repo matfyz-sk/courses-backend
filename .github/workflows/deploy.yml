@@ -1,0 +1,51 @@
+name: Deployment of backend
+
+on:
+  workflow_call:
+    inputs:
+      TAG:
+        required: true
+        type: string
+      CONTAINER:
+        required: true
+        type: string
+      BRANCH:
+        required: true
+        type: string
+      BACKEND_PORT:
+        required: true
+        type: number
+      VIRTUOSO_PORT:
+        required: true
+        type: number 
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Branch name
+        run: echo running on branch ${{ inputs.BRANCH }}
+      - name: Running docker skript 
+        uses: appleboy/ssh-action@master
+        env:
+          TAG: ${{ inputs.TAG }}
+          CONTAINER: ${{ inputs.CONTAINER }}
+          BACKEND_PORT: ${{ inputs.BACKEND_PORT }}
+          VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT
+          script: |
+            docker build -t $TAG https://github.com/matfyz-sk/courses-backend.git
+            docker stop $CONTAINER
+            docker rm -f $CONTAINER
+            docker run --detach --env VIRTUOSO_ENDPOINT="http://localhost:$VIRTUOSO_PORT/sparql" --name=$CONTAINER --publish $BACKEND_PORT:3010 --restart=always $TAG

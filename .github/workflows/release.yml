@@ -1,0 +1,25 @@
+name: release
+
+on: 
+  push:
+    branches: [ master ]
+    paths:
+      - src/**
+      - Dockerfile
+      - package.json
+      - package.json.lock
+  workflow_dispatch:
+
+jobs:
+  release:
+    uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
+    with:
+      TAG: courses:master
+      CONTAINER: courses-master
+      BRANCH: master
+      BACKEND_PORT: 3030
+      VIRTUOSO_PORT: 9000
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
