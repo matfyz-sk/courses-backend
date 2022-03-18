@@ -23,3 +23,13 @@ jobs:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
+  database:
+    needs: [release]
+    uses: matfyz-sk/courses-backend/.github/workflows/deployDatabase.yml@master
+    with:
+      VIRTUOSO_NAME: virtuoso-master
+      VIRTUOSO_PORT: 9000
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
