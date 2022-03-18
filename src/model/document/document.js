@@ -24,6 +24,11 @@ export const document = {
             multiple: false,
             dataType: "boolean",
         },
+        restoredFrom: {
+            required: false,
+            multiple: false,
+            dataType: "dateTime",
+        },
         author: {
             required: true,
             multiple: true,
