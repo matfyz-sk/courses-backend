@@ -52,10 +52,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX
           script: |
-            docker build -t $TAG https://github.com/matfyz-sk/courses-backend.git
-            docker stop $CONTAINER
-            docker rm -f $CONTAINER
-            echo "Graph_IRI = https://$GRAPH_IRI_PREFIXcourses3.matfyz.sk/"
-            echo "AUTH_SECRET = $AUTH_SECRET"
-            echo "SPARQL_ENDPOINT = http://localhost:$VIRTUOSO_PORT/sparql"
-            docker run --detach --env SPARQL_ENDPOINT=http://localhost:$VIRTUOSO_PORT/sparql --env AUTH_SECRET=$AUTH_SECRET --env GRAPH_IRI=https://$GRAPH_IRI_PREFIXcourses3.matfyz.sk/ --env BASE_IRI=http://courses.matfyz.sk/ --name=$CONTAINER --publish $BACKEND_PORT:3010 --restart=always $TAG
+            docker build -t ${TAG} https://github.com/matfyz-sk/courses-backend.git
+            docker stop ${CONTAINER}
+            docker rm -f ${CONTAINER}
+            echo "Graph_IRI = https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/"
+            echo "AUTH_SECRET = ${AUTH_SECRET}"
+            echo "SPARQL_ENDPOINT = http://localhost:${VIRTUOSO_PORT}/sparql"
+            docker run --detach --env "SPARQL_ENDPOINT=http://localhost:${VIRTUOSO_PORT}/sparql" --env "AUTH_SECRET=${AUTH_SECRET}" --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" --env "BASE_IRI=http://courses.matfyz.sk/" --name=$CONTAINER --publish ${BACKEND_PORT}:3010 --restart=always ${TAG}
