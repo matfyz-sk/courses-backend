@@ -30,6 +30,8 @@ on:
         required: true
       AUTH_SECRET:
         required: true
+      DOCKER_HOST:
+        required: true
 
 jobs:
   deploy:
@@ -46,13 +48,14 @@ jobs:
           VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           GRAPH_IRI_PREFIX: ${{ inputs.GRAPH_IRI_PREFIX }}
+          DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX
+          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,DOCKER_HOST
           script: |
             docker build -t ${TAG} https://github.com/matfyz-sk/courses-backend.git
             docker stop ${CONTAINER}
             docker rm -f ${CONTAINER}
-            docker run --detach --env "SPARQL_ENDPOINT=http://localhost:${VIRTUOSO_PORT}/sparql" --env "AUTH_SECRET=${AUTH_SECRET}" --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" --env "BASE_IRI=http://courses3.matfyz.sk/" --name=$CONTAINER --publish ${BACKEND_PORT}:3010 --restart=always ${TAG}
+            docker run --detach --env "SPARQL_ENDPOINT=http://${DOCKER_HOST}:${VIRTUOSO_PORT}/sparql" --env "AUTH_SECRET=${AUTH_SECRET}" --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" --env "BASE_IRI=http://courses3.matfyz.sk/" --name=$CONTAINER --publish ${BACKEND_PORT}:3010 --restart=always ${TAG}
