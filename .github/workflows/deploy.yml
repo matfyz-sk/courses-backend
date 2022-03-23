@@ -17,13 +17,18 @@ on:
         type: number
       VIRTUOSO_PORT:
         required: true
-        type: number 
+        type: number
+      GRAPH_IRI_PREFIX:
+        required: true
+        type: string
     secrets:
       SSH_PRIVATE_KEY:
         required: true
       SSH_HOST:
         required: true
       SSH_USER:
+        required: true
+      AUTH_SECRET:
         required: true
 
 jobs:
@@ -39,13 +44,15 @@ jobs:
           CONTAINER: ${{ inputs.CONTAINER }}
           BACKEND_PORT: ${{ inputs.BACKEND_PORT }}
           VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          GRAPH_IRI_PREFIX: ${{ inputs.GRAPH_IRI_PREFIX }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT
+          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX
           script: |
             docker build -t $TAG https://github.com/matfyz-sk/courses-backend.git
             docker stop $CONTAINER
             docker rm -f $CONTAINER
-            docker run --detach --env VIRTUOSO_ENDPOINT="http://localhost:$VIRTUOSO_PORT/sparql" --name=$CONTAINER --publish $BACKEND_PORT:3010 --restart=always $TAG
+            docker run --detach --env SPARQL_ENDPOINT="http://localhost:$VIRTUOSO_PORT/sparql" --env AUTH_SECRET=$AUTH_SECRET --env GRAPH_IRI=https://$GRAPH_IRI_PREFIXcourses3.matfyz.sk/ --env BASE_IRI=http://courses.matfyz.sk/ --name=$CONTAINER --publish $BACKEND_PORT:3010 --restart=always $TAG

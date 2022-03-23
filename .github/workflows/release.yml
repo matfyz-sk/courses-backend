@@ -19,8 +19,10 @@ jobs:
       BRANCH: master
       BACKEND_PORT: 3030
       VIRTUOSO_PORT: 9000
+      GRAPH_IRI_PREFIX: 
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
  
