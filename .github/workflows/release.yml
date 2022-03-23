@@ -24,6 +24,4 @@ jobs:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
-      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-      DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
- 
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }} 
