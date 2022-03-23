@@ -13,36 +13,32 @@ export class ExporterSparql extends Exporter {
             GRAPH_IRI
         );
 
-        let store = client.getLocalStore();
+        const store = client.getLocalStore();
 
-        let commonOntology = this.getCommonOntology();
+        const commonOntology = this.getCommonOntology();
         store.bulk(commonOntology);
 
-
-        let superAdminExists = await this.superAdminExists(client);
+        const superAdminExists = await this.superAdminExists(client);
         if(!superAdminExists) {
-            let userOntology = this.getUserOntology();
+            const userOntology = this.getUserOntology();
             store.bulk(userOntology);
         }
 
-        client.store(true)
-            .then((result) => {
-                console.log(result)
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        try {
+            await client.store(true);
+        } catch(e) {
+            console.log(e);
+        }
     }
 
     async superAdminExists(client) {
-        let results;
-        await client.query("SELECT ?superAdmin WHERE {?superAdmin <" + ONTOLOGY_IRI + "isSuperAdmin> true}")
-            .then((r) => {
-                results = r.results.bindings;
-            }).catch((e) => {
-                console.log(e);
-            });
-        return results && results.length > 0;
+        try {
+            const r = await client.query("SELECT ?superAdmin WHERE {?superAdmin <" + ONTOLOGY_IRI + "isSuperAdmin> true}");
+            return r && r.results && r.results.bindings && r.results.bindings.length > 0;
+        } catch(e) {
+            console.log(e);
+            return false;
+        }
     }
 
     getTriple(sprefix, s, pprefix, p, oprefix, o) {

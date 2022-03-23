@@ -9,7 +9,7 @@ export class ExporterTurtle extends Exporter {
         this.getPrefixes();
         console.log("");
 
-        let commonOntology = this.getCommonOntology();
+        const commonOntology = this.getCommonOntology();
 
         commonOntology.map((item) => {
                 console.log(item);
@@ -17,7 +17,7 @@ export class ExporterTurtle extends Exporter {
         );
         console.log("");
 
-        let userOntology = this.getUserOntology();
+        const userOntology = this.getUserOntology();
 
         userOntology.map((item) => {
                 console.log(item);
