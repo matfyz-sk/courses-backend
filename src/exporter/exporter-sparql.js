@@ -1,4 +1,4 @@
-import { GRAPH_NAME, DATA_URI, SPARQL_ENDPOINT } from "../constants";
+import { GRAPH_IRI, DATA_IRI, SPARQL_ENDPOINT } from "../constants";
 import { Client, Data, Node, Triple } from "virtuoso-sparql-client";
 import { Exporter, PREFIXES } from './exporter';
 
@@ -10,7 +10,7 @@ export class ExporterSparql extends Exporter {
         client.setOptions(
             "application/json",
             this.getPrefixes(),
-            GRAPH_NAME
+            GRAPH_IRI
         );
 
         let store = client.getLocalStore();

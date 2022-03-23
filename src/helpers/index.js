@@ -4,7 +4,7 @@ import * as Resources from "../model";
 import moment from "moment-timezone";
 import RequestError from "./RequestError";
 import jwt from "jsonwebtoken";
-import { AUTH_SECRET, DATA_URI, GRAPH_NAME, ONTOLOGY_URI, SPARQL_ENDPOINT } from "../constants";
+import { AUTH_SECRET, DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT } from "../constants";
 
 export function getTripleObjectType(objectTypeName, objectValue) {
    switch (objectTypeName) {
@@ -113,9 +113,9 @@ export function client() {
    client.setOptions(
       "application/json",
       {
-         courses: ONTOLOGY_URI,
+         courses: ONTOLOGY_IRI,
       },
-       GRAPH_NAME
+       GRAPH_IRI
    );
    return client;
 }
@@ -123,7 +123,7 @@ export function client() {
 export async function getNewNode(resourceURI) {
    ID.cfg({
       endpoint: SPARQL_ENDPOINT,
-      graph: GRAPH_NAME,
+      graph: GRAPH_IRI,
       prefix: resourceURI,
    });
    let newNode;
@@ -141,7 +141,7 @@ export function generateToken({ userURI, email }) {
 
 export function classPrefix(className) {
    const lowerCaseClassName = className.charAt(0).toLowerCase() + className.slice(1);
-   return DATA_URI + "/" + lowerCaseClassName + "/";
+   return DATA_IRI + "/" + lowerCaseClassName + "/";
 }
 
 export function className(className, includePrefix = false) {
@@ -150,7 +150,7 @@ export function className(className, includePrefix = false) {
 }
 
 export function uri2className(uri) {
-   return className(uri.substring(ONTOLOGY_URI.length));
+   return className(uri.substring(ONTOLOGY_IRI.length));
 }
 
 export function uri2id(uri) {

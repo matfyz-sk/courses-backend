@@ -1,5 +1,5 @@
 import runQuery from "../query";
-import { ONTOLOGY_URI } from "../constants";
+import { ONTOLOGY_IRI } from "../constants";
 import RequestError from "../helpers/RequestError";
 import { getResourceObject } from "../helpers";
 
@@ -44,5 +44,5 @@ export async function getResource(resource, filters, user) {
 export function getResourceSubclasses(resource) {
    return resource.subclasses == undefined
       ? []
-      : resource.subclasses.map((e) => ONTOLOGY_URI + e.charAt(0).toUpperCase() + e.slice(1));
+      : resource.subclasses.map((e) => ONTOLOGY_IRI + e.charAt(0).toUpperCase() + e.slice(1));
 }

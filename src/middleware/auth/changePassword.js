@@ -1,14 +1,14 @@
 import { body } from "express-validator";
 import bcrypt from "bcrypt";
 import { client } from "../../helpers";
-import { DATA_URI, GRAPH_NAME } from "../../constants";
+import { DATA_IRI, GRAPH_IRI } from "../../constants";
 import { checkValidation } from "./checkValidation";
 
 const bodyValidation = [body("password").exists().isString().isLength({ min: 6 })];
 
 async function _changePassword(req, res) {
    const userId = req.params.userId;
-   const userURI = `${DATA_URI}/user/${userId}`;
+   const userURI = `${DATA_IRI}/user/${userId}`;
    const hash = bcrypt.hashSync(req.body.password, 10);
    const db = client();
    const userExists = await db.query(`ASK { <${userURI}> rdf:type courses:User }`, true);
@@ -17,7 +17,7 @@ async function _changePassword(req, res) {
    }
    await db.query(`DELETE WHERE { <${userURI}> courses:password ?password }`, true);
    await db.query(
-      `INSERT IN GRAPH <${GRAPH_NAME}> { <${userURI}> courses:password "${hash}" }`,
+      `INSERT IN GRAPH <${GRAPH_IRI}> { <${userURI}> courses:password "${hash}" }`,
       true
    );
    res.send({ status: true });

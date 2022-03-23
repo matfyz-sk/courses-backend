@@ -1,5 +1,5 @@
 import lib from "sparql-transformer";
-import { ONTOLOGY_URI, SPARQL_ENDPOINT, DC_TERMS_URI } from "../constants";
+import { ONTOLOGY_IRI, SPARQL_ENDPOINT, DC_TERMS_IRI } from "../constants";
 import {
    getAllProps,
    classPrefix,
@@ -11,14 +11,14 @@ import {
 import RequestError from "../helpers/RequestError";
 
 const sparqlOptions = {
-   context: ONTOLOGY_URI,
+   context: ONTOLOGY_IRI,
    endpoint: SPARQL_ENDPOINT,
    debug: false,
 };
 
 const sparqlPrefixes = {
-   courses: ONTOLOGY_URI,
-   dc: DC_TERMS_URI,
+   courses: ONTOLOGY_IRI,
+   dc: DC_TERMS_IRI,
 };
 
 function generateQuery(resource, filters, user) {

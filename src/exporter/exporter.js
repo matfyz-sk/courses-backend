@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import * as models from "../model";
-import { DATA_URI, ONTOLOGY_URI } from "../constants";
+import { DATA_IRI, ONTOLOGY_IRI } from "../constants";
 
 export const PREFIXES = {
-    courses: ONTOLOGY_URI,
-    coursesData: DATA_URI,
+    courses: ONTOLOGY_IRI,
+    coursesData: DATA_IRI,
     rdfs: "http://www.w3.org/2000/01/rdf-schema#",
     rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     schema: "http://schema.org/",
