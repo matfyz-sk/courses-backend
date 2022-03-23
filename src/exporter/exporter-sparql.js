@@ -1,11 +1,11 @@
-import { GRAPH_IRI, DATA_IRI, SPARQL_ENDPOINT } from "../constants";
+import { GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT } from "../constants";
 import { Client, Data, Node, Triple } from "virtuoso-sparql-client";
 import { Exporter, PREFIXES } from './exporter';
 
 
 export class ExporterSparql extends Exporter {
 
-    exportOntology() {
+    async exportOntology() {
         const client = new Client(SPARQL_ENDPOINT);
         client.setOptions(
             "application/json",
@@ -18,8 +18,12 @@ export class ExporterSparql extends Exporter {
         let commonOntology = this.getCommonOntology();
         store.bulk(commonOntology);
 
-        let userOntology = this.getUserOntology();
-        store.bulk(userOntology);
+
+        let superAdminExists = await this.superAdminExists(client);
+        if(!superAdminExists) {
+            let userOntology = this.getUserOntology();
+            store.bulk(userOntology);
+        }
 
         client.store(true)
             .then((result) => {
@@ -28,6 +32,17 @@ export class ExporterSparql extends Exporter {
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    async superAdminExists(client) {
+        let results;
+        await client.query("SELECT ?superAdmin WHERE {?superAdmin <" + ONTOLOGY_IRI + "isSuperAdmin> true}")
+            .then((r) => {
+                results = r.results.bindings;
+            }).catch((e) => {
+                console.log(e);
+            });
+        return results && results.length > 0;
     }
 
     getTriple(sprefix, s, pprefix, p, oprefix, o) {
