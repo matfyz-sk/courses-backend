@@ -1,10 +1,10 @@
-import * as Constants from "../constants";
 import { Client, Node, Data, Text } from "virtuoso-sparql-client";
 import * as ID from "../lib/virtuoso-uid";
 import * as Resources from "../model";
 import moment from "moment-timezone";
 import RequestError from "./RequestError";
 import jwt from "jsonwebtoken";
+import { AUTH_SECRET, DATA_URI, GRAPH_NAME, ONTOLOGY_URI, SPARQL_ENDPOINT } from "../constants";
 
 export function getTripleObjectType(objectTypeName, objectValue) {
    switch (objectTypeName) {
@@ -34,8 +34,8 @@ export function getResourceObject(resourceName) {
 }
 
 export function getAllProps(resource, includeSubclasses = true) {
-   var props = {};
-   var r = resource;
+   let props = {};
+   let r = resource;
    while (r) {
       Object.keys(r.props).forEach((key) => {
          props[key] = { ...r.props[key] };
@@ -51,7 +51,7 @@ export function getAllProps(resource, includeSubclasses = true) {
       return props;
    }
 
-   var subclasses = [...resource.subclasses];
+   let subclasses = [...resource.subclasses];
    while (subclasses.length > 0) {
       const className = subclasses.shift();
       r = Resources[className];
@@ -70,7 +70,7 @@ export function getResourceCourseInstance(resource) {
    if (resource.hasOwnProperty("courseInstance")) {
       return resource.courseInstance;
    }
-   var r = resource.subclassOf;
+   let r = resource.subclassOf;
    while (r) {
       if (r.hasOwnProperty("courseInstance")) {
          return r.courseInstance;
@@ -84,7 +84,7 @@ export function getResourceShowRules(resource) {
    if (resource.hasOwnProperty("show")) {
       return resource.show;
    }
-   var r = resource.subclassOf;
+   let r = resource.subclassOf;
    while (r) {
       if (r.hasOwnProperty("show")) {
          return r.show;
@@ -98,7 +98,7 @@ export function getResourceCreateRules(resource) {
    if (resource.hasOwnProperty("create")) {
       return resource.create;
    }
-   var r = resource.subclassOf;
+   let r = resource.subclassOf;
    while (r) {
       if (r.hasOwnProperty("create")) {
          return r.create;
@@ -109,21 +109,21 @@ export function getResourceCreateRules(resource) {
 }
 
 export function client() {
-   const client = new Client(Constants.virtuosoEndpoint);
+   const client = new Client(SPARQL_ENDPOINT);
    client.setOptions(
       "application/json",
       {
-         courses: Constants.ontologyURI,
+         courses: ONTOLOGY_URI,
       },
-      Constants.graphURI
+       GRAPH_NAME
    );
    return client;
 }
 
 export async function getNewNode(resourceURI) {
    ID.cfg({
-      endpoint: Constants.virtuosoEndpoint,
-      graph: Constants.graphURI,
+      endpoint: SPARQL_ENDPOINT,
+      graph: GRAPH_NAME,
       prefix: resourceURI,
    });
    let newNode;
@@ -136,15 +136,12 @@ export async function getNewNode(resourceURI) {
 }
 
 export function generateToken({ userURI, email }) {
-   let token = jwt.sign({ userURI, email }, Constants.authSecret, {
-      algorithm: "HS256",
-   });
-   return token;
+   return jwt.sign({ userURI, email }, AUTH_SECRET, {algorithm: "HS256",});
 }
 
 export function classPrefix(className) {
    const lowerCaseClassName = className.charAt(0).toLowerCase() + className.slice(1);
-   return Constants.graphURI + "/" + lowerCaseClassName + "/";
+   return DATA_URI + "/" + lowerCaseClassName + "/";
 }
 
 export function className(className, includePrefix = false) {
@@ -153,7 +150,7 @@ export function className(className, includePrefix = false) {
 }
 
 export function uri2className(uri) {
-   return className(uri.substring(Constants.ontologyURI.length));
+   return className(uri.substring(ONTOLOGY_URI.length));
 }
 
 export function uri2id(uri) {
@@ -162,7 +159,7 @@ export function uri2id(uri) {
 
 export function isIsoDate(str) {
    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
-   var d = new Date(str);
+   let d = new Date(str);
    return d.toISOString() === str;
 }
 
