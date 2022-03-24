@@ -33,9 +33,9 @@ jobs:
           envs: VIRTUOSO_NAME,VIRTUOSO_PORT
           script: |
             docker pull openlink/virtuoso-opensource-7
-            mkdir /home/virtuoso/$VIRTUOSO_NAME
-            docker run --detach --name $VIRTUOSO_NAME --interactive --tty --publish $VIRTUOSO_PORT:8890 --volume /home/virtuoso/$VIRTUOSO_NAME:/database openlink/virtuoso-opensource-7:latest
+            mkdir /home/virtuoso/${VIRTUOSO_NAME}
+            docker run --detach --name ${VIRTUOSO_NAME} --interactive --tty --publish "127.0.0.1:${VIRTUOSO_PORT}:8890" --volume /home/virtuoso/${VIRTUOSO_NAME}:/database openlink/virtuoso-opensource-7:latest
             sleep 60
-            passwd="$(docker exec -i $VIRTUOSO_NAME cat /settings/dba_password)"
-            echo 'grant SPARQL_UPDATE to "SPARQL";' | docker exec -i $VIRTUOSO_NAME isql 1111 dba $passwd
+            passwd="$(docker exec -i ${VIRTUOSO_NAME} cat /settings/dba_password)"
+            echo 'grant SPARQL_UPDATE to "SPARQL";' | docker exec -i ${VIRTUOSO_NAME} isql 1111 dba $passwd
             
