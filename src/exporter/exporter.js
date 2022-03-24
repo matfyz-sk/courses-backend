@@ -85,9 +85,9 @@ export class Exporter {
     }
 
     getUserOntology() {
-        let userArray = [];
-        let userIri = this.getUserIri();
-        let adminSettings = this.getAdminSettings();
+        const userArray = [];
+        const userIri = this.getUserIri();
+        const adminSettings = this.getAdminSettings();
 
         userArray.push(this.getUserTypeTriple());
 
