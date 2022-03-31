@@ -18,7 +18,7 @@ jobs:
       CONTAINER: courses-master
       BRANCH: master
       BACKEND_PORT: 3030
-      VIRTUOSO_PORT: 9000
+      VIRTUOSO_PORT: 8890
       GRAPH_IRI_PREFIX: 
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
