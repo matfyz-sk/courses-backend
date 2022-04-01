@@ -22,6 +22,7 @@ export const courseInstance = {
          patch: ["admin"],
          delete: ["admin"],
       },
+      // TODO use to list all the materials in the course's general info?
       hasDocument: {
          required: false,
          multiple: true,
@@ -33,7 +34,7 @@ export const courseInstance = {
          delete: ["admin"],
       },
       fileExplorerRoot: {
-         required: true,
+         required: false,
          multiple: false,
          dataType: "node",
          objectClass: "folder",
