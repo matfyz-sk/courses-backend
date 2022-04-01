@@ -32,6 +32,12 @@ export const courseInstance = {
          patch: ["admin"],
          delete: ["admin"],
       },
+      fileExplorerRoot: {
+         required: true,
+         multiple: false,
+         dataType: "node",
+         objectClass: "folder",
+      },
       hasGrading: {
          required: false,
          multiple: true,
