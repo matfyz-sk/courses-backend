@@ -7,7 +7,7 @@ on:
 
 jobs:
   remove-backend:
-    uses: matfyz-sk/courses-backend/.github/workflows/removeBackend.yml@master
+    uses: matfyz-sk/courses-backend/.github/workflows/remove-backend.yml@master
     with:
       CONTAINER: courses-${GITHUB_REF##*/}
     secrets:
@@ -16,7 +16,7 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
   remove-database:
     needs: remove-backend
-    uses: matfyz-sk/courses-backend/.github/workflows/removeDatabase.yml@master
+    uses: matfyz-sk/courses-backend/.github/workflows/remove-database.yml@master
     with:
       VIRTUOSO_NAME: virtuoso-${GITHUB_REF##*/}
     secrets:

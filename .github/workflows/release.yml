@@ -12,7 +12,7 @@ on:
 
 jobs:
   release:
-    uses: matfyz-sk/courses-backend/.github/workflows/components/old-deploy.yml@master
+    uses: matfyz-sk/courses-backend/.github/workflows/old-deploy.yml@master
     with:
       TAG: courses:master
       CONTAINER: courses-master
