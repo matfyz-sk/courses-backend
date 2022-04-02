@@ -1,0 +1,35 @@
+name: Removal of database
+
+on:
+  workflow_call:
+    inputs:
+      VIRTUOSO_NAME:
+        required: true
+        type: string
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+
+jobs:
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Running docker skript 
+        uses: appleboy/ssh-action@master
+        env:
+          VIRTUOSO_NAME: ${{ inputs.VIRTUOSO_NAME }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: VIRTUOSO_NAME
+          script: |
+            docker stop ${VIRTUOSO_NAME}
+            docker rm -f ${VIRTUOSO_NAME}
+            rm --force --recursive --dir /home/virtuoso/${VIRTUOSO_NAME}
+
+            

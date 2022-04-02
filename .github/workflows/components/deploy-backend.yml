@@ -1,0 +1,76 @@
+name: Deploy backend from DockerHub
+
+on:
+  workflow_call:
+    inputs:
+      TAG:
+        required: true
+        type: string
+      CONTAINER:
+        required: true
+        type: string
+      BASE_BACKEND_PORT:
+        required: true
+        type: number
+      BASE_VIRTUOSO_PORT:
+        required: true
+        type: number
+      PR_NUMBER:
+        required: false
+        type: number
+        default: 0
+      GRAPH_IRI_PREFIX:
+        required: false
+        type: string
+        default: ''
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+      AUTH_SECRET:
+        required: true
+      DOCKERHUB_OWNER:
+        required: true
+      DOCKERHUB_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set part of Virtuoso port
+        run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }})" >> $GITHUB_ENV
+      - name: Calculate Virtuoso port
+        run: echo "VIRTUOSO_PORT=$(expr ${{ BASE_VIRTUOSO_PORT }} ${{ PR_PORT_PART }})" >> $GITHUB_ENV
+      - name: Calculate Backend port
+        run: echo "BACKEND_PORT=$(expr ${{ BASE_BACKEND_PORT }} ${{ PR_PORT_PART }})" >> $GITHUB_ENV
+      - name: PR port part
+        run: echo "${{ env.PR_PORT_PART }}"
+      - name: Virtuoso port
+        run: echo "${{ env.VIRTUOSO_PORT }}"
+      - name: Backend port
+        run: echo "${{ env.BACKEND_PORT }}"
+      - name: Deploy backend docker image
+        uses: appleboy/ssh-action@master
+        env:
+          USERNAME: ${{ secrets.DOCKERHUB_OWNER }}
+          PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          TAG: ${{ inputs.TAG }}
+          CONTAINER: ${{ inputs.CONTAINER }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          BACKEND_PORT: ${{ env.BACKEND_PORT }}
+          VIRTUOSO_PORT: ${{ env.VIRTUOSO_PORT }}
+          GRAPH_IRI_PREFIX: ${{ inputs.GRAPH_IRI_PREFIX }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: USERNAME,PASSWORD,TAG,CONTAINER,AUTH_SECRET,BACKEND_PORT,VIRTUOSO_PORT,GRAPH_IRI_PREFIX
+          script: |
+            docker login --username ${USERNAME} --password ${PASSWORD}
+            docker pull ${USERNAME}/${TAG}
+            docker run --detach --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" --env "AUTH_SECRET=${AUTH_SECRET}" --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" --env "BASE_IRI=https://courses3.matfyz.sk/" --name=${CONTAINER} --publish ${BACKEND_PORT}:3010 --restart=always ${TAG}
+

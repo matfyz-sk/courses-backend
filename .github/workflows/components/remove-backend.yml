@@ -1,0 +1,32 @@
+name: Remove backend docker container
+
+on:
+  workflow_call:
+    inputs:
+      CONTAINER:
+        required: true
+        type: string
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove backend docker container
+        uses: appleboy/ssh-action@master
+        env:
+          CONTAINER: ${{ inputs.CONTAINER }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: CONTAINER
+          script: |
+            docker stop ${CONTAINER}
+            docker rm -f ${CONTAINER}

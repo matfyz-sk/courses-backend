@@ -12,14 +12,13 @@ on:
 
 jobs:
   release:
-    uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
+    uses: matfyz-sk/courses-backend/.github/workflows/components/old-deploy.yml@master
     with:
       TAG: courses:master
       CONTAINER: courses-master
       BRANCH: master
       BACKEND_PORT: 3030
       VIRTUOSO_PORT: 8890
-      GRAPH_IRI_PREFIX: 
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
