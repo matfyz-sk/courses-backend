@@ -44,9 +44,9 @@ jobs:
       - name: Set part of Virtuoso port
         run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }})" >> $GITHUB_ENV
       - name: Calculate Virtuoso port
-        run: echo "VIRTUOSO_PORT=$(expr ${{ BASE_VIRTUOSO_PORT }} ${{ PR_PORT_PART }})" >> $GITHUB_ENV
+        run: echo "VIRTUOSO_PORT=$(expr ${{ BASE_VIRTUOSO_PORT }} + ${{ PR_PORT_PART }})" >> $GITHUB_ENV
       - name: Calculate Backend port
-        run: echo "BACKEND_PORT=$(expr ${{ BASE_BACKEND_PORT }} ${{ PR_PORT_PART }})" >> $GITHUB_ENV
+        run: echo "BACKEND_PORT=$(expr ${{ BASE_BACKEND_PORT }} + ${{ PR_PORT_PART }})" >> $GITHUB_ENV
       - name: PR port part
         run: echo "${{ env.PR_PORT_PART }}"
       - name: Virtuoso port

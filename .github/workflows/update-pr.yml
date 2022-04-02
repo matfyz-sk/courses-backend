@@ -1,5 +1,9 @@
 name: MW - Building and deploying an updated backend when PR has new commmits
 
+env:
+  BASE_BACKEND_PORT: 6000
+  BASE_VIRTUOSO_PORT: 7000
+
 on: 
   pull_request:
     types: [edited, synchronized]
@@ -19,8 +23,8 @@ jobs:
     with:
       TAG: courses:${GITHUB_REF##*/}
       CONTAINER: courses-${GITHUB_REF##*/}
-      BASE_BACKEND_PORT: 6000
-      BASE_VIRTUOSO_PORT: 7000
+      BASE_BACKEND_PORT: ${{ env.BASE_BACKEND_PORT }}
+      BASE_VIRTUOSO_PORT: ${{ env.BASE_VIRTUOSO_PORT }}
       PR_NUMBER: ${{ github.event.number }}
       GRAPH_IRI_PREFIX: ${GITHUB_REF##*/}.
     secrets:
