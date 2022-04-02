@@ -1,4 +1,4 @@
-name: Building and deploying backend and database when PR is created
+name: MW - Building and deploying backend and database when PR is created
 
 on: 
   pull_request:

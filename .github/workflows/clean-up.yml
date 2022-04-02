@@ -1,4 +1,4 @@
-name: Clean up after PR is closed
+name: MW - Clean up after PR is closed
 
 on: 
   pull_request:

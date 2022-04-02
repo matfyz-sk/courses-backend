@@ -1,4 +1,4 @@
-name: Building and deploying an updated backend when PR has new commmits
+name: MW - Building and deploying an updated backend when PR has new commmits
 
 on: 
   pull_request:
