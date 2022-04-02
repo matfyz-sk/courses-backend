@@ -1,4 +1,4 @@
-name: Deploy backend from DockerHub
+name: Deployment of backend
 
 on:
   workflow_call:

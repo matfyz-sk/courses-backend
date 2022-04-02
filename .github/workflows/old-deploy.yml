@@ -1,4 +1,4 @@
-name: Deployment of backend
+name: Old deployment of backend
 
 on:
   workflow_call:

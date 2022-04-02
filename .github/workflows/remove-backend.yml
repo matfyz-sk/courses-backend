@@ -1,4 +1,4 @@
-name: Remove backend docker container
+name: Removal of backend
 
 on:
   workflow_call:
