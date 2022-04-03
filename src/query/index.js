@@ -140,6 +140,7 @@ function generateQuery(resource, filters, user) {
    if (authWhere.length > 0) {
       query.$where.push(authWhere);
    }
+   console.log(query);
    return query;
 }
 
@@ -235,7 +236,9 @@ function nodesToArray(obj) {
 
 async function run(query) {
    const data = await lib.default(query, sparqlOptions);
+   console.log(data);
    nodesToArray(data["@graph"]);
+   console.log(data);
    return data;
 }
 
