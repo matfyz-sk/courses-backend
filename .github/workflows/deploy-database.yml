@@ -3,7 +3,7 @@ name: Deployment of database
 on:
   workflow_call:
     inputs:
-      VIRTUOSO_NAME:
+      BRANCH:
         required: true
         type: string
       BASE_VIRTUOSO_PORT:
@@ -25,6 +25,8 @@ jobs:
   database:
     runs-on: ubuntu-latest
     steps:
+      - name: Set name for Virtuoso
+        run: echo "VIRTUOSO_NAME=virtuoso-${{ inputs.BRANCH }}" >> $GITHUB_ENV
       - name: Set part of Virtuoso port
         run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }})" >> $GITHUB_ENV
       - name: Calculate Virtuoso port
@@ -32,7 +34,7 @@ jobs:
       - name: Running docker skript 
         uses: appleboy/ssh-action@master
         env:
-          VIRTUOSO_NAME: ${{ inputs.VIRTUOSO_NAME }}
+          VIRTUOSO_NAME: ${{ env.VIRTUOSO_NAME }}
           VIRTUOSO_PORT: ${{ env.VIRTUOSO_PORT }}
         with:
           host: ${{ secrets.SSH_HOST }}

@@ -3,10 +3,7 @@ name: Deployment of backend
 on:
   workflow_call:
     inputs:
-      TAG:
-        required: true
-        type: string
-      CONTAINER:
+      BRANCH:
         required: true
         type: string
       BASE_BACKEND_PORT:
@@ -19,10 +16,6 @@ on:
         required: false
         type: number
         default: 0
-      GRAPH_IRI_PREFIX:
-        required: false
-        type: string
-        default: ''
     secrets:
       SSH_PRIVATE_KEY:
         required: true
@@ -41,6 +34,16 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Set TAG for backend docker image
+        run: echo "TAG=courses:${{ inputs.BRANCH }}" >> $GITHUB_ENV
+      - name: Set CONTAINER for backend docker container
+        run: echo "CONTAINER=courses-${{ inputs.BRANCH }}" >> $GITHUB_ENV
+      - name: Set GRAPH_IRI_PREFIX 
+        if: ${{ inputs.BRANCH != 'master'}}
+        run: echo "GRAPH_IRI_PREFIX=${{ inputs.BRANCH }}." >> $GITHUB_ENV
+      - name: Set GRAPH_IRI_PREFIX 
+        if: ${{ inputs.BRANCH == 'master'}}
+        run: echo "GRAPH_IRI_PREFIX=" >> $GITHUB_ENV    
       - name: Set part of Virtuoso port
         run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }})" >> $GITHUB_ENV
       - name: Calculate Virtuoso port
@@ -48,22 +51,22 @@ jobs:
       - name: Calculate backend port
         run: echo "BACKEND_PORT=$(expr ${{ inputs.BASE_BACKEND_PORT }} + ${{ env.PR_PORT_PART }})" >> $GITHUB_ENV
       - name: PR port part
-        run: echo "${{ inputs.TAG }}"
+        run: echo "${{ env.TAG }}"
       - name: Virtuoso port
-        run: echo "${{ inputs.CONTAINER }}"
+        run: echo "${{ env.CONTAINER }}"
       - name: Backend port
-        run: echo "${{ inputs.GRAPH_IRI_PREFIX }}"
+        run: echo "${{ env.GRAPH_IRI_PREFIX }}"
       - name: Deploy backend docker image
         uses: appleboy/ssh-action@master
         env:
           USERNAME: ${{ secrets.DOCKERHUB_OWNER }}
           PASSWORD: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-          TAG: ${{ inputs.TAG }}
-          CONTAINER: ${{ inputs.CONTAINER }}
+          TAG: ${{ env.TAG }}
+          CONTAINER: ${{ env.CONTAINER }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           BACKEND_PORT: ${{ env.BACKEND_PORT }}
           VIRTUOSO_PORT: ${{ env.VIRTUOSO_PORT }}
-          GRAPH_IRI_PREFIX: ${{ inputs.GRAPH_IRI_PREFIX }}
+          GRAPH_IRI_PREFIX: ${{ env.GRAPH_IRI_PREFIX }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}

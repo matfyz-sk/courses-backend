@@ -3,7 +3,7 @@ name: Build and push new backend image
 on:
   workflow_call:
     inputs:
-      TAG:
+      BRANCH:
         required: true
         type: string
     secrets:
@@ -16,6 +16,8 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Set TAG for backend docker image
+        run: echo "TAG=courses:${{ inputs.BRANCH }}" >> $GITHUB_ENV
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -29,7 +31,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_OWNER }}/${{ inputs.TAG }}
+          tags: ${{ secrets.DOCKERHUB_OWNER }}/${{ env.TAG }}
       - name: Wait half a minute
         run: sleep 30
 
