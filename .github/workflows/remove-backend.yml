@@ -3,7 +3,7 @@ name: Removal of backend
 on:
   workflow_call:
     inputs:
-      CONTAINER:
+      BRANCH:
         required: true
         type: string
     secrets:
@@ -18,10 +18,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Set CONTAINER for backend docker container
+        run: echo "CONTAINER=courses-${{ inputs.BRANCH }}" >> $GITHUB_ENV
       - name: Remove backend docker container
         uses: appleboy/ssh-action@master
         env:
-          CONTAINER: ${{ inputs.CONTAINER }}
+          CONTAINER: ${{ env.CONTAINER }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}

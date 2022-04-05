@@ -3,7 +3,7 @@ name: Removal of database
 on:
   workflow_call:
     inputs:
-      VIRTUOSO_NAME:
+      BRANCH:
         required: true
         type: string
     secrets:
@@ -18,10 +18,12 @@ jobs:
   database:
     runs-on: ubuntu-latest
     steps:
+      - name: Set name for Virtuoso
+        run: echo "VIRTUOSO_NAME=virtuoso-${{ inputs.BRANCH }}" >> $GITHUB_ENV
       - name: Running docker skript 
         uses: appleboy/ssh-action@master
         env:
-          VIRTUOSO_NAME: ${{ inputs.VIRTUOSO_NAME }}
+          VIRTUOSO_NAME: ${{ env.VIRTUOSO_NAME }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
