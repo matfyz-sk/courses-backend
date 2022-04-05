@@ -28,12 +28,12 @@ jobs:
       - name: Set part of Virtuoso port
         run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }})" >> $GITHUB_ENV
       - name: Calculate Virtuoso port
-        run: echo "VIRTUOSO_PORT=$(expr ${{ BASE_VIRTUOSO_PORT }} + ${{ PR_PORT_PART }})" >> $GITHUB_ENV
+        run: echo "VIRTUOSO_PORT=$(expr ${{ inputs.BASE_VIRTUOSO_PORT }} + ${{ env.PR_PORT_PART }})" >> $GITHUB_ENV
       - name: Running docker skript 
         uses: appleboy/ssh-action@master
         env:
           VIRTUOSO_NAME: ${{ inputs.VIRTUOSO_NAME }}
-          VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
+          VIRTUOSO_PORT: ${{ env.VIRTUOSO_PORT }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}

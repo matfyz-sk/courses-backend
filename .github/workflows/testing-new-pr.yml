@@ -17,8 +17,18 @@ jobs:
     secrets:
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
       DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+  deploy-database: 
+    uses: matfyz-sk/courses-backend/.github/workflows/deploy-database.yml@master
+    with:
+      VIRTUOSO_NAME: virtuoso-${GITHUB_REF##*/}
+      BASE_VIRTUOSO_PORT: ${{ env.BASE_VIRTUOSO_PORT }}
+      PR_NUMBER: ${{ github.event.number }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
   deploy-backend:
-    needs: build-backend
+    needs: [build-backend, deploy-database]
     uses: matfyz-sk/courses-backend/.github/workflows/deploy-backend.yml@master
     with:
       TAG: courses:${GITHUB_REF##*/}
@@ -34,17 +44,6 @@ jobs:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       DOCKERHUB_OWNER: ${{ secrets.DOCKERHUB_OWNER }}
       DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-  deploy-database:
-    needs: [build-backend, deploy-backend]
-    uses: matfyz-sk/courses-backend/.github/workflows/deploy-database.yml@master
-    with:
-      VIRTUOSO_NAME: virtuoso-${GITHUB_REF##*/}
-      BASE_VIRTUOSO_PORT: ${{ env.BASE_VIRTUOSO_PORT }}
-      PR_NUMBER: ${{ github.event.number }}
-    secrets:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      SSH_HOST: ${{ secrets.SSH_HOST }}
-      SSH_USER: ${{ secrets.SSH_USER }}
   
       
 

@@ -1,4 +1,4 @@
-name: Build and push new backend
+name: Build and push new backend image
 
 on:
   workflow_call:
