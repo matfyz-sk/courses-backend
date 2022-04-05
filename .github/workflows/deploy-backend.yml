@@ -48,11 +48,11 @@ jobs:
       - name: Calculate backend port
         run: echo "BACKEND_PORT=$(expr ${{ inputs.BASE_BACKEND_PORT }} + ${{ env.PR_PORT_PART }})" >> $GITHUB_ENV
       - name: PR port part
-        run: echo "${{ env.PR_PORT_PART }}"
+        run: echo "${{ inputs.TAG }}"
       - name: Virtuoso port
-        run: echo "${{ env.VIRTUOSO_PORT }}"
+        run: echo "${{ inputs.CONTAINER }}"
       - name: Backend port
-        run: echo "${{ env.BACKEND_PORT }}"
+        run: echo "${{ inputs.GRAPH_IRI_PREFIX }}"
       - name: Deploy backend docker image
         uses: appleboy/ssh-action@master
         env:
