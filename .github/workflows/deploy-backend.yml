@@ -59,8 +59,8 @@ jobs:
       - name: Deploy backend docker image
         uses: appleboy/ssh-action@master
         env:
-          USERNAME: ${{ secrets.DOCKERHUB_OWNER }}
-          PASS: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          DOCKER_USER: ${{ secrets.DOCKERHUB_OWNER }}
+          DOCKER_PASS: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
           TAG: ${{ env.TAG }}
           CONTAINER: ${{ env.CONTAINER }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -71,9 +71,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: USERNAME,PASS,TAG,CONTAINER,AUTH_SECRET,BACKEND_PORT,VIRTUOSO_PORT,GRAPH_IRI_PREFIX
+          envs: DOCKER_USER,DOCKER_PASS,TAG,CONTAINER,AUTH_SECRET,BACKEND_PORT,VIRTUOSO_PORT,GRAPH_IRI_PREFIX
           script: |
-            docker login --username ${USERNAME} --password ${PASS}
-            docker pull ${USERNAME}/${TAG}
+            docker login --username ${DOCKER_USER} --password ${DOCKER_PASS}
+            docker pull ${DOCKER_USER}/${TAG}
             docker run --detach --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" --env "AUTH_SECRET=${AUTH_SECRET}" --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" --env "BASE_IRI=https://courses3.matfyz.sk/" --name=${CONTAINER} --publish ${BACKEND_PORT}:3010 --restart=always ${TAG}
 
