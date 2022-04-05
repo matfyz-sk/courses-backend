@@ -26,4 +26,3 @@ app.listen(port, () => {
         exporterSparql.exportOntology();
     }
 )
-
