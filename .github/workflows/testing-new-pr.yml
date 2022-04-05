@@ -1,9 +1,5 @@
 name: MW - Building and deploying backend and database when PR is created
 
-env:
-  BASE_BACKEND_PORT: 6000
-  BASE_VIRTUOSO_PORT: 7000
-
 on: 
   pull_request:
     types: [opened, reopened]
@@ -21,7 +17,7 @@ jobs:
     uses: matfyz-sk/courses-backend/.github/workflows/deploy-database.yml@master
     with:
       VIRTUOSO_NAME: virtuoso-${GITHUB_REF##*/}
-      BASE_VIRTUOSO_PORT: $BASE_VIRTUOSO_PORT
+      BASE_VIRTUOSO_PORT: 7000
       PR_NUMBER: ${{ github.event.number }}
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -33,8 +29,8 @@ jobs:
     with:
       TAG: courses:${GITHUB_REF##*/}
       CONTAINER: courses-${GITHUB_REF##*/}
-      BASE_BACKEND_PORT: $BASE_BACKEND_PORT
-      BASE_VIRTUOSO_PORT: $BASE_VIRTUOSO_PORT
+      BASE_BACKEND_PORT: 6000
+      BASE_VIRTUOSO_PORT: 7000
       PR_NUMBER: ${{ github.event.number }}
       GRAPH_IRI_PREFIX: ${GITHUB_REF##*/}.
     secrets:
