@@ -74,6 +74,6 @@ jobs:
           envs: DOCKER_USER,DOCKER_PASS,TAG,CONTAINER,AUTH_SECRET,BACKEND_PORT,VIRTUOSO_PORT,GRAPH_IRI_PREFIX
           script: |
             docker login --username ${DOCKER_USER} --password ${DOCKER_PASS}
-            docker pull ${DOCKER_USER}/${TAG}
+            docker pull ricsitoth/${TAG}
             docker run --detach --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" --env "AUTH_SECRET=${AUTH_SECRET}" --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" --env "BASE_IRI=https://courses3.matfyz.sk/" --name=${CONTAINER} --publish ${BACKEND_PORT}:3010 --restart=always ${TAG}
 
