@@ -11,6 +11,12 @@ export const folder = {
             multiple: true,
             dataType: "node",
             objectClass: "fsObject",
-        }
+        },  
+        courseInstance: {
+            required: true,
+            multiple: false,
+            dataType: "node",
+            objectClass: "courseInstance",
+        },
     }
 }

@@ -9,6 +9,7 @@ export const fsObject = {
             multiple: false,
             dataType: "string"
         },
+        // TODO maybe this just in the folder?
         parent: {
             required: false,
             multiple: false,
@@ -20,12 +21,6 @@ export const fsObject = {
             required: false,
             multiple: false,
             dataType: "boolean",
-        },  
-        courseInstance: {
-            required: true,
-            multiple: true,
-            dataType: "node",
-            objectClass: "courseInstance",
         },
     }
 }
