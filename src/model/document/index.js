@@ -5,3 +5,4 @@ export * from './file';
 export * from './payload';
 export * from './fsObject';
 export * from './folder';
+export * from './documentReference';
