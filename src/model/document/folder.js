@@ -12,6 +12,13 @@ export const folder = {
             dataType: "node",
             objectClass: "fsObject",
         },  
+        parent: {
+            required: false,
+            multiple: false,
+            dataType: "node",
+            objectClass: "folder",
+            change: ["teacher"],
+        },
         courseInstance: {
             required: true,
             multiple: false,
