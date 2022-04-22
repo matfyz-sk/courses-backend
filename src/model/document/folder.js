@@ -25,5 +25,10 @@ export const folder = {
             dataType: "node",
             objectClass: "courseInstance",
         },
+        lastChanged: {
+            required: false,
+            multiple: false,
+            dataType: "dateTime",
+        },
     }
 }
