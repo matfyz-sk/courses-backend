@@ -4,3 +4,4 @@ dist
 run.sh
 remove-none.sh
 .idea
+.env*
