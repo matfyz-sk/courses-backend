@@ -1,5 +1,5 @@
 export const resultType = {
-   type: "resultType",
+   type: ["resultType"],
    props: {
       name: {
          required: false,

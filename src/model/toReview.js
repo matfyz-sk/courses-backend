@@ -1,5 +1,5 @@
 export const toReview = {
-   type: "toReview",
+   type: ["toReview"],
    props: {
       submission: {
          required: true,

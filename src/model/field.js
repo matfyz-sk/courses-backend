@@ -1,5 +1,5 @@
 export const field = {
-   type: "field",
+   type: ["field"],
    courseInstance: "^hasField/courseInstance",
    props: {
       name: {

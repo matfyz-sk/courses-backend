@@ -1,5 +1,5 @@
 export const task = {
-   type: "task",
+   type: ["task"],
    subclasses: ["assignment"],
    create: ["teacher"],
    props: {

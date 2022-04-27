@@ -1,7 +1,7 @@
 import { quizAssignment } from "./quizAssignment";
 
 export const generatedQuizAssignment = {
-   type: "generatedQuizAssignment",
+   type: ["generatedQuizAssignment"],
    subclassOf: quizAssignment,
    props: {
       pointsPerQuestion: {

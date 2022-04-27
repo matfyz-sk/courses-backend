@@ -1,5 +1,5 @@
 export const orderedQuestion = {
-   type: "orderedQuestion",
+   type: ["orderedQuestion"],
    courseInstance: "^orderedQuestion/ofQuizAssignment/courseInstance",
    // create: ["[quizTakePrototype]", "[quizTake]"],
    create: ["all"],

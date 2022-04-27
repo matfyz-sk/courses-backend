@@ -1,5 +1,5 @@
 export const coursePersonalSettings = {
-   type: "coursePersonalSettings",
+   type: ["coursePersonalSettings"],
    props: {
       hasUser: {
          required: false,

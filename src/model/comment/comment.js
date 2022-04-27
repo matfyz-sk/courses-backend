@@ -1,5 +1,5 @@
 export const comment = {
-   type: "comment",
+   type: ["comment"],
    subclasses: ["codeComment"],
    props: {
       commentText: {

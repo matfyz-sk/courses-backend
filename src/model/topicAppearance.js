@@ -1,5 +1,5 @@
 export const topicAppearance = {
-   type: "topicAppearance",
+   type: ["topicAppearance"],
    create: ["[generatedQuizAssignment]"],
    props: {
       questionsAmount: {

@@ -1,7 +1,7 @@
 import { event } from "./event";
 
 export const courseInstance = {
-   type: "courseInstance",
+   type: ["courseInstance"],
    subclassOf: event,
    create: ["admin"],
    show: ["all"],

@@ -1,5 +1,5 @@
 export const event = {
-   type: "event",
+   type: ["event"],
    subclasses: ["courseInstance", "block", "session", "taskEvent"],
    create: ["teacher"],
    props: {

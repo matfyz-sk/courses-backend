@@ -1,7 +1,7 @@
 import { agent } from "./agent";
 
 export const team = {
-   type: "team",
+   type: ["team"],
    subclassOf: agent,
    create: ["teacher", "student"],
    change: ["teacher"],

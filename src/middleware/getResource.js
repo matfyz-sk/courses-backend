@@ -1,6 +1,7 @@
 import RequestError from "../helpers/RequestError";
 import {DataController} from "../controllers";
-import {getResourceObject, client, className, uri2className, classPrefix} from "../helpers";
+import {classPrefix, client, getResourceObject, uri2className} from "../helpers";
+import _ from "lodash";
 
 async function resolveResource(req, res, next) {
     try {
@@ -14,7 +15,6 @@ async function resolveResource(req, res, next) {
             `SELECT ?type
           WHERE {
              ?uri rdf:type ?type .
-             ?type rdfs:subClassOf* ${className(req.params.className, true)} .
              FILTER regex(?uri, "${req.params.id}$")
           }`,
             false
@@ -29,17 +29,39 @@ async function resolveResource(req, res, next) {
             );
         }
 
-        const name = uri2className(results[0].type.value);
-        res.locals.resource = getResourceObject(name);
+        const resArray = [];
+        results.map((result) => {
+            console.log("uriTocLASSnAME", result.type.value, uri2className(result.type.value));
+            resArray.push(getResourceObject(uri2className(result.type.value)));
+        });
+
+        console.log(resArray);
+        console.log("merge", _.mergeWith(resArray[0], resArray[1], customizer));
+
+        res.locals.resource = resArray[0];
         next();
     } catch (err) {
         next(err);
     }
 }
 
+function customizer(objValue, srcValue) {
+    if (_.isArray(objValue)) {
+        return objValue.concat(srcValue);
+    }
+    if (_.isString(objValue)) {
+        if (_.isString(srcValue)) {
+            return [objValue, srcValue];
+        }
+        if (_.isArray(srcValue)) {
+            return [objValue].concat(srcValue);
+        }
+    }
+}
+
 async function _getResource(req, res, next) {
     try {
-        if (req.query._subclasses != undefined) {
+        if (req.query._subclasses !== undefined) {
             return res
                 .status(200)
                 .json({value: DataController.getResourceSubclasses(res.locals.resource)});

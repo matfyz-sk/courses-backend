@@ -1,7 +1,7 @@
 import { question } from "./question";
 
 export const orderingQuestion = {
-   type: "orderingQuestion",
+   type: ["orderingQuestion"],
    subclassOf: question,
    props: {
       hasAnswer: {

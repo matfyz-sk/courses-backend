@@ -1,7 +1,7 @@
 import { quizAssignment } from "./quizAssignment";
 
 export const manualQuizAssignment = {
-   type: "manualQuizAssignment",
+   type: ["manualQuizAssignment"],
    subclassOf: quizAssignment,
    props: {
       shuffleAnswer: {

@@ -102,7 +102,7 @@ function generateQuery(resource, filters, user) {
 
          query.$where.push(where);
 
-         if (filters.hasOwnProperty(predicateName) && filters[predicateName] != "iri") {
+         if (filters.hasOwnProperty(predicateName) && filters[predicateName] !== "iri") {
             query.$where.push(
                `FILTER EXISTS { ${id} courses:${predicateName} <${
                   classPrefix(allProps[predicateName].objectClass) + filters[predicateName]
@@ -114,7 +114,7 @@ function generateQuery(resource, filters, user) {
       query["@graph"][predicateName] = objectVar;
       if (filters.hasOwnProperty(predicateName)) {
          query.$where.push(`${id} courses:${predicateName} ${objectVar}`);
-         if (allProps[predicateName].dataType == "string") {
+         if (allProps[predicateName].dataType === "string") {
             query.$filter.push(`${objectVar}="${filters[predicateName]}"`);
          } else {
             query.$filter.push(`${objectVar}=${filters[predicateName]}`);
@@ -144,7 +144,7 @@ function generateQuery(resource, filters, user) {
 }
 
 function resolveAuthRules(id, resource, props, user) {
-   if (user != undefined && user.isSuperAdmin) {
+   if (user !== undefined && user.isSuperAdmin) {
       return "";
    }
    var rules = getResourceShowRules(resource);
@@ -157,13 +157,13 @@ function resolveAuthRules(id, resource, props, user) {
    if (courseInstance == null) {
       return "";
    }
-   if (rules.length == 1 && rules[0] == "all") {
+   if (rules.length === 1 && rules[0] === "all") {
       return "";
    }
-   if (user == undefined) {
+   if (user === undefined) {
       throw new RequestError("You don't have access rights to this resource", 401);
    }
-   if (rules.length == 0) {
+   if (rules.length === 0) {
       // default rules
       predicate = `createdBy | ${courseInstance}/hasInstructor | ${courseInstance}/^studentOf | ${courseInstance}/instanceOf/hasAdmin`;
       const regex = /([a-zA-Z]+)/gm;
@@ -209,7 +209,7 @@ function resolveAuthRules(id, resource, props, user) {
 }
 
 function nodesToArray(obj) {
-   if (obj.constructor.name == "Array") {
+   if (obj.constructor.name === "Array") {
       for (var val of obj) {
          nodesToArray(val);
       }
@@ -217,13 +217,13 @@ function nodesToArray(obj) {
    }
    for (var predicateName in obj) {
       if (obj.hasOwnProperty(predicateName)) {
-         if (obj[predicateName].constructor.name != "Object") {
+         if (obj[predicateName].constructor.name !== "Object") {
             continue;
          }
          if (predicateName === "createdBy") {
             continue;
          }
-         if (Object.keys(obj[predicateName]).length == 0) {
+         if (Object.keys(obj[predicateName]).length === 0) {
             obj[predicateName] = [];
          } else {
             nodesToArray(obj[predicateName]);
@@ -242,13 +242,13 @@ async function run(query) {
 async function dataChain(query, propName) {
    var res = await run({ ...query });
 
-   if (res["@graph"].length != 1) {
+   if (res["@graph"].length !== 1) {
       throw new RequestError("Bad length");
    }
 
    var inst = res["@graph"][0];
 
-   while (inst[propName] != undefined && inst[propName].length == 1) {
+   while (inst[propName] !== undefined && inst[propName].length === 1) {
       const nextURI = inst[propName][0]["@id"];
       query["@graph"]["@id"] = `${nextURI}`;
       query["$where"].forEach((item, index, arr) => {
@@ -265,7 +265,7 @@ async function dataChain(query, propName) {
 
 export default function runQuery(resource, filters, user) {
    const query = generateQuery(resource, filters, user);
-   if (filters._chain == undefined) {
+   if (filters._chain === undefined) {
       return run(query);
    }
    return dataChain(query, filters._chain);

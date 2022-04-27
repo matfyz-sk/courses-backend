@@ -1,5 +1,5 @@
 export const predefinedAnswer = {
-   type: "predefinedAnswer",
+   type: ["predefinedAnswer"],
    courseInstance: "^hasAnswer/courseInstance",
    create: ["[questionWithPredefinedAnswer]"],
    props: {

@@ -1,5 +1,5 @@
 export const agent = {
-   type: "agent",
+   type: ["agent"],
    subclasses: ["user", "team"],
    props: {
       avatar: {

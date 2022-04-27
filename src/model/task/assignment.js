@@ -1,7 +1,7 @@
 import { task } from "./task";
 
 export const assignment = {
-   type: "assignment",
+   type: ["assignment"],
    subclassOf: task,
    props: {
       shortDescription: {

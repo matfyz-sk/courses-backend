@@ -1,5 +1,5 @@
 export const teamInstance = {
-   type: "teamInstance",
+   type: ["teamInstance"],
    courseInstance: "instanceOf/courseInstance",
    create: ["student"],
    change: ["teacher"],

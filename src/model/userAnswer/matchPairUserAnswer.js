@@ -1,7 +1,7 @@
 import { userAnswer } from "./userAnswer";
 
 export const matchPairUserAnswer = {
-   type: "matchPairUserAnswer",
+   type: ["matchPairUserAnswer"],
    subclassOf: userAnswer,
    props: {
       position: {

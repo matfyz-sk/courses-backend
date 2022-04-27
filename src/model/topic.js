@@ -1,5 +1,5 @@
 export const topic = {
-   type: "topic",
+   type: ["topic"],
    create: ["[userURI].instructorOf.?courseInstance"],
    props: {
       name: {

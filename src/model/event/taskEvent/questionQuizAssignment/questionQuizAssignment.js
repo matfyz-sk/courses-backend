@@ -1,7 +1,7 @@
 import { taskEvent } from "../taskEvent";
 
 export const questionQuizAssignment = {
-   type: "questionQuizAssignment",
+   type: ["questionQuizAssignment"],
    subclassOf: taskEvent,
    subclasses: ["questionAssignment", "quizAssignment"],
    props: {

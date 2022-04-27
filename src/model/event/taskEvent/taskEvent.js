@@ -1,7 +1,7 @@
 import { event } from "../event";
 
 export const taskEvent = {
-   type: "taskEvent",
+   type: ["taskEvent"],
    subclassOf: event,
    subclasses: ["assignmentPeriod", "examinationEvent", "questionQuizAssignment"],
    props: {

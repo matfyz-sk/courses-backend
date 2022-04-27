@@ -26,6 +26,7 @@ export function getTripleObjectType(objectTypeName, objectValue) {
 }
 
 export function getResourceObject(resourceName) {
+   console.log(resourceName);
    resourceName = resourceName.charAt(0).toLowerCase() + resourceName.slice(1);
    if (!Resources[resourceName]) {
       throw new RequestError(`Resource with class name '${resourceName}' is not supported`, 400);
@@ -140,17 +141,25 @@ export function generateToken({ userURI, email }) {
 }
 
 export function classPrefix(className) {
-   const lowerCaseClassName = className.charAt(0).toLowerCase() + className.slice(1);
-   return DATA_IRI + "/" + lowerCaseClassName + "/";
+   if(className.length !== 0){
+      console.log("classPrefix",className);
+      const classNameFormatted = className[0].charAt(0).toLowerCase() + className[0].slice(1);
+      return DATA_IRI + "/" + classNameFormatted + "/";
+   }
+   return null;
 }
 
 export function className(className, includePrefix = false) {
-   const upperCaseClassName = className.charAt(0).toUpperCase() + className.slice(1);
-   return includePrefix ? "courses:" + upperCaseClassName : upperCaseClassName;
+   if(className.length !== 0){
+      console.log("className",className);
+      const upperCaseClassName = className[0].charAt(0).toUpperCase() + className[0].slice(1);
+      return includePrefix ? "courses:" + upperCaseClassName : upperCaseClassName;
+   }
+   return null;
 }
 
 export function uri2className(uri) {
-   return className(uri.substring(ONTOLOGY_IRI.length));
+   return className([uri.substring(ONTOLOGY_IRI.length)]);
 }
 
 export function uri2id(uri) {

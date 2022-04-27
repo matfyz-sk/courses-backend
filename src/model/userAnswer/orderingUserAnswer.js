@@ -1,7 +1,7 @@
 import { userAnswer } from "./userAnswer";
 
 export const orderingUserAnswer = {
-   type: "orderingUserAnswer",
+   type: ["orderingUserAnswer"],
    subclassOf: userAnswer,
    props: {
       userChoice: {
