@@ -54,7 +54,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX
+          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD
           script: |
             docker build -t ${TAG} https://github.com/matfyz-sk/courses-backend.git
             docker stop ${CONTAINER}
