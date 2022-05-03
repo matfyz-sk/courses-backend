@@ -68,7 +68,7 @@ jobs:
               --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" \
               --env "AUTH_SECRET=${AUTH_SECRET}" \
               --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}devcourses3.matfyz.sk/" \
-              --env "BASE_IRI=https://devcourses3.matfyz.sk/" \
+              --env "BASE_IRI=https://courses3.matfyz.sk/" \
               --env "IMPERSONATION_PASSWORD=${IMPERSONATION_PASSWORD}" \
               --name=${CONTAINER} \
               --publish ${BACKEND_PORT}:3010 \
