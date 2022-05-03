@@ -61,7 +61,7 @@ jobs:
             cd ${TMP}
             git clone --branch ${BRANCH} https://github.com/matfyz-sk/courses-backend.git
             cd courses-backend
-            docker build -t ${TAG} 
+            docker build -t ${TAG} .
             docker stop ${CONTAINER}
             docker rm -f ${CONTAINER}
             docker run --detach \
