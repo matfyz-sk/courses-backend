@@ -1,0 +1,78 @@
+name: Old deployment of backend for documents by Rasto
+
+on:
+  workflow_call:
+    inputs:
+      TAG:
+        required: true
+        type: string
+      CONTAINER:
+        required: true
+        type: string
+      BRANCH:
+        required: true
+        type: string
+      BACKEND_PORT:
+        required: true
+        type: number
+      VIRTUOSO_PORT:
+        required: true
+        type: number
+      GRAPH_IRI_PREFIX:
+        required: false
+        type: string
+        default: ''
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+      SSH_HOST:
+        required: true
+      SSH_USER:
+        required: true
+      AUTH_SECRET:
+        required: true
+      IMPERSONATION_PASSWORD:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Branch name
+        run: echo running on branch ${{ inputs.BRANCH }}
+      - name: Running docker skript 
+        uses: appleboy/ssh-action@master
+        env:
+          TAG: ${{ inputs.TAG }}
+          CONTAINER: ${{ inputs.CONTAINER }}
+          BRANCH: ${{ inputs.BRANCH }}
+          BACKEND_PORT: ${{ inputs.BACKEND_PORT }}
+          VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          GRAPH_IRI_PREFIX: ${{ inputs.GRAPH_IRI_PREFIX }}
+          IMPERSONATION_PASSWORD: ${{ secrets.IMPERSONATION_PASSWORD }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: TAG,CONTAINER,BRANCH,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD
+          script: |
+            TMP=$(mktemp -d tmpXXX)
+            cd ${TMP}
+            git clone --branch ${BRANCH} https://github.com/matfyz-sk/courses-backend.git
+            cd courses-backend
+            docker build -t ${TAG} 
+            docker stop ${CONTAINER}
+            docker rm -f ${CONTAINER}
+            docker run --detach \
+              --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" \
+              --env "AUTH_SECRET=${AUTH_SECRET}" \
+              --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}devcourses3.matfyz.sk/" \
+              --env "BASE_IRI=https://devcourses3.matfyz.sk/" \
+              --env "IMPERSONATION_PASSWORD=${IMPERSONATION_PASSWORD}" \
+              --name=${CONTAINER} \
+              --publish ${BACKEND_PORT}:3010 \
+              --restart=always \
+              ${TAG}
+            cd ../..
+            rm -dfr ${TMP}
