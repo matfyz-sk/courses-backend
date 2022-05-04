@@ -2,7 +2,7 @@ name: MW - Release workflow for documents by Rasto
 
 on: 
   push:
-    branches: [ documents_rasto ]
+    branches: [ devcourses3 ]
     paths:
       - src/**
       - Dockerfile
@@ -16,7 +16,7 @@ jobs:
     with:
       TAG: courses:rasto
       CONTAINER: courses-rasto
-      BRANCH: documents_rasto
+      BRANCH: devcourses3
       BACKEND_PORT: 3020
       VIRTUOSO_PORT: 8890
     secrets:
