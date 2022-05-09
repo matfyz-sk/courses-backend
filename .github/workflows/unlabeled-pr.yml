@@ -1,0 +1,20 @@
+name: MW - Clean up after PR label 'no frontend' removed
+
+on: 
+  pull_request:
+    types: [unlabeled]
+  workflow_dispatch:
+
+jobs:
+  remove-frontend-directory:
+    if: ${{ github.event.label.name == 'no frontend' }}
+    uses: matfyz-sk/courses-frontend/.github/workflows/remove-destination.yml@master
+    with:
+      FRONTEND_PATH: /home/www/${GITHUB_HEAD_REF}.courses3.matfyz.sk
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+
+
+

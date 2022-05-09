@@ -28,7 +28,7 @@ jobs:
       - name: Set name for Virtuoso
         run: echo "VIRTUOSO_NAME=virtuoso-${{ inputs.BRANCH }}" >> $GITHUB_ENV
       - name: Set part of Virtuoso port
-        run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }})" >> $GITHUB_ENV
+        run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }} | tail -c 4)" >> $GITHUB_ENV
       - name: Calculate Virtuoso port
         run: echo "VIRTUOSO_PORT=$(expr ${{ inputs.BASE_VIRTUOSO_PORT }} + ${{ env.PR_PORT_PART }})" >> $GITHUB_ENV
       - name: Running docker skript 
@@ -44,7 +44,10 @@ jobs:
           script: |
             docker pull openlink/virtuoso-opensource-7
             mkdir /home/virtuoso/${VIRTUOSO_NAME}
-            docker run --detach --name ${VIRTUOSO_NAME} --publish "172.17.42.1:${VIRTUOSO_PORT}:8890" --volume /home/virtuoso/${VIRTUOSO_NAME}:/database openlink/virtuoso-opensource-7:latest
+            docker run --detach \
+              --name ${VIRTUOSO_NAME} \
+              --publish "172.17.42.1:${VIRTUOSO_PORT}:8890" \
+              --volume /home/virtuoso/${VIRTUOSO_NAME}:/database openlink/virtuoso-opensource-7:latest
             sleep 60
             passwd="$(docker exec ${VIRTUOSO_NAME} cat /settings/dba_password)"
             echo 'grant SPARQL_UPDATE to "SPARQL";' | docker exec ${VIRTUOSO_NAME} isql 1111 dba $passwd

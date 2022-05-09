@@ -3,22 +3,20 @@ name: Old deployment of backend
 on:
   workflow_call:
     inputs:
-      TAG:
-        required: true
-        type: string
-      CONTAINER:
-        required: true
-        type: string
       BRANCH:
         required: true
         type: string
-      BACKEND_PORT:
+      BASE_BACKEND_PORT:
         required: true
         type: number
       VIRTUOSO_PORT:
         required: true
         type: number
-      GRAPH_IRI_PREFIX:
+      PR_NUMBER:
+        required: false
+        type: number
+        default: 0
+      FRONTEND_BRANCH:
         required: false
         type: string
         default: ''
@@ -38,25 +36,47 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Branch name
-        run: echo running on branch ${{ inputs.BRANCH }}
+      - name: Set TAG for backend docker image
+        run: echo "TAG=courses:${{ inputs.BRANCH }}" >> $GITHUB_ENV
+      - name: Set CONTAINER for backend docker container
+        run: echo "CONTAINER=courses-${{ inputs.BRANCH }}" >> $GITHUB_ENV
+      - name: Set branch when called from backend
+        if: ${{ inputs.FRONTEND_BRANCH == ''}}
+        run: echo "BRANCH=${{ inputs.BRANCH }}" >> $GITHUB_ENV
+      - name: Set branch when called from frontend
+        if: ${{ inputs.FRONTEND_BRANCH != ''}}
+        run: echo "BRANCH=${{ inputs.FRONTEND_BRANCH }}" >> $GITHUB_ENV
+      - name: Set GRAPH_IRI_PREFIX for non master branch
+        if: ${{ inputs.BRANCH != 'master'}}
+        run: echo "GRAPH_IRI_PREFIX=${{ inputs.BRANCH }}." >> $GITHUB_ENV
+      - name: Set GRAPH_IRI_PREFIX for master branch
+        if: ${{ inputs.BRANCH == 'master'}}
+        run: echo "GRAPH_IRI_PREFIX=" >> $GITHUB_ENV    
+      - name: Set PR port part
+        run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }} | tail -c 4)" >> $GITHUB_ENV
+      - name: Calculate backend port
+        run: echo "BACKEND_PORT=$(expr ${{ inputs.BASE_BACKEND_PORT }} + ${{ env.PR_PORT_PART }})" >> $GITHUB_ENV
       - name: Running docker skript 
         uses: appleboy/ssh-action@master
         env:
-          TAG: ${{ inputs.TAG }}
-          CONTAINER: ${{ inputs.CONTAINER }}
-          BACKEND_PORT: ${{ inputs.BACKEND_PORT }}
+          TAG: ${{ env.TAG }}
+          CONTAINER: ${{ env.CONTAINER }}
+          BRANCH: ${{ env.BRANCH }}
+          BACKEND_PORT: ${{ env.BACKEND_PORT }}
           VIRTUOSO_PORT: ${{ inputs.VIRTUOSO_PORT }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-          GRAPH_IRI_PREFIX: ${{ inputs.GRAPH_IRI_PREFIX }}
+          GRAPH_IRI_PREFIX: ${{ env.GRAPH_IRI_PREFIX }}
           IMPERSONATION_PASSWORD: ${{ secrets.IMPERSONATION_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD
+          envs: TAG,CONTAINER,BRANCH,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD
           script: |
-            docker build -t ${TAG} https://github.com/matfyz-sk/courses-backend.git
+            TMP=$(mktemp -d tmpXXX)
+            cd ${TMP}
+            git clone --branch ${BRANCH} https://github.com/matfyz-sk/courses-backend.git
+            docker build -t ${TAG} courses-backend
             docker stop ${CONTAINER}
             docker rm -f ${CONTAINER}
             docker run --detach \
@@ -69,3 +89,5 @@ jobs:
               --publish ${BACKEND_PORT}:3010 \
               --restart=always \
               ${TAG}
+            cd ..
+            rm -dfr ${TMP}
