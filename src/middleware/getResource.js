@@ -6,7 +6,7 @@ import _ from "lodash";
 async function resolveResource(req, res, next) {
     try {
         const resource = getResourceObject(req.params.className);
-        if (req.params.id === undefined) {
+        if (req.params.id == undefined) {
             res.locals.resource = resource;
             return next();
         }
@@ -61,7 +61,7 @@ function customizer(objValue, srcValue) {
 
 async function _getResource(req, res, next) {
     try {
-        if (req.query._subclasses !== undefined) {
+        if (req.query._subclasses != undefined) {
             return res
                 .status(200)
                 .json({value: DataController.getResourceSubclasses(res.locals.resource)});

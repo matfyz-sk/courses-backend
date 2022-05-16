@@ -1,4 +1,4 @@
-import expressJWT from "express-jwt";
+import { expressjwt } from "express-jwt";
 import { AUTH_SECRET } from "../constants";
 import { client } from "../helpers";
 
@@ -20,8 +20,8 @@ async function setSuperAdmin(req, res, next) {
    }
 }
 
-export const tokenVerify = [expressJWT({ secret: AUTH_SECRET }), setSuperAdmin];
+export const tokenVerify = [expressjwt({ secret: AUTH_SECRET, algorithms: ["HS256"] }), setSuperAdmin];
 export const optionalTokenVerify = [
-   expressJWT({ secret: AUTH_SECRET, credentialsRequired: false }),
+   expressjwt({ secret: AUTH_SECRET,algorithms: ["HS256"], credentialsRequired: false }),
    setSuperAdmin,
 ];
