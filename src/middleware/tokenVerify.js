@@ -3,17 +3,17 @@ import { AUTH_SECRET } from "../constants";
 import { client } from "../helpers";
 
 async function setSuperAdmin(req, res, next) {
-   if (!req.user) {
+   if (!req.auth) {
       return next();
    }
    try {
       const db = client();
       const data = await db.query(
          `ASK {
-           <${req.user.userURI}> courses:isSuperAdmin true
+           <${req.auth.userURI}> courses:isSuperAdmin true
          }`
       );
-      req.user.isSuperAdmin = data.boolean;
+      req.auth.isSuperAdmin = data.boolean;
       next();
    } catch (err) {
       next(err);

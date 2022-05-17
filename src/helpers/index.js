@@ -1,4 +1,4 @@
-import {Client, Node, Data, Text} from "virtuoso-sparql-client";
+import {Client, Data, Node, Text} from "virtuoso-sparql-client";
 import * as ID from "../lib/virtuoso-uid";
 import * as Resources from "../model";
 import moment from "moment-timezone";
@@ -27,12 +27,11 @@ export function getTripleObjectType(objectTypeName, objectValue) {
 }
 
 export function getResourceObject(resourceName) {
-    console.log(resourceName);
-    resourceName = resourceName.charAt(0).toLowerCase() + resourceName.slice(1);
-    if (!Resources[resourceName]) {
-        throw new RequestError(`Resource with class name '${resourceName}' is not supported`, 400);
+    const r = changeFirstCharCase(resourceName, false);
+    if (!Resources[r]) {
+        throw new RequestError(`Resource with class name '${r}' is not supported`, 400);
     }
-    return Resources[resourceName];
+    return Resources[r];
 }
 
 export function getAllProps(resource, includeSubclasses = true) {
@@ -143,13 +142,17 @@ export function generateToken({userURI, email}) {
 
 export function classPrefix(className) {
     if (className.length !== 0) {
-        const classNameFormatted = upperCaseClassName(className, false);
+        const classNameFormatted = changeFirstCharCase(className, false);
         return DATA_IRI + "/" + classNameFormatted + "/";
     }
     return null;
 }
 
-export function upperCaseClassName(className, toUpperCase) {
+export function changeFirstCharCase(className, toUpperCase) {
+    if (!className || className.length < 1) {
+        return className;
+    }
+
     let upperCaseClassNameObject;
 
     if (_.isArray(className)) {
@@ -167,15 +170,16 @@ export function upperCaseClassName(className, toUpperCase) {
 }
 
 export function className(className, includePrefix = false) {
-    let upperCaseClassName1 = upperCaseClassName(className, true);
+    let formattedClassName = changeFirstCharCase(className, true);
 
-    if (upperCaseClassName1) {
-        return includePrefix ? "courses:" + upperCaseClassName1 : upperCaseClassName1;
+    if (formattedClassName) {
+        return includePrefix ? "courses:" + formattedClassName : formattedClassName;
     }
     return null;
 }
 
 export function uri2className(uri) {
+    //TODO check this
     return className([uri.substring(ONTOLOGY_IRI.length)]);
 }
 

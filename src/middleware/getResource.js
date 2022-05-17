@@ -31,7 +31,6 @@ async function resolveResource(req, res, next) {
 
         const resArray = [];
         results.map((result) => {
-            console.log("uriTocLASSnAME", result.type.value, uri2className(result.type.value));
             resArray.push(getResourceObject(uri2className(result.type.value)));
         });
 
@@ -69,7 +68,8 @@ async function _getResource(req, res, next) {
         if (req.params.id) {
             req.query["id"] = req.params.id;
         }
-        const data = await DataController.getResource(res.locals.resource, req.query, req.user);
+
+        const data = await DataController.getResource(res.locals.resource, req.query, req.auth);
         res.status(200).send(data);
     } catch (err) {
         next(err);

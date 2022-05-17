@@ -10,6 +10,8 @@ import {
    getResourceCreateRules,
 } from "../helpers";
 import RequestError from "../helpers/RequestError";
+import _ from "lodash";
+import {ONTOLOGY_IRI} from "../constants";
 
 const IMPLICIT_CREATE = ["admin", "superAdmin", "teacher"];
 const IMPLICIT_CHANGE = ["admin", "superAdmin", "teacher"];
@@ -78,7 +80,7 @@ export default class Resource {
             401
          );
       }
-      const createRules = getResourceCreateRules(this.resource);
+      let createRules = getResourceCreateRules(this.resource);
       if (createRules.length === 0) {
          createRules = IMPLICIT_CREATE;
       }
@@ -175,7 +177,7 @@ export default class Resource {
          return;
       }
       if (!this.props[predicateName].multiple) {
-         if (Array.isArray(value)) {
+         if (_.isArray(value)) {
             if (value.length > 1) {
                throw new RequestError(`Attribute '${predicateName}' accepts only one value`, 422);
             }
@@ -314,10 +316,12 @@ export default class Resource {
       }
       if (rule === "admin") {
          if (this.courseInstance == null) {
+            //TODO check if not ask over GRAPH
             data = await this.db.query(
                `ASK { ?courseInstanceURI courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`
             );
          } else {
+            //TODO check if not ask over GRAPH
             data = await this.db.query(
                `ASK { <${this.courseInstance}> courses:instanceOf/courses:hasAdmin <${this.user.userURI}> }`
             );

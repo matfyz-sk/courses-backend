@@ -56,7 +56,6 @@ export class Exporter {
             let className;
             if (model.type) {
                 className = this.firstLetterToUppercase(model.type);
-                console.log("MOOOOODEL", model.type, className);
                 ontologyArray.push(this.getTriple(PREFIXES.courses, className, PREFIXES.rdf, "type", PREFIXES.rdfs, "Class"));
             }
             if (model.subclassOf && model.subclassOf.type) {
@@ -115,7 +114,6 @@ export class Exporter {
         if (value.length < 1) {
             return value;
         }
-        
         let val;
         if (_.isArray(value)) {
             val = value[0];
