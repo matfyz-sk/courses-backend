@@ -111,13 +111,12 @@ export function getResourceCreateRules(resource) {
 
 export function client() {
     const client = new Client(SPARQL_ENDPOINT);
-    client.setOptions(
-        "application/json",
-        {
-            courses: ONTOLOGY_IRI,
-        },
-        GRAPH_IRI
-    );
+
+    client.setDefaultFormat("application/json")
+    client.setDefaultGraph(GRAPH_IRI);
+    client.addPrefixes({
+        courses: ONTOLOGY_IRI,
+    });
     return client;
 }
 
