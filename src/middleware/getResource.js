@@ -35,8 +35,8 @@ async function resolveResource(req, res, next) {
             resArray.push(getResourceObject(uri2className(result.type.value)));
         });
 
-        console.log(resArray);
-        console.log("merge", _.mergeWith(resArray[0], resArray[1], customizer));
+        //console.log(resArray);
+        //console.log("merge", _.mergeWith(resArray[0], resArray[1], customizer));
 
         res.locals.resource = resArray[0];
         next();

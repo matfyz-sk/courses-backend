@@ -143,14 +143,13 @@ export function generateToken({userURI, email}) {
 
 export function classPrefix(className) {
     if (className.length !== 0) {
-        console.log("classPrefix", className);
-        const classNameFormatted = className[0].charAt(0).toLowerCase() + className[0].slice(1);
+        const classNameFormatted = upperCaseClassName(className, false);
         return DATA_IRI + "/" + classNameFormatted + "/";
     }
     return null;
 }
 
-export function className(className, includePrefix = false) {
+export function upperCaseClassName(className, toUpperCase) {
     let upperCaseClassNameObject;
 
     if (_.isArray(className)) {
@@ -158,12 +157,21 @@ export function className(className, includePrefix = false) {
     } else if (_.isString(className)) {
         upperCaseClassNameObject = className;
     }
-    
-    if (upperCaseClassNameObject) {
-        const upperCaseClassName = upperCaseClassNameObject.charAt(0).toUpperCase() + upperCaseClassNameObject.slice(1);
-        return includePrefix ? "courses:" + upperCaseClassName : upperCaseClassName;
-    }
 
+    if (upperCaseClassNameObject) {
+        let firstChar = upperCaseClassNameObject.charAt(0);
+        firstChar = toUpperCase ? firstChar.toUpperCase() : firstChar.toLowerCase();
+        return firstChar + upperCaseClassNameObject.slice(1);
+    }
+    return null;
+}
+
+export function className(className, includePrefix = false) {
+    let upperCaseClassName1 = upperCaseClassName(className, true);
+
+    if (upperCaseClassName1) {
+        return includePrefix ? "courses:" + upperCaseClassName1 : upperCaseClassName1;
+    }
     return null;
 }
 
