@@ -10,7 +10,8 @@ jobs:
     if: ${{ github.event.label.name == 'no frontend' }}
     uses: matfyz-sk/courses-frontend/.github/workflows/create-destination.yml@master
     with:
-      FRONTEND_PATH: /home/www/${GITHUB_HEAD_REF}.courses3.matfyz.sk/htdocs/
+      FRONTEND_PATH: courses3.matfyz.sk/htdocs/
+      PR_BRANCH: ${GITHUB_HEAD_REF}
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -21,9 +22,10 @@ jobs:
     uses: matfyz-sk/courses-frontend/.github/workflows/deploy.yml@master
     with:
       BRANCH: master
-      FRONTEND_PATH: /home/www/${GITHUB_HEAD_REF}.courses3.matfyz.sk/htdocs/
+      FRONTEND_PATH: courses3.matfyz.sk/htdocs/
       BASE_WEBSITE_PORT: 8000
       PR_NUMBER: ${{ github.event.number }}
+      PR_BRANCH: ${GITHUB_HEAD_REF}
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
