@@ -115,7 +115,7 @@ export function client() {
       {
          courses: ONTOLOGY_IRI,
       },
-      DATA_IRI
+       GRAPH_IRI
    );
    return client;
 }
