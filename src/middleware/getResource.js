@@ -5,8 +5,11 @@ import _ from "lodash";
 
 async function resolveResource(req, res, next) {
     try {
-        const resource = getResourceObject(req.params.className);
-        if (req.params.id == undefined) {
+        const baseClassName = req.params.className;
+        const id = req.params.id;
+
+        const resource = getResourceObject(baseClassName);
+        if (id === undefined) {
             res.locals.resource = resource;
             return next();
         }
@@ -15,7 +18,7 @@ async function resolveResource(req, res, next) {
             `SELECT ?type
           WHERE {
              ?uri rdf:type ?type .
-             FILTER regex(?uri, "${req.params.id}$")
+             FILTER regex(?uri, "${id}$")
           }`,
             false
         );
@@ -23,7 +26,7 @@ async function resolveResource(req, res, next) {
         if (results.length === 0) {
             throw new RequestError(
                 `Resource with URI '${
-                    classPrefix(req.params.className) + req.params.id
+                    classPrefix(baseClassName) + id
                 }' doesn't exist.`,
                 404
             );
@@ -31,6 +34,7 @@ async function resolveResource(req, res, next) {
 
         const resArray = [];
         results.map((result) => {
+            console.log(result);
             resArray.push(getResourceObject(uri2className(result.type.value)));
         });
 
