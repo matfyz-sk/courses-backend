@@ -178,7 +178,6 @@ export function className(className, includePrefix = false) {
 }
 
 export function uri2className(uri) {
-    //TODO check this
     return className([uri.substring(ONTOLOGY_IRI.length)]);
 }
 
