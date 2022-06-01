@@ -1,5 +1,5 @@
 import lib from "sparql-transformer";
-import { ONTOLOGY_IRI, SPARQL_ENDPOINT, DC_TERMS_IRI } from "../constants";
+import {ONTOLOGY_IRI, SPARQL_ENDPOINT, DC_TERMS_IRI, GRAPH_IRI} from "../constants";
 import {
    getAllProps,
    classPrefix,
@@ -22,7 +22,8 @@ const sparqlPrefixes = {
 };
 
 function generateQuery(resource, filters, user) {
-   var query = {
+   let query = {
+      $from: GRAPH_IRI,
       "@graph": {},
       $where: [],
       $filter: [],
