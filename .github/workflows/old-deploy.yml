@@ -50,7 +50,7 @@ jobs:
         run: echo "BRANCH=${{ inputs.FRONTEND_BRANCH }}" >> $GITHUB_ENV
       - name: Set GRAPH_IRI_PREFIX for non master branch
         if: ${{ inputs.BRANCH != 'master'}}
-        run: echo "GRAPH_IRI_PREFIX=${{ inputs.BRANCH }}." >> $GITHUB_ENV
+        run: echo "GRAPH_IRI_PREFIX=${{ inputs.BRANCH }}.dev" >> $GITHUB_ENV
       - name: Set GRAPH_IRI_PREFIX for master branch
         if: ${{ inputs.BRANCH == 'master'}}
         run: echo "GRAPH_IRI_PREFIX=" >> $GITHUB_ENV    
