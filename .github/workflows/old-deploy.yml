@@ -90,7 +90,7 @@ jobs:
               --env "IMPERSONATION_PASSWORD=${IMPERSONATION_PASSWORD}" \
               --name=${CONTAINER} \
               --publish ${BACKEND_PORT}:3010 \
-              --restart=always \
+              --restart=unless-stopped \
               ${TAG}
             cd ..
             rm -dfr ${TMP}

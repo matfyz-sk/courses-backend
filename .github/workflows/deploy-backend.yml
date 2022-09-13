@@ -82,6 +82,6 @@ jobs:
               --env "BASE_IRI=https://courses3.matfyz.sk/" \
               --name=${CONTAINER} \
               --publish ${BACKEND_PORT}:3010 \
-              --restart=always \
+              --restart=unless-stopped \
               ${TAG}
 
