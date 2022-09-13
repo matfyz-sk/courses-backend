@@ -33,6 +33,8 @@ on:
         required: true
       IMPERSONATION_PASSWORD:
         required: true
+      SPARQL_HOST:
+        required: true
 
 jobs:
   deploy:
@@ -51,11 +53,12 @@ jobs:
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           GRAPH_IRI_PREFIX: ${{ inputs.GRAPH_IRI_PREFIX }}
           IMPERSONATION_PASSWORD: ${{ secrets.IMPERSONATION_PASSWORD }}
+          SPARQL_HOST: ${{ secrets.SPARQL_HOST }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER,BRANCH,BACKEND_PORT,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD
+          envs: TAG,CONTAINER,BRANCH,BACKEND_PORT,SPARQL_HOST,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD
           script: |
             TMP=$(mktemp -d tmpXXX)
             cd ${TMP}
@@ -65,7 +68,7 @@ jobs:
             docker stop ${CONTAINER}
             docker rm -f ${CONTAINER}
             docker run --detach \
-              --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" \
+              --env "SPARQL_ENDPOINT=http://${SPARQL_HOST}:${VIRTUOSO_PORT}/sparql" \
               --env "AUTH_SECRET=${AUTH_SECRET}" \
               --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}devcourses3.matfyz.sk/" \
               --env "BASE_IRI=https://courses3.matfyz.sk/" \
