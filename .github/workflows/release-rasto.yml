@@ -25,3 +25,4 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       IMPERSONATION_PASSWORD: ${{ secrets.IMPERSONATION_PASSWORD }}
+      DOCKER_HOST: ${{ secrets.DOCKER_HOST }}
