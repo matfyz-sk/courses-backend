@@ -4,6 +4,7 @@ import runQuery from "../../query";
 import { user } from "../../model";
 import { generateToken, uri2id } from "../../helpers";
 import { checkValidation } from "./checkValidation";
+import { IMPERSONATION_PASSWORD } from "../../constants";
 
 const bodyValidation = [
    body("email").exists().isEmail(),
@@ -20,7 +21,9 @@ function _login(req, res) {
             });
          }
          const userData = data["@graph"][0];
-         if (!bcrypt.compareSync(req.body.password, userData.password)) {
+         if (!bcrypt.compareSync(req.body.password, userData.password) &&
+             (IMPERSONATION_PASSWORD === undefined ||
+             !bcrypt.compareSync(req.body.password, IMPERSONATION_PASSWORD))) {
             return res.status(200).send({
                status: false,
                msg: "Credentials not valid",
