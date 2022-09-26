@@ -22,6 +22,23 @@ export const courseInstance = {
          patch: ["admin"],
          delete: ["admin"],
       },
+      // TODO use to list all the materials in the course's general info?
+      hasDocument: {
+         required: false,
+         multiple: true,
+         dataType: "node",
+         objectClass: "document",
+         // TODO permissions might need to change...
+         put: ["admin"],
+         patch: ["admin"],
+         delete: ["admin"],
+      },
+      fileExplorerRoot: {
+         required: false,
+         multiple: false,
+         dataType: "node",
+         objectClass: "folder",
+      },
       hasGrading: {
          required: false,
          multiple: true,
