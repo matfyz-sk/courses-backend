@@ -1,7 +1,7 @@
 import { userAnswer } from "./userAnswer";
 
 export const directAnswer = {
-   type: "directAnswer",
+   type: ["directAnswer"],
    subclassOf: userAnswer,
    props: {
       text: {

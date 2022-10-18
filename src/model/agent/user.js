@@ -1,7 +1,7 @@
 import { agent } from "./agent";
 
 export const user = {
-   type: "user",
+   type: ["user"],
    subclassOf: agent,
    create: ["register"],
    props: {

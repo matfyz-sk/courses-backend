@@ -1,7 +1,7 @@
 import { userAnswer } from "./userAnswer";
 
 export const orderedAnswer = {
-   type: "orderedAnswer",
+   type: ["orderedAnswer"],
    subclassOf: userAnswer,
    props: {
       position: {

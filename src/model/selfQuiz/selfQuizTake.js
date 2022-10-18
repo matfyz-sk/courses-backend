@@ -1,5 +1,5 @@
 export const selfQuizTake = {
-    type: "selfQuizTake",
+    type: ["selfQuizTake"],
     create: ["all"],
     props: {
         submittedDate: {

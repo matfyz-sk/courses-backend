@@ -1,7 +1,7 @@
 import { comment } from "./comment";
 
 export const codeComment = {
-   type: "codeComment",
+   type: ["codeComment"],
    subclassOf: comment,
    props: {
       commentedText: {

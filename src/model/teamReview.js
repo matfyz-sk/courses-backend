@@ -1,5 +1,5 @@
 export const teamReview = {
-   type: "teamReview",
+   type: ["teamReview"],
    courseInstance: "ofSubmission/ofAssignment/courseInstance",
    create: ["student"],
    show: ["reviewedStudent", "teacher", "creator"],

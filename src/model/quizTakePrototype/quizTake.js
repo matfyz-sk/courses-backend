@@ -1,5 +1,5 @@
 export const quizTake = {
-   type: "quizTake",
+   type: ["quizTake"],
    courseInstance: "quizAssignment/courseInstance",
    create: ["quizAssignment/assignedTo"],
    props: {

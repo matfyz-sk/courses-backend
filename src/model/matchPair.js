@@ -1,5 +1,5 @@
 export const matchPair = {
-   type: "matchPair",
+   type: ["matchPair"],
    courseInstance: "^hasAnswer/courseInstance",
    create: ["[matchPair]"],
    props: {

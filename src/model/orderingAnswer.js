@@ -1,5 +1,5 @@
 export const orderingAnswer = {
-   type: "orderingAnswer",
+   type: ["orderingAnswer"],
    courseInstance: "^hasAnswer/courseInstance",
    create: ["[orderingQuestion]"],
    props: {

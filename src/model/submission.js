@@ -1,5 +1,5 @@
 export const submission = {
-   type: "submission",
+   type: ["submission"],
    courseInstance: "ofAssignment/courseInstance",
    create: ["student"],
    change: ["teacher"],

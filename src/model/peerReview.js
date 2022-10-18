@@ -1,5 +1,5 @@
 export const peerReview = {
-   type: "peerReview",
+   type: ["peerReview"],
    courseInstance: "ofSubmission/ofAssignment/courseInstance",
    props: {
       hasQuestionAnswer: {

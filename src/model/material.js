@@ -1,5 +1,5 @@
 export const material = {
-   type: "material",
+   type: ["material"],
    props: {
       name: {
          required: true,

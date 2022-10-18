@@ -1,7 +1,7 @@
 import { session } from "./session";
 
 export const lecture = {
-   type: "lecture",
+   type: ["lecture"],
    subclassOf: session,
    props: {}
 };

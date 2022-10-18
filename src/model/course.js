@@ -1,5 +1,5 @@
 export const course = {
-   type: "course",
+   type: ["course"],
    create: ["superAdmin"],
    show: ["all"],
    props: {

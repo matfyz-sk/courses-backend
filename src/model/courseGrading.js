@@ -1,5 +1,5 @@
 export const courseGrading = {
-   type: "courseGrading",
+   type: ["courseGrading"],
    props: {
       grade: {
          required: false,

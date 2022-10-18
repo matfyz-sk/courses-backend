@@ -1,5 +1,5 @@
 export const quizTakePrototype = {
-   type: "quizTakePrototype",
+   type: ["quizTakePrototype"],
    courseInstance: "^hasQuizTakePrototype/courseInstance",
    create: ["[manualQuizAssignment]"],
    change: [],

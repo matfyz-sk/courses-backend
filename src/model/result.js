@@ -1,5 +1,5 @@
 export const result = {
-   type: "result",
+   type: ["result"],
    props: {
       courseInstance: {
          required: false,

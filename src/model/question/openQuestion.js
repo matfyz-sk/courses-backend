@@ -1,7 +1,7 @@
 import { question } from "./question";
 
 export const openQuestion = {
-   type: "openQuestion",
+   type: ["openQuestion"],
    subclassOf: question,
    props: {
       regexp: {

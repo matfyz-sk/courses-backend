@@ -1,7 +1,7 @@
 import { taskEvent } from "./taskEvent";
 
 export const assignmentPeriod = {
-   type: "assignmentPeriod",
+   type: ["assignmentPeriod"],
    subclassOf: taskEvent,
    props: {
       openTime: {
