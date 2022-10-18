@@ -1,8 +1,8 @@
-name: MW - Release workflow
+name: MW - Release workflow for documents by Rasto
 
 on: 
   push:
-    branches: [ master ]
+    branches: [ devcourses3 ]
     paths:
       - src/**
       - Dockerfile
@@ -12,10 +12,12 @@ on:
 
 jobs:
   release:
-    uses: matfyz-sk/courses-backend/.github/workflows/old-deploy.yml@master
+    uses: matfyz-sk/courses-backend/.github/workflows/old-deploy-rasto.yml@master
     with:
-      BRANCH: master
-      BASE_BACKEND_PORT: 3030
+      TAG: courses:rasto
+      CONTAINER: courses-rasto
+      BRANCH: devcourses3
+      BACKEND_PORT: 3020
       VIRTUOSO_PORT: 8890
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -24,4 +26,3 @@ jobs:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       IMPERSONATION_PASSWORD: ${{ secrets.IMPERSONATION_PASSWORD }}
       SPARQL_HOST: ${{ secrets.SPARQL_HOST }}
-

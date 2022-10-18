@@ -45,7 +45,7 @@ jobs:
         if: ${{ inputs.BRANCH == 'master'}}
         run: echo "GRAPH_IRI_PREFIX=" >> $GITHUB_ENV    
       - name: Set part of Virtuoso port
-        run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }})" >> $GITHUB_ENV
+        run: echo "PR_PORT_PART=$(printf "%03i" ${{ inputs.PR_NUMBER }} | tail -c 4)" >> $GITHUB_ENV
       - name: Calculate Virtuoso port
         run: echo "VIRTUOSO_PORT=$(expr ${{ inputs.BASE_VIRTUOSO_PORT }} + ${{ env.PR_PORT_PART }})" >> $GITHUB_ENV
       - name: Calculate backend port
@@ -75,5 +75,13 @@ jobs:
           script: |
             docker login --username ${DOCKER_USER} --password ${DOCKER_PASS}
             docker pull ricsitoth/${TAG}
-            docker run --detach --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" --env "AUTH_SECRET=${AUTH_SECRET}" --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" --env "BASE_IRI=https://courses3.matfyz.sk/" --name=${CONTAINER} --publish ${BACKEND_PORT}:3010 --restart=always ${TAG}
+            docker run --detach \
+              --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" \
+              --env "AUTH_SECRET=${AUTH_SECRET}" \
+              --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
+              --env "BASE_IRI=https://courses3.matfyz.sk/" \
+              --name=${CONTAINER} \
+              --publish ${BACKEND_PORT}:3010 \
+              --restart=unless-stopped \
+              ${TAG}
 

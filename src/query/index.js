@@ -1,5 +1,5 @@
 import lib from "sparql-transformer";
-import {DC_TERMS_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
+import { ONTOLOGY_IRI, SPARQL_ENDPOINT, DC_TERMS_IRI, GRAPH_IRI } from "../constants";
 import {
     className,
     classPrefix,
@@ -23,13 +23,12 @@ const prefixes = {
 
 function generateQuery(resource, filters, user) {
     const query = {
-        "@graph": {},
         $from: GRAPH_IRI,
+        "@graph": {},
         $where: [],
         $filter: [],
         $prefixes: prefixes,
     };
-
     const allProps = getAllProps(resource);
     allProps["createdBy"] = {
         required: true,

@@ -40,6 +40,12 @@ export const event = {
          dataType: "node",
          objectClass: "material",
       },
+      documentReference: {
+         required: false,
+         multiple: true,
+         dataType: "node",
+         objectClass: "documentReference",
+      },
       covers: {
          required: false,
          multiple: true,

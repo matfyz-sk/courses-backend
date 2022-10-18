@@ -3,4 +3,9 @@ node_modules
 dist
 run.sh
 remove-none.sh
+
+
+
 .idea
+.env*
+

@@ -1,22 +1,18 @@
-name: MW - Release workflow
+name: MW - Building and deploying backend and database when PR is created
 
 on: 
-  push:
-    branches: [ master ]
-    paths:
-      - src/**
-      - Dockerfile
-      - package.json
-      - package.json.lock
+  pull_request:
+    types: [opened, reopened, edited, synchronized]
   workflow_dispatch:
 
 jobs:
-  release:
+  deploy-backend:
     uses: matfyz-sk/courses-backend/.github/workflows/old-deploy.yml@master
     with:
-      BRANCH: master
-      BASE_BACKEND_PORT: 3030
+      BRANCH: ${GITHUB_HEAD_REF}
+      BASE_BACKEND_PORT: 6000
       VIRTUOSO_PORT: 8890
+      PR_NUMBER: ${{ github.event.number }}
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -24,4 +20,3 @@ jobs:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       IMPERSONATION_PASSWORD: ${{ secrets.IMPERSONATION_PASSWORD }}
       SPARQL_HOST: ${{ secrets.SPARQL_HOST }}
-
