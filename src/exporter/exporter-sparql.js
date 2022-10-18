@@ -1,6 +1,8 @@
 import { GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT } from "../constants";
 import { Client, Data, Node, Triple } from "virtuoso-sparql-client";
 import { Exporter, PREFIXES } from './exporter';
+import chalk from "chalk";
+import {dateTime} from "../helpers";
 
 
 export class ExporterSparql extends Exporter {
@@ -27,8 +29,10 @@ export class ExporterSparql extends Exporter {
         try {
             await client.store(true);
         } catch(e) {
-            console.log(e);
+            console.log(chalk.red(`[${ dateTime() }]`), `Export of the ontology was not successful.`);
+            return;
         }
+        console.log(chalk.green(`[${ dateTime() }]`), `Export of the ontology finished successfully.`);
     }
 
     async superAdminExists(client) {
