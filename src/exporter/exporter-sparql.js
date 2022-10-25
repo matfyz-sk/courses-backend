@@ -29,6 +29,7 @@ export class ExporterSparql extends Exporter {
         try {
             await client.store(true);
         } catch(e) {
+            console.log(e);
             console.log(chalk.red(`[${ dateTime() }]`), `Export of the ontology was not successful.`);
             return;
         }
