@@ -1,4 +1,4 @@
-import lib from "sparql-transformer";
+import sparqlTransformer from "sparql-transformer";
 import { ONTOLOGY_IRI, SPARQL_ENDPOINT, DC_TERMS_IRI, GRAPH_IRI } from "../constants";
 import {
     className,
@@ -88,7 +88,7 @@ function generateQuery(resource, filters, user) {
                     }} . `;
                 });
 
-                var authWhere = resolveAuthRules(objectVar, joinResource, joinResourceProps, user);
+                const authWhere = resolveAuthRules(objectVar, joinResource, joinResourceProps, user);
                 if (authWhere.length > 0) {
                     where += authWhere + " . ";
                 }
@@ -234,7 +234,7 @@ function nodesToArray(obj) {
 }
 
 async function run(query) {
-    const data = await lib.default(query, options);
+    const data = await sparqlTransformer.default(query, options);
     nodesToArray(data["@graph"]);
     return data;
 }
