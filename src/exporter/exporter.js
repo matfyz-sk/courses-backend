@@ -52,6 +52,8 @@ export class Exporter {
     getCommonOntology() {
         let ontologyArray = [];
 
+        const properties = new Set();
+
         Object.values(models).map((model) => {
             let className;
             if (model.type) {
@@ -71,6 +73,9 @@ export class Exporter {
                 Object.entries(model.props).map(([propertyName, propertyObject]) => {
                     ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className));
                     if (propertyObject) {
+
+                        properties.add(propertyName);
+
                         if (propertyObject.objectClass) {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
                         }
@@ -81,6 +86,10 @@ export class Exporter {
                 });
             }
         });
+
+        for (const item of properties.values()) {
+            ontologyArray.push(this.getTriple(PREFIXES.courses, item, PREFIXES.rdf, "type", PREFIXES.rdf, "Property"));
+        }
 
         return ontologyArray;
     }

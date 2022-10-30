@@ -1,7 +1,7 @@
 import { document } from "./document";
 
 export const internalDocument = {
-    type: "internalDocument",
+    type: ["internalDocument"],
     subclassOf: document,
     props: {
         mimeType: {

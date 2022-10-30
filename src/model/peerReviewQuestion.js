@@ -1,5 +1,5 @@
 export const peerReviewQuestion = {
-   type: "peerReviewQuestion",
+   type: ["peerReviewQuestion"],
    props: {
       question: {
          required: true,

@@ -1,7 +1,7 @@
 import { fsObject } from "./fsObject";
 
 export const document = {
-    type: "document",
+    type: ["document"],
     subclassOf: fsObject,
     subclasses: ['internalDocument', 'externalDocument', 'file'],
     create: ["all"],

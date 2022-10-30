@@ -1,7 +1,7 @@
 import { fsObject } from "./fsObject";
 
 export const folder = {
-    type: "folder",
+    type: ["folder"],
     subclassOf: fsObject,
     create: ["all"],
     show: ["all"],

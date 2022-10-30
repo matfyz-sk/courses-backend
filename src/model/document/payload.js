@@ -1,5 +1,5 @@
 export const payload = {
-    type: "payload",
+    type: ["payload"],
     create: ["all"],
     show: ["all"],
     props: {

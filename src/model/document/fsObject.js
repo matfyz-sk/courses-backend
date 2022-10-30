@@ -1,5 +1,5 @@
 export const fsObject = {
-    type: "fsObject",
+    type: ["fsObject"],
     subclasses: ['folder', 'document'],
     create: ["all"],
     show: ["all"],

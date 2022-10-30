@@ -1,7 +1,7 @@
 import { document } from "./document";
 
 export const externalDocument = {
-    type: "externalDocument",
+    type: ["externalDocument"],
     subclassOf: document,
     props: {
         uri: {  

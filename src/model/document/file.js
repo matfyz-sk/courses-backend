@@ -1,7 +1,7 @@
 import { document } from "./document";
 
 export const file = {
-    type: "file",
+    type: ["file"],
     subclassOf: document,
     props: {
         filename: {

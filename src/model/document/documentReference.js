@@ -1,6 +1,6 @@
 
 export const documentReference = {
-    type: "documentReference",
+    type: ["documentReference"],
     create: ["all"],
     show: ["all"],
     props: {
