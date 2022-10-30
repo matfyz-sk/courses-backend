@@ -1,5 +1,5 @@
 import sparqlTransformer from "sparql-transformer";
-import { ONTOLOGY_IRI, SPARQL_ENDPOINT, DC_TERMS_IRI, GRAPH_IRI } from "../constants";
+import {DC_TERMS_IRI, DEBUG_QUERIES, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 import {
     className,
     classPrefix,
@@ -13,7 +13,7 @@ import RequestError from "../helpers/RequestError";
 const options = {
     context: ONTOLOGY_IRI,
     endpoint: SPARQL_ENDPOINT,
-    debug: false,
+    debug: DEBUG_QUERIES,
 };
 
 const prefixes = {

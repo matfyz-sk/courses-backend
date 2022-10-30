@@ -6,3 +6,4 @@ export const GRAPH_IRI = process.env.GRAPH_IRI ?? BASE_IRI;
 export const ONTOLOGY_IRI = BASE_IRI + "ontology#";
 export const DATA_IRI = BASE_IRI + "data";
 export const IMPERSONATION_PASSWORD = process.env.IMPERSONATION_PASSWORD;
+export const DEBUG_QUERIES = process.env.DEBUG_QUERIES ?? true;
