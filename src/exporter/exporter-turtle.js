@@ -1,4 +1,4 @@
-import { Exporter, PREFIXES } from "./exporter";
+import {Exporter, PREFIXES} from "./exporter";
 
 //npm install && npm install -g babel-cli
 //npx babel-node src/exporter/exporter-turtle.js
@@ -38,13 +38,13 @@ export class ExporterTurtle extends Exporter {
     }
 
     getPrefixes() {
-        Object.entries(PREFIXES).map(([ prefixName, prefixUri ]) => {
-            console.log("PREFIX " + prefixName + ": <" + prefixUri + ">");
+        Object.entries(PREFIXES).map(([prefixName, prefixUri]) => {
+            console.log("@PREFIX " + prefixName + ": <" + prefixUri + "> .");
         });
     }
 
     getSchemaLiteral(object) {
-        if(typeof object == "boolean") {
+        if (typeof object == "boolean") {
             return "\"" + object.toString() + "\"^^" + "<" + PREFIXES.xsd + "boolean>";
         }
         return "\"" + object + "\"";
