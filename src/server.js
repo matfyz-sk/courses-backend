@@ -23,14 +23,22 @@ app.use(errorHandler);
 
 app.listen(port, () => {
         console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${port}`);
-        let exporterSparql = new ExporterSparql();
-        exporterSparql.exportOntology();
+        const exporterSparql = new ExporterSparql();
+        let ultraGraphQLProcess;
 
-        const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.4-exe.jar --config ./src/ultragraphql/config.json';
-        exec(ultraGraphQLCommand, function (error, stdout, stderr) {
-            console.log(error);
-            console.log(stdout);
-            console.log(stderr);
+        exporterSparql.exportOntology().then(() => {
+            console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
+            const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.4-exe.jar --config ./src/ultragraphql/config.json';
+            ultraGraphQLProcess = exec(ultraGraphQLCommand);
+            ultraGraphQLProcess.stdout.on('data', function (data) {
+                console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL ${data}`);
+            });
+            ultraGraphQLProcess.stdin.on('data', function (data) {
+                console.log(chalk.yellow(`[${dateTime()}]`), `UltraGraphQL ${data}`);
+            });
+            ultraGraphQLProcess.stderr.on('data', function (data) {
+                console.log(chalk.red(`[${dateTime()}]`), `UltraGraphQL ${data}`);
+            });
         });
     }
 )
