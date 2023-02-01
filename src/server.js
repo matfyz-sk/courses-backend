@@ -14,6 +14,7 @@ import proxy from 'express-http-proxy';
 
 const app = express();
 const port = 3010;
+const ultraGraphQLPort = 8080; //This port must correspond to the port in config.json file for ultraGraphQL
 
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true}));
 app.use(bodyParser.json({limit: "50mb"}));
@@ -39,11 +40,11 @@ app.listen(port, () => {
                 console.log(chalk.red(`[${dateTime()}]`), `UltraGraphQL ${data}`);
             });
 
-            const graphqlApiProxy = proxy('http://localhost:8080/', {
+            const graphqlApiProxy = proxy('http://localhost:' + ultraGraphQLPort + '/', {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
 
-            const graphqlApiProxyInterface = proxy('http://localhost:8080/graphiql', {
+            const graphqlApiProxyInterface = proxy('http://localhost:' + ultraGraphQLPort + '/graphiql', {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
             app.use("/graphql", graphqlApiProxy);
