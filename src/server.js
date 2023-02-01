@@ -9,6 +9,8 @@ import {dateTime} from "./helpers";
 import {logger} from "./middleware/logger";
 import {ExporterSparql} from "./exporter/exporter-sparql";
 import {exec} from 'child_process';
+import url from 'url';
+import proxy from 'express-http-proxy';
 
 const app = express();
 const port = 3010;
@@ -23,13 +25,10 @@ app.use(errorHandler);
 
 app.listen(port, () => {
         console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${port}`);
-        const exporterSparql = new ExporterSparql();
-        let ultraGraphQLProcess;
-
-        exporterSparql.exportOntology().then(() => {
+        new ExporterSparql().exportOntology().then(() => {
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
             const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.4-exe.jar --config ./src/ultragraphql/config.json';
-            ultraGraphQLProcess = exec(ultraGraphQLCommand);
+            const ultraGraphQLProcess = exec(ultraGraphQLCommand);
             ultraGraphQLProcess.stdout.on('data', function (data) {
                 console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL ${data}`);
             });
@@ -39,6 +38,16 @@ app.listen(port, () => {
             ultraGraphQLProcess.stderr.on('data', function (data) {
                 console.log(chalk.red(`[${dateTime()}]`), `UltraGraphQL ${data}`);
             });
+
+            const graphqlApiProxy = proxy('http://localhost:8080/', {
+                proxyReqPathResolver: req => url.parse(req.baseUrl).path
+            });
+
+            const graphqlApiProxyInterface = proxy('http://localhost:8080/graphiql', {
+                proxyReqPathResolver: req => url.parse(req.baseUrl).path
+            });
+            app.use("/graphql", graphqlApiProxy);
+            app.use("/graphiql", graphqlApiProxyInterface);
         });
     }
 )
