@@ -11,22 +11,21 @@ const GITHUB_CLIENT_SECRET = "b0cb4f40f0065a50f5ab671089de7208cf592614";
 
 export async function githubLogin(req, res) {
     const code = req.query.code;
-    var access_token = null;
 
-    var resp = await axios.post(GITHUB_GET_TOKEN_URL, {
+    let resp = await axios.post(GITHUB_GET_TOKEN_URL, {
         client_id: GITHUB_CLIENT_ID,
         client_secret: GITHUB_CLIENT_SECRET,
         code,
     });
 
-    access_token = resp.data.split("&")[0].split("=")[1];
+    const access_token = resp.data.split("&")[0].split("=")[1];
 
     resp = await axios.get(`${GITHUB_GET_USER_URL}?access_token=${access_token}`);
 
     const email = resp.email;
     const githubId = resp.id;
 
-    var userData;
+    let userData;
     if (!email) {
         userData = await runQuery(user, {githubId});
     } else {

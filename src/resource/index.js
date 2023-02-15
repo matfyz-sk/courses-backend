@@ -38,21 +38,21 @@ export default class Resource {
     }
 
     async _getResourceCourseInstance() {
-        if (this.resource.type == "courseInstance") {
+        if (this.resource.type === "courseInstance") {
             return this.subject.iri;
         }
         if (this.props.hasOwnProperty("courseInstance")) {
             return this.props.courseInstance.value.obj.iri;
         }
-        var r = this.resource.subclassOf;
+        let r = this.resource.subclassOf;
         while (r) {
             if (r.hasOwnProperty("courseInstance")) {
-                var path = r.courseInstance;
-                var propName = path.substring(0, path.indexOf("/"));
+                let path = r.courseInstance;
+                let propName = path.substring(0, path.indexOf("/"));
 
-                var subject = `<${this.props[propName].value.obj.iri}>`;
-                var predicate = path.substring(path.indexOf("/") + 1);
-                var object = `?courseInstanceURI`;
+                let subject = `<${this.props[propName].value.obj.iri}>`;
+                let predicate = path.substring(path.indexOf("/") + 1);
+                let object = `?courseInstanceURI`;
 
                 const data = await this.db.query(`
                SELECT ${object} WHERE {
@@ -86,8 +86,8 @@ export default class Resource {
         if (this.courseInstance === 0) {
             await this._getResourceCourseInstance();
         }
-        var res;
-        var authorized = false;
+        let res;
+        let authorized = false;
         for (let rule of createRules) {
             res = await this._resolveAuthRule(rule);
             if (res) {
@@ -101,7 +101,7 @@ export default class Resource {
                 401
             );
         }
-        for (var nestedInstance of this.nested) {
+        for (let nestedInstance of this.nested) {
             await nestedInstance.authorizeCreate();
         }
         return true;
@@ -111,7 +111,7 @@ export default class Resource {
         if (this.user.isSuperAdmin) {
             return true;
         }
-        var changeRules;
+        let changeRules;
         if (this.props[propName].multiple) {
             if (this.operation === "PUT") {
                 changeRules = this.props[propName].put;
@@ -127,14 +127,14 @@ export default class Resource {
                 changeRules = this.props[propName].delete;
             }
         }
-        if (changeRules == undefined || changeRules.length == 0) {
+        if (changeRules === undefined || changeRules.length === 0) {
             changeRules = IMPLICIT_CHANGE;
         }
         if (this.courseInstance === 0) {
             this.courseInstance = await this._getResourceCourseInstance();
         }
-        var res;
-        var authorized = false;
+        let res;
+        let authorized = false;
         for (let rule of changeRules) {
             res = await this._resolveAuthRule(rule);
             if (res) {
@@ -202,7 +202,7 @@ export default class Resource {
         }
         if (!value) {
             // delete all values of predicate
-            for (var triple of this.props[predicateName].value) {
+            for (let triple of this.props[predicateName].value) {
                 triple.setOperation(Triple.REMOVE);
             }
             return;
@@ -210,8 +210,8 @@ export default class Resource {
         if (!Array.isArray(value)) {
             value = [value];
         }
-        for (var v of value) {
-            for (var triple of this.props[predicateName].value) {
+        for (let v of value) {
+            for (let triple of this.props[predicateName].value) {
                 if (
                     (triple.obj.hasOwnProperty("iri") && triple.obj.iri == v) ||
                     (triple.obj.hasOwnProperty("value") && triple.obj.value == v)
@@ -282,7 +282,7 @@ export default class Resource {
         if (this.auth.hasOwnProperty(rule)) {
             return this.auth[rule];
         }
-        var data;
+        let data;
         if (rule === "student") {
             if (this.courseInstance == null) {
                 data = await this.db.query(
@@ -340,12 +340,12 @@ export default class Resource {
             }
             return true;
         }
-        var propName = rule.substring(0, rule.indexOf("/"));
-        var subject = `<${this.props[propName].value.obj.iri}>`;
-        var predicate = rule.substring(rule.indexOf("/") + 1);
+        let propName = rule.substring(0, rule.indexOf("/"));
+        let subject = `<${this.props[propName].value.obj.iri}>`;
+        let predicate = rule.substring(rule.indexOf("/") + 1);
         const regex = /([a-zA-Z]+)/gm;
         predicate = predicate.replace(regex, "courses:$1");
-        var object = `<${this.user.userURI}>`;
+        let object = `<${this.user.userURI}>`;
         data = await this.db.query(`ASK { ${subject} ${predicate} ${object}}`);
         if (!this.auth.hasOwnProperty(rule)) {
             this.auth[rule] = data.boolean;
@@ -510,9 +510,9 @@ export default class Resource {
     }
 
     _prepareData(data) {
-        var actualData = {};
-        for (var row of data) {
-            var predicate = row.p.value;
+        let actualData = {};
+        for (let row of data) {
+            let predicate = row.p.value;
             const object = row.o.value;
             const lastSharpIndex = predicate.lastIndexOf("#");
             const lastDashIndex = predicate.lastIndexOf("/");

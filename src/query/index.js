@@ -147,12 +147,12 @@ function resolveAuthRules(id, resource, props, user) {
     if (user !== undefined && user.isSuperAdmin) {
         return "";
     }
-    var rules = getResourceShowRules(resource);
-    var courseInstance = props.courseInstance
+    let rules = getResourceShowRules(resource);
+    let courseInstance = props.courseInstance
         ? "courseInstance"
         : getResourceCourseInstance(resource);
 
-    var predicate = "";
+    let predicate = "";
 
     if (courseInstance == null) {
         return "";
@@ -210,12 +210,12 @@ function resolveAuthRules(id, resource, props, user) {
 
 function nodesToArray(obj) {
     if (obj.constructor.name === "Array") {
-        for (var val of obj) {
+        for (let val of obj) {
             nodesToArray(val);
         }
         return;
     }
-    for (var predicateName in obj) {
+    for (let predicateName in obj) {
         if (obj.hasOwnProperty(predicateName)) {
             if (obj[predicateName].constructor.name !== "Object") {
                 continue;
@@ -240,13 +240,13 @@ async function run(query) {
 }
 
 async function dataChain(query, propName) {
-    var res = await run({...query});
+    let res = await run({...query});
 
     if (res["@graph"].length !== 1) {
         throw new RequestError("Bad length");
     }
 
-    var inst = res["@graph"][0];
+    let inst = res["@graph"][0];
 
     while (inst[propName] !== undefined && inst[propName].length === 1) {
         const nextURI = inst[propName][0]["@id"];
@@ -255,7 +255,7 @@ async function dataChain(query, propName) {
             arr[index] = item.replace(`<${inst["@id"]}>`, `<${nextURI}>`);
         });
 
-        var data = await run({...query});
+        let data = await run({...query});
 
         res["@graph"].push(data["@graph"][0]);
         inst = data["@graph"][0];
