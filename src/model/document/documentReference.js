@@ -1,10 +1,9 @@
-
 export const documentReference = {
     type: ["documentReference"],
     create: ["all"],
     show: ["all"],
     props: {
-        hasDocument: {  
+        hasDocument: {
             required: true,
             multiple: false,
             dataType: 'node',

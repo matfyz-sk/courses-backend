@@ -1,4 +1,4 @@
-import { document } from "./document";
+import {document} from "./document";
 
 export const file = {
     type: ["file"],
@@ -9,7 +9,7 @@ export const file = {
             multiple: false,
             dataType: 'string',
         },
-        mimeType: {  
+        mimeType: {
             required: true,
             multiple: false,
             dataType: 'string',

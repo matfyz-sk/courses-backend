@@ -1,10 +1,4 @@
-import {
-   createResource,
-   modifyResource,
-   getResource,
-   tokenVerify,
-   optionalTokenVerify,
-} from "../middleware";
+import {createResource, getResource, modifyResource, optionalTokenVerify, tokenVerify,} from "../middleware";
 import express from "express";
 
 const dataRouter = express.Router();

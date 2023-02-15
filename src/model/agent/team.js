@@ -1,21 +1,21 @@
-import { agent } from "./agent";
+import {agent} from "./agent";
 
 export const team = {
-   type: ["team"],
-   subclassOf: agent,
-   create: ["teacher", "student"],
-   change: ["teacher"],
-   props: {
-      name: {
-         required: true,
-         multiple: false,
-         dataType: "string",
-      },
-      courseInstance: {
-         required: true,
-         multiple: false,
-         dataType: "node",
-         objectClass: "courseInstance",
-      },
-   },
+    type: ["team"],
+    subclassOf: agent,
+    create: ["teacher", "student"],
+    change: ["teacher"],
+    props: {
+        name: {
+            required: true,
+            multiple: false,
+            dataType: "string",
+        },
+        courseInstance: {
+            required: true,
+            multiple: false,
+            dataType: "node",
+            objectClass: "courseInstance",
+        },
+    },
 };

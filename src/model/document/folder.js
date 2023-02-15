@@ -1,4 +1,4 @@
-import { fsObject } from "./fsObject";
+import {fsObject} from "./fsObject";
 
 export const folder = {
     type: ["folder"],
@@ -11,7 +11,7 @@ export const folder = {
             multiple: true,
             dataType: "node",
             objectClass: "fsObject",
-        },  
+        },
         parent: {
             required: false,
             multiple: false,

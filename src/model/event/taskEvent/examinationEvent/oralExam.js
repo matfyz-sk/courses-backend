@@ -1,7 +1,7 @@
-import { examinationEvent } from "./examinationEvent";
+import {examinationEvent} from "./examinationEvent";
 
 export const oralExam = {
-   type: ["oralExam"],
-   subclassOf: examinationEvent,
-   props: {}
+    type: ["oralExam"],
+    subclassOf: examinationEvent,
+    props: {}
 };

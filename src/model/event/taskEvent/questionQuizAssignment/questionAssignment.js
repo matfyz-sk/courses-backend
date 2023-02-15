@@ -1,7 +1,7 @@
-import { questionQuizAssignment } from "./questionQuizAssignment";
+import {questionQuizAssignment} from "./questionQuizAssignment";
 
 export const questionAssignment = {
-   type: ["questionAssignment"],
-   subclassOf: questionQuizAssignment,
-   props: {},
+    type: ["questionAssignment"],
+    subclassOf: questionQuizAssignment,
+    props: {},
 };

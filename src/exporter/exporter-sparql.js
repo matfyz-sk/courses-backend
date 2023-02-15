@@ -1,6 +1,6 @@
-import { GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT } from "../constants";
-import { Client, Data, Node, Triple } from "virtuoso-sparql-client";
-import { Exporter, PREFIXES } from './exporter';
+import {GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
+import {Client, Data, Node, Triple} from "virtuoso-sparql-client";
+import {Exporter, PREFIXES} from './exporter';
 import chalk from "chalk";
 import {dateTime} from "../helpers";
 
@@ -21,26 +21,26 @@ export class ExporterSparql extends Exporter {
         store.bulk(commonOntology);
 
         const superAdminExists = await this.superAdminExists(client);
-        if(!superAdminExists) {
+        if (!superAdminExists) {
             const userOntology = this.getUserOntology();
             store.bulk(userOntology);
         }
 
         try {
             await client.store(true);
-        } catch(e) {
+        } catch (e) {
             console.log(e);
-            console.log(chalk.red(`[${ dateTime() }]`), `Export of the ontology was not successful.`);
+            console.log(chalk.red(`[${dateTime()}]`), `Export of the ontology was not successful.`);
             return;
         }
-        console.log(chalk.green(`[${ dateTime() }]`), `Export of the ontology finished successfully.`);
+        console.log(chalk.green(`[${dateTime()}]`), `Export of the ontology finished successfully.`);
     }
 
     async superAdminExists(client) {
         try {
             const r = await client.query("SELECT ?superAdmin WHERE {?superAdmin <" + ONTOLOGY_IRI + "isSuperAdmin> true}");
             return r && r.results && r.results.bindings && r.results.bindings.length > 0;
-        } catch(e) {
+        } catch (e) {
             console.log(e);
             return false;
         }
@@ -63,7 +63,7 @@ export class ExporterSparql extends Exporter {
     }
 
     getSchemaLiteral(object) {
-        if(typeof object == "boolean") {
+        if (typeof object == "boolean") {
             return new Data(object, 'xsd:boolean');
         }
         return new Data(object);

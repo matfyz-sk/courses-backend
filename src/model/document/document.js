@@ -1,4 +1,4 @@
-import { fsObject } from "./fsObject";
+import {fsObject} from "./fsObject";
 
 export const document = {
     type: ["document"],
