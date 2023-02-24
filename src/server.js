@@ -11,6 +11,7 @@ import {ExporterSparql} from "./exporter/exporter-sparql";
 import {exec} from 'child_process';
 import url from 'url';
 import proxy from 'express-http-proxy';
+import {JsonExporter} from "./exporter/json-exporter";
 
 const app = express();
 const port = 3010;
@@ -27,6 +28,11 @@ app.use(errorHandler);
 app.listen(port, () => {
         console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${port}`);
         new ExporterSparql().exportOntology().then(() => {
+
+            console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
+            console.log(new JsonExporter().getAllModelsToJson());
+            console.log(chalk.green(`[${dateTime()}]`), `All models converted to JSON.`);
+
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
             const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.4-exe.jar --config ./src/ultragraphql/config.json';
             const ultraGraphQLProcess = exec(ultraGraphQLCommand);
