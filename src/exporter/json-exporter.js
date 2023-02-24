@@ -12,7 +12,7 @@ export class JsonExporter {
     getAllModelsToJson() {
         return Object.values(models).map((model) => {
             return JSON.stringify(model, this.replacer);
-        })
+        }).join(',');
     }
 
 }
