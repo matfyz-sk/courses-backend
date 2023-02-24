@@ -10,9 +10,9 @@ export class JsonExporter {
     }
 
     getAllModelsToJson() {
-        return Object.values(models).map((model) => {
-            return JSON.stringify(model, this.replacer);
-        }).join(',');
+        return "{" + Object.values(models).map((model) => {
+            return "\"" + model.type[0] + "\":" + JSON.stringify(model, this.replacer);
+        }).join(',') + "}";
     }
 
 }
