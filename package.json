@@ -3,7 +3,7 @@
    "version": "1.1.0",
    "description": "Backend of web application",
    "nodemonConfig": {
-      "ignore": ["./src/ultragraphql/model.json"]
+      "ignore": ["./src/ultragraphql/model.json", "./src/ultragraphql/config.json"]
    },
    "repository": {
       "type": "git",

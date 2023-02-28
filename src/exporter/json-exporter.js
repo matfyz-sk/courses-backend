@@ -11,7 +11,7 @@ export class JsonExporter {
 
     getAllModelsToJson() {
         return "{" + Object.values(models).map((model) => {
-            return "\"" + model.type[0] + "\":" + JSON.stringify(model, this.replacer);
+            return "\"" + model.type[0] + "\":" + JSON.stringify(model, this.replacer, "\t");
         }).join(',') + "}";
     }
 

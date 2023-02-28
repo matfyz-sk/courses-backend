@@ -12,6 +12,7 @@ import {exec} from 'child_process';
 import url from 'url';
 import proxy from 'express-http-proxy';
 import {JsonExporter} from "./exporter/json-exporter";
+import {UltraGraphQLExporter} from "./exporter/ugql-exporter";
 
 const fs = require('fs');
 
@@ -31,12 +32,18 @@ app.listen(port, () => {
         console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${port}`);
         new ExporterSparql().exportOntology().then(() => {
 
-            console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
-            const modelJson = new JsonExporter().getAllModelsToJson()
-            console.log(modelJson);
+            console.log(chalk.green(`[${dateTime()}]`), `Creating UltraGraphQL config.`);
+            const ultraGraphQLConfigStringJson = new UltraGraphQLExporter().getConfiguration();
+            fs.writeFileSync('./src/ultragraphql/config.json', ultraGraphQLConfigStringJson, {flag: 'w'});
+            console.log(chalk.green(`[${dateTime()}]`), ultraGraphQLConfigStringJson);
+            console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL config was created.`);
 
-            fs.writeFileSync('./src/ultragraphql/model.json', modelJson, {flag: 'a+'});
+            console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
+            const modelJson = new JsonExporter().getAllModelsToJson();
+            console.log(chalk.green(`[${dateTime()}]`), modelJson);
+            fs.writeFileSync('./src/ultragraphql/model.json', modelJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), `All models converted to JSON.`);
+
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
             const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.5-exe.jar --config ' + ultraGraphQLConfig;
             const ultraGraphQLProcess = exec(ultraGraphQLCommand);
@@ -52,7 +59,7 @@ app.listen(port, () => {
 
             const configFileParsed = JSON.parse(fs.readFileSync(ultraGraphQLConfig));
 
-            if(!configFileParsed?.server?.port || !configFileParsed?.server?.graphql || !configFileParsed?.server?.graphiql){
+            if (!configFileParsed?.server?.port || !configFileParsed?.server?.graphql || !configFileParsed?.server?.graphiql) {
                 throw new Error("Cannot start UltraGraphQL endpoint. UltraGraphQL server configuration is missing. Please specify the UltraGraphQL port, graphql and graphiql url.");
             }
 
