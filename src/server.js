@@ -13,7 +13,6 @@ import url from 'url';
 import proxy from 'express-http-proxy';
 import {JsonExporter} from "./exporter/json-exporter";
 import {UltraGraphQLExporter} from "./exporter/ugql-exporter";
-import {BACKEND_PORT} from "./constants";
 
 const fs = require('fs');
 
@@ -66,11 +65,11 @@ app.listen(port, () => {
 
             const ultraGraphQLServerConfig = configFileParsed.server;
 
-            const graphqlApiProxy = proxy(BACKEND_PORT + ultraGraphQLServerConfig.port + '/', {
+            const graphqlApiProxy = proxy('http://localhost:' + ultraGraphQLServerConfig.port + '/', {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
 
-            const graphqlApiProxyInterface = proxy(BACKEND_PORT + ultraGraphQLServerConfig.port + ultraGraphQLServerConfig.graphql, {
+            const graphqlApiProxyInterface = proxy('http://localhost:' + ultraGraphQLServerConfig.port + ultraGraphQLServerConfig.graphql, {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
             app.use(ultraGraphQLServerConfig.graphql, graphqlApiProxy);
