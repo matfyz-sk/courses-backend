@@ -1,3 +1,5 @@
+import {GRAPH_IRI, SPARQL_ENDPOINT} from "../constants";
+
 export class UltraGraphQLExporter {
 
     getConfiguration() {
@@ -16,8 +18,8 @@ export class UltraGraphQLExporter {
                 {
                     "id": "matfyz-graphql",
                     "type": "SPARQLEndpointService",
-                    "url": process.env.SPARQL_ENDPOINT ?? "http://127.0.0.1:8890/sparql/",
-                    "graph": process.env.GRAPH_IRI ?? "http://www.courses.matfyz.sk/",
+                    "url": SPARQL_ENDPOINT,
+                    "graph": GRAPH_IRI,
                     "user": "SPARQL",
                     "password": "123456" //TODO adjust password
                 }
