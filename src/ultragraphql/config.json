@@ -13,7 +13,7 @@
 		{
 			"id": "matfyz-graphql",
 			"type": "SPARQLEndpointService",
-			"url": "http://127.0.0.1:8890/sparql/",
+			"url": "http://matfyz.sk:8890/sparql",
 			"graph": "http://www.courses.matfyz.sk/",
 			"user": "SPARQL",
 			"password": "123456"
