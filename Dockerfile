@@ -1,4 +1,5 @@
 FROM node:latest
+FROM openjdk:8-jdk-alpine
 
 WORKDIR /usr/src/courses
 
