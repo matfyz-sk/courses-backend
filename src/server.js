@@ -32,18 +32,21 @@ app.listen(port, () => {
         console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${port}`);
         new ExporterSparql().exportOntology().then(() => {
 
+            /* UltraGraphQLConfiguration */
             console.log(chalk.green(`[${dateTime()}]`), `Creating UltraGraphQL config.`);
             const ultraGraphQLConfigStringJson = new UltraGraphQLExporter().getConfiguration();
             fs.writeFileSync('./src/ultragraphql/config.json', ultraGraphQLConfigStringJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), ultraGraphQLConfigStringJson);
             console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL config was created.`);
 
+            /* Converting backend models to json */
             console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
             const modelJson = new JsonExporter().getAllModelsToJson();
             console.log(chalk.green(`[${dateTime()}]`), modelJson);
             fs.writeFileSync('./src/ultragraphql/model.json', modelJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), `All models converted to JSON.`);
 
+            /* Start UltraGraphQL */
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
             const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.5-exe.jar --config ' + ultraGraphQLConfig;
             const ultraGraphQLProcess = exec(ultraGraphQLCommand);
@@ -65,11 +68,12 @@ app.listen(port, () => {
 
             const ultraGraphQLServerConfig = configFileParsed.server;
 
-            const graphqlApiProxy = proxy('http://localhost:' + ultraGraphQLServerConfig.port + '/', {
+            /* Setting UltraGraphQL proxies */
+            const graphqlApiProxy = proxy('127.0.0.1:' + ultraGraphQLServerConfig.port + '/', {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
 
-            const graphqlApiProxyInterface = proxy('http://localhost:' + ultraGraphQLServerConfig.port + ultraGraphQLServerConfig.graphql, {
+            const graphqlApiProxyInterface = proxy('127.0.0.1:' + ultraGraphQLServerConfig.port + ultraGraphQLServerConfig.graphql, {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
             app.use(ultraGraphQLServerConfig.graphql, graphqlApiProxy);
