@@ -10,7 +10,7 @@ export class UltraGraphQLExporter {
             "mutationService": "matfyz-graphql",
             "modelJson": "./src/ultragraphql/model.json",
             "server": {
-                "port": 8543,
+                "port": 8080,
                 "graphql": "/graphql",
                 "graphiql": "/graphiql"
             },
