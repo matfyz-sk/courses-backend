@@ -1,4 +1,4 @@
-import {GRAPH_IRI, SPARQL_ENDPOINT} from "../constants";
+import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 
 export class UltraGraphQLExporter {
 
@@ -20,13 +20,12 @@ export class UltraGraphQLExporter {
                     "type": "SPARQLEndpointService",
                     "url": SPARQL_ENDPOINT,
                     "graph": GRAPH_IRI,
-                    "user": "SPARQL",
-                    "password": "123456" //TODO adjust password
+                    "user": "SPARQL"
                 }
             ],
             "prefixes": {
-                "courses-data": "http://www.courses.matfyz.sk/data",
-                "courses": "http://www.courses.matfyz.sk/ontology#",
+                "courses-data": DATA_IRI,
+                "courses": ONTOLOGY_IRI,
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                 "schema": "http://schema.org/",
