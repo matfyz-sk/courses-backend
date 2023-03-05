@@ -1,4 +1,6 @@
-FROM node:latest
+FROM node:18
+
+RUN apt-get update && apt-get install default-jre -y
 
 WORKDIR /usr/src/courses
 
@@ -14,4 +16,4 @@ RUN npm prune --production
 
 EXPOSE 3010
 
-CMD ["npm", "run", "prod", "java", "-version"] 
+CMD ["npm", "run", "prod"]
