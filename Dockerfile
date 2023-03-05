@@ -1,5 +1,12 @@
 FROM node:latest
-FROM openjdk:8-jdk-alpine
+
+RUN apt-get update && \
+    apt-get install -y openjdk-8-jdk && \
+    apt-get install -y ant && \
+    apt-get clean;
+    
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+RUN export JAVA_HOME
 
 WORKDIR /usr/src/courses
 
@@ -15,4 +22,4 @@ RUN npm prune --production
 
 EXPOSE 3010
 
-CMD ["npm", "run", "prod"] 
+CMD ["npm", "run", "prod", "java", "-version"] 
