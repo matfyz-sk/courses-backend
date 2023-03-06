@@ -1,11 +1,12 @@
 import {Exporter, PREFIXES} from "./exporter";
+import {generate} from "../lib/virtuoso-uid";
 
 //npm install && npm install -g babel-cli
 //npx babel-node src/exporter/exporter-turtle.js
 
 export class ExporterTurtle extends Exporter {
 
-    exportOntology() {
+    async exportOntology() {
         this.getPrefixes();
         console.log("");
 
@@ -17,7 +18,7 @@ export class ExporterTurtle extends Exporter {
         );
         console.log("");
 
-        const userOntology = this.getUserOntology();
+        const userOntology = await this.getUserOntology();
 
         userOntology.map((item) => {
                 console.log(item);
@@ -29,8 +30,8 @@ export class ExporterTurtle extends Exporter {
         return sprefix + s + " " + pprefix + p + " " + oprefix + o + " .";
     }
 
-    getUserTypeTriple() {
-        return this.getUserIri() + " " + PREFIXES.rdf + "type" + " " + PREFIXES.courses + "User" + " .";
+    getUserTypeTriple(userIri) {
+        return userIri + " " + PREFIXES.rdf + "type" + " " + PREFIXES.courses + "User" + " .";
     }
 
     getAdminTriple(userIri, fieldName, fieldValue) {
@@ -50,8 +51,12 @@ export class ExporterTurtle extends Exporter {
         return "\"" + object + "\"";
     }
 
-    getUserIri() {
-        return "<" + this.getUserIriPart() + ">";
+    getUserIri(userIriString) {
+        return "<" + userIriString + ">";
+    }
+
+    createUserIriIdentifier() {
+        return PREFIXES.coursesData + (PREFIXES.coursesData.lastIndexOf("/") === (PREFIXES.coursesData.length - 1) ? "" : "/") + "user/" + generate();
     }
 
 }

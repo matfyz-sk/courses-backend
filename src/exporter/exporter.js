@@ -20,8 +20,6 @@ export const PREFIXES = {
     xsd: "http://www.w3.org/2001/XMLSchema#"
 };
 
-const ADMIN_IDENTIFIER = "s3MzY";
-
 export class Exporter {
 
     constructor() {
@@ -101,21 +99,18 @@ export class Exporter {
         return ontologyArray;
     }
 
-    getUserOntology() {
+    async getUserOntology() {
         const userArray = [];
-        const userIri = this.getUserIri();
+        const createUserIriIdentifier = await this.createUserIriIdentifier();
+        const userIri = this.getUserIri(_.isString(createUserIriIdentifier) ? createUserIriIdentifier : createUserIriIdentifier.iri);
         const adminSettings = this.getAdminSettings();
 
-        userArray.push(this.getUserTypeTriple());
+        userArray.push(this.getUserTypeTriple(userIri));
 
         Object.entries(adminSettings).map(([fieldName, fieldValue]) => {
             userArray.push(this.getAdminTriple(userIri, fieldName, fieldValue));
         });
         return userArray;
-    }
-
-    getUserIriPart() {
-        return PREFIXES.coursesData + (PREFIXES.coursesData.lastIndexOf("/") === (PREFIXES.coursesData.length - 1) ? "" : "/") + "user/" + ADMIN_IDENTIFIER;
     }
 
     //string, datetime, boolean, float, integer, node
@@ -143,8 +138,8 @@ export class Exporter {
         throw new Error("Method 'exportTriple(sprefix, s, pprefix, p, oprefix, o)' must be implemented.");
     };
 
-    getUserTypeTriple() {
-        throw new Error("Method 'getUserTriple()' must be implemented.");
+    getUserTypeTriple(userIri) {
+        throw new Error("Method 'getUserTriple(userIri)' must be implemented.");
     }
 
     getAdminTriple(userIri, fieldName, fieldValue) {
@@ -155,11 +150,15 @@ export class Exporter {
         throw new Error("Method 'getPrefixes()' must be implemented.");
     }
 
-    getUserIri() {
-        throw new Error("Method 'getUserIri()' must be implemented.");
+    getUserIri(userIriString) {
+        throw new Error("Method 'getUserIri(userIriString)' must be implemented.");
     }
 
     getSchemaLiteral(object) {
+        throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
+    }
+
+    createUserIriIdentifier() {
         throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
     }
 
