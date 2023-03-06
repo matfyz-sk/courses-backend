@@ -1,7 +1,7 @@
 import {body} from "express-validator";
 import bcrypt from "bcrypt";
 import {client} from "../../helpers";
-import {DATA_IRI, GRAPH_IRI} from "../../constants";
+import {DATA_IRI, GRAPH_IRI, PASSWORD_SALT} from "../../constants";
 import {checkValidation} from "./checkValidation";
 
 const bodyValidation = [body("password").exists().isString().isLength({min: 6})];
@@ -9,7 +9,7 @@ const bodyValidation = [body("password").exists().isString().isLength({min: 6})]
 async function _changePassword(req, res) {
     const userId = req.params.userId;
     const userURI = `${DATA_IRI}/user/${userId}`;
-    const hash = bcrypt.hashSync(req.body.password, 10);
+    const hash = bcrypt.hashSync(req.body.password, PASSWORD_SALT);
     const db = client();
     const userExists = await db.query(`ASK { <${userURI}> rdf:type courses:User }`, true);
     if (!userExists.boolean) {

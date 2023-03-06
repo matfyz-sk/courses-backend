@@ -1,6 +1,13 @@
 import bcrypt from "bcrypt";
 import * as models from "../model";
-import {DATA_IRI, ONTOLOGY_IRI} from "../constants";
+import {
+    DATA_IRI,
+    ONTOLOGY_IRI,
+    PASSWORD_SALT,
+    SUPER_ADMIN_EMAIL,
+    SUPER_ADMIN_NAME,
+    SUPER_ADMIN_PASSWORD
+} from "../constants";
 import _ from "lodash";
 
 export const PREFIXES = {
@@ -24,14 +31,14 @@ export class Exporter {
     }
 
     getAdminSettings() {
-        const PASSWORD = "admin123";
-        const NAME = "Admin";
-        const hash = bcrypt.hashSync(PASSWORD, 10);
+        const PASSWORD = SUPER_ADMIN_PASSWORD;
+        const NAME = SUPER_ADMIN_NAME;
+        const hash = bcrypt.hashSync(PASSWORD, PASSWORD_SALT);
 
         return {
             firstName: NAME,
             lastName: NAME,
-            email: "admin@admin.admin",
+            email: SUPER_ADMIN_EMAIL,
             password: hash,
             description: "",
             nickname: NAME,

@@ -5,6 +5,7 @@ import runQuery from "../../query";
 import {user as userObj} from "../../model";
 import {generateToken, uri2id} from "../../helpers";
 import {checkValidation} from "./checkValidation";
+import {PASSWORD_SALT} from "../../constants";
 
 const bodyValidation = [
     body("user").exists(),
@@ -43,7 +44,7 @@ export function emailIsFree(req, res, next) {
 async function _register(req, res, next) {
     const {user, privacy} = req.body;
     const u = new Resource({resource: userObj, setCreator: false});
-    const hash = bcrypt.hashSync(user.password, 10);
+    const hash = bcrypt.hashSync(user.password, PASSWORD_SALT);
     try {
         await u.setPredicate("firstName", user.first_name);
         await u.setPredicate("lastName", user.last_name);
