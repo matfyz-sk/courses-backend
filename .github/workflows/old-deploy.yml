@@ -33,6 +33,12 @@ on:
         required: true
       SPARQL_HOST:
         required: true
+      SUPER_ADMIN_NAME:
+        required: true
+      SUPER_ADMIN_EMAIL:
+        required: true
+      SUPER_ADMIN_PASSWORD:
+        required: true
 
 jobs:
   deploy:
@@ -70,11 +76,14 @@ jobs:
           GRAPH_IRI_PREFIX: ${{ env.GRAPH_IRI_PREFIX }}
           IMPERSONATION_PASSWORD: ${{ secrets.IMPERSONATION_PASSWORD }}
           SPARQL_HOST: ${{ secrets.SPARQL_HOST }}
+          SUPER_ADMIN_NAME: ${{ secrets.SUPER_ADMIN_NAME }}
+          SUPER_ADMIN_EMAIL: ${{ secrets.SUPER_ADMIN_EMAIL }}
+          SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: TAG,CONTAINER,BRANCH,BACKEND_PORT,SPARQL_HOST,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD
+          envs: TAG,CONTAINER,BRANCH,BACKEND_PORT,SPARQL_HOST,VIRTUOSO_PORT,AUTH_SECRET,GRAPH_IRI_PREFIX,IMPERSONATION_PASSWORD,SUPER_ADMIN_NAME,SUPER_ADMIN_EMAIL,SUPER_ADMIN_PASSWORD
           script: |
             TMP=$(mktemp -d tmpXXX)
             cd ${TMP}
@@ -88,6 +97,9 @@ jobs:
               --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
               --env "BASE_IRI=https://courses3.matfyz.sk/" \
               --env "IMPERSONATION_PASSWORD=${IMPERSONATION_PASSWORD}" \
+              --env "SUPER_ADMIN_NAME=${SUPER_ADMIN_NAME}" \
+              --env "SUPER_ADMIN_EMAIL=${SUPER_ADMIN_EMAIL}" \
+              --env "SUPER_ADMIN_PASSWORD=${SUPER_ADMIN_PASSWORD}" \
               --name=${CONTAINER} \
               --publish ${BACKEND_PORT}:3010 \
               --restart=unless-stopped \
