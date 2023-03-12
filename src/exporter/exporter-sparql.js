@@ -58,6 +58,10 @@ export class ExporterSparql extends Exporter {
         return new Triple(userIri, new Node(PREFIXES.courses + fieldName), this.getSchemaLiteral(fieldValue))
     }
 
+    getLiteralTriple(sprefix, s, pprefix, p,field){
+        return new Triple(new Node(sprefix + s), new Node(pprefix + p), this.getSchemaLiteral(field))
+    }
+
     getPrefixes() {
         return PREFIXES;
     }
@@ -66,6 +70,7 @@ export class ExporterSparql extends Exporter {
         if (typeof object == "boolean") {
             return new Data(object, 'xsd:boolean');
         }
+        //TODO add new types
         return new Data(object);
     }
 

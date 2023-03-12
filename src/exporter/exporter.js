@@ -17,8 +17,11 @@ export const PREFIXES = {
     rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     schema: "http://schema.org/",
     owl: "http://www.w3.org/2002/07/owl#",
-    xsd: "http://www.w3.org/2001/XMLSchema#"
+    xsd: "http://www.w3.org/2001/XMLSchema#",
+    dc: "http://purl.org/dc/terms/"
 };
+
+const CREATED_PROPERTY = "created";
 
 export class Exporter {
 
@@ -59,6 +62,8 @@ export class Exporter {
 
         const properties = new Set();
 
+        this.addResourceCreated(ontologyArray);
+
         Object.values(models).map((model) => {
             let className;
             if (model.type) {
@@ -75,11 +80,16 @@ export class Exporter {
                 }
             }
             if (model.props) {
+                ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className)); // Add prop created to the given class
+
                 Object.entries(model.props).map(([propertyName, propertyObject]) => {
                     ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className));
                     if (propertyObject) {
-
                         properties.add(propertyName);
+
+                        if (propertyObject?.dataType && this.getScalarTypes().includes(propertyObject.dataType)) {
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, this.firstLetterToUppercase(propertyObject.dataType)));
+                        }
 
                         if (propertyObject.objectClass) {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
@@ -87,16 +97,33 @@ export class Exporter {
                         if (propertyObject.dataType) {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
                         }
+                        if (propertyObject.multiple) {
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.rdf, "List"));
+                        }
+                        ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.xsd, "use", propertyObject?.required ? "required" : "optional"));
                     }
                 });
             }
         });
 
+        properties.add(CREATED_PROPERTY);
         for (const item of properties.values()) {
             ontologyArray.push(this.getTriple(PREFIXES.courses, item, PREFIXES.rdf, "type", PREFIXES.rdf, "Property"));
         }
 
         return ontologyArray;
+    }
+
+    addResourceCreated(ontologyArray){
+        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "DatatypeProperty"));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.rdfs, "subClassOf", PREFIXES.dc, CREATED_PROPERTY));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, "dateTime")); //TODO add proper type
+    }
+
+
+    getScalarTypes() {
+        //If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField
+        return ["integer", "string", "boolean", "float", "dateTime"];
     }
 
     async getUserOntology() {
@@ -160,6 +187,10 @@ export class Exporter {
 
     createUserIriIdentifier() {
         throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
+    }
+
+    getLiteralTriple(sprefix, s, pprefix, p, field) {
+        throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, field)' must be implemented.");
     }
 
 }
