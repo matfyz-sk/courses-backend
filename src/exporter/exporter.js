@@ -88,7 +88,7 @@ export class Exporter {
                         properties.add(propertyName);
 
                         if (propertyObject?.dataType && this.getScalarTypes().includes(propertyObject.dataType)) {
-                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, this.firstLetterToUppercase(propertyObject.dataType)));
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, propertyObject.dataType));
                         }
 
                         if (propertyObject.objectClass) {
