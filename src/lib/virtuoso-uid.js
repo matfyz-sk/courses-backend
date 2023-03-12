@@ -80,7 +80,12 @@ let insert = (iri, echo = false) => {
     return SaveClient.store(echo);
 };
 
-let generate = () => {
+export const generate = () => {
+
+    if (!config) {
+        config = defaults;
+    }
+
     let rtn = "";
     for (let i = 0; i < config.idLength; i++) {
         rtn += config.alphabet.charAt(Math.floor(Math.random() * config.alphabet.length));

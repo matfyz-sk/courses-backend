@@ -24,8 +24,8 @@ export class UltraGraphQLExporter {
                 }
             ],
             "prefixes": {
-                "courses-data": DATA_IRI,
-                "courses": ONTOLOGY_IRI,
+                "courses-data": DATA_IRI, //Key ("courses-data") is fixed and used in UltraGraphQL endpoint mutation. In case it needs to modified change it also in @see SPARQLMutationConverter.
+                "courses": ONTOLOGY_IRI, //Key ("courses") is fixed and used in UltraGraphQL endpoint mutation. In case it needs to modified change it also in @see SPARQLMutationConverter.
                 "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
                 "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                 "schema": "http://schema.org/",

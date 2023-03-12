@@ -1,6 +1,13 @@
 import bcrypt from "bcrypt";
 import * as models from "../model";
-import {DATA_IRI, ONTOLOGY_IRI} from "../constants";
+import {
+    DATA_IRI,
+    ONTOLOGY_IRI,
+    PASSWORD_SALT,
+    SUPER_ADMIN_EMAIL,
+    SUPER_ADMIN_NAME,
+    SUPER_ADMIN_PASSWORD
+} from "../constants";
 import _ from "lodash";
 
 export const PREFIXES = {
@@ -10,10 +17,11 @@ export const PREFIXES = {
     rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     schema: "http://schema.org/",
     owl: "http://www.w3.org/2002/07/owl#",
-    xsd: "http://www.w3.org/2001/XMLSchema#"
+    xsd: "http://www.w3.org/2001/XMLSchema#",
+    dc: "http://purl.org/dc/terms/"
 };
 
-const ADMIN_IDENTIFIER = "s3MzY";
+const CREATED_PROPERTY = "created";
 
 export class Exporter {
 
@@ -24,14 +32,14 @@ export class Exporter {
     }
 
     getAdminSettings() {
-        const PASSWORD = "admin123";
-        const NAME = "Admin";
-        const hash = bcrypt.hashSync(PASSWORD, 10);
+        const PASSWORD = SUPER_ADMIN_PASSWORD;
+        const NAME = SUPER_ADMIN_NAME;
+        const hash = bcrypt.hashSync(PASSWORD, PASSWORD_SALT);
 
         return {
             firstName: NAME,
             lastName: NAME,
-            email: "admin@admin.admin",
+            email: SUPER_ADMIN_EMAIL,
             password: hash,
             description: "",
             nickname: NAME,
@@ -54,6 +62,8 @@ export class Exporter {
 
         const properties = new Set();
 
+        this.addResourceCreated(ontologyArray);
+
         Object.values(models).map((model) => {
             let className;
             if (model.type) {
@@ -70,11 +80,16 @@ export class Exporter {
                 }
             }
             if (model.props) {
+                ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className)); // Add prop created to the given class
+
                 Object.entries(model.props).map(([propertyName, propertyObject]) => {
                     ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className));
                     if (propertyObject) {
-
                         properties.add(propertyName);
+
+                        if (propertyObject?.dataType && this.getScalarTypes().includes(propertyObject.dataType)) {
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, propertyObject.dataType));
+                        }
 
                         if (propertyObject.objectClass) {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
@@ -82,11 +97,16 @@ export class Exporter {
                         if (propertyObject.dataType) {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
                         }
+                        if (propertyObject.multiple) {
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.rdf, "List"));
+                        }
+                        ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.xsd, "use", propertyObject?.required ? "required" : "optional"));
                     }
                 });
             }
         });
 
+        properties.add(CREATED_PROPERTY);
         for (const item of properties.values()) {
             ontologyArray.push(this.getTriple(PREFIXES.courses, item, PREFIXES.rdf, "type", PREFIXES.rdf, "Property"));
         }
@@ -94,21 +114,30 @@ export class Exporter {
         return ontologyArray;
     }
 
-    getUserOntology() {
+    addResourceCreated(ontologyArray){
+        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "DatatypeProperty"));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.rdfs, "subClassOf", PREFIXES.dc, CREATED_PROPERTY));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, "dateTime")); //TODO add proper type
+    }
+
+
+    getScalarTypes() {
+        //If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField
+        return ["integer", "string", "boolean", "float", "dateTime"];
+    }
+
+    async getUserOntology() {
         const userArray = [];
-        const userIri = this.getUserIri();
+        const createUserIriIdentifier = await this.createUserIriIdentifier();
+        const userIri = this.getUserIri(_.isString(createUserIriIdentifier) ? createUserIriIdentifier : createUserIriIdentifier.iri);
         const adminSettings = this.getAdminSettings();
 
-        userArray.push(this.getUserTypeTriple());
+        userArray.push(this.getUserTypeTriple(userIri));
 
         Object.entries(adminSettings).map(([fieldName, fieldValue]) => {
             userArray.push(this.getAdminTriple(userIri, fieldName, fieldValue));
         });
         return userArray;
-    }
-
-    getUserIriPart() {
-        return PREFIXES.coursesData + (PREFIXES.coursesData.lastIndexOf("/") === (PREFIXES.coursesData.length - 1) ? "" : "/") + "user/" + ADMIN_IDENTIFIER;
     }
 
     //string, datetime, boolean, float, integer, node
@@ -136,8 +165,8 @@ export class Exporter {
         throw new Error("Method 'exportTriple(sprefix, s, pprefix, p, oprefix, o)' must be implemented.");
     };
 
-    getUserTypeTriple() {
-        throw new Error("Method 'getUserTriple()' must be implemented.");
+    getUserTypeTriple(userIri) {
+        throw new Error("Method 'getUserTriple(userIri)' must be implemented.");
     }
 
     getAdminTriple(userIri, fieldName, fieldValue) {
@@ -148,12 +177,20 @@ export class Exporter {
         throw new Error("Method 'getPrefixes()' must be implemented.");
     }
 
-    getUserIri() {
-        throw new Error("Method 'getUserIri()' must be implemented.");
+    getUserIri(userIriString) {
+        throw new Error("Method 'getUserIri(userIriString)' must be implemented.");
     }
 
     getSchemaLiteral(object) {
         throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
+    }
+
+    createUserIriIdentifier() {
+        throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
+    }
+
+    getLiteralTriple(sprefix, s, pprefix, p, field) {
+        throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, field)' must be implemented.");
     }
 
 }

@@ -2,7 +2,7 @@ import {GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 import {Client, Data, Node, Triple} from "virtuoso-sparql-client";
 import {Exporter, PREFIXES} from './exporter';
 import chalk from "chalk";
-import {dateTime} from "../helpers";
+import {dateTime, getNewNode} from "../helpers";
 
 
 export class ExporterSparql extends Exporter {
@@ -22,7 +22,7 @@ export class ExporterSparql extends Exporter {
 
         const superAdminExists = await this.superAdminExists(client);
         if (!superAdminExists) {
-            const userOntology = this.getUserOntology();
+            const userOntology = await this.getUserOntology();
             store.bulk(userOntology);
         }
 
@@ -50,12 +50,16 @@ export class ExporterSparql extends Exporter {
         return new Triple(new Node(sprefix + s), new Node(pprefix + p), new Node(oprefix + o));
     }
 
-    getUserTypeTriple() {
-        return new Triple(this.getUserIri(), new Node(PREFIXES.rdf + "type"), new Node(PREFIXES.courses + "User"));
+    getUserTypeTriple(userIri) {
+        return new Triple(userIri, new Node(PREFIXES.rdf + "type"), new Node(PREFIXES.courses + "User"));
     }
 
     getAdminTriple(userIri, fieldName, fieldValue) {
         return new Triple(userIri, new Node(PREFIXES.courses + fieldName), this.getSchemaLiteral(fieldValue))
+    }
+
+    getLiteralTriple(sprefix, s, pprefix, p,field){
+        return new Triple(new Node(sprefix + s), new Node(pprefix + p), this.getSchemaLiteral(field))
     }
 
     getPrefixes() {
@@ -66,11 +70,17 @@ export class ExporterSparql extends Exporter {
         if (typeof object == "boolean") {
             return new Data(object, 'xsd:boolean');
         }
+        //TODO add new types
         return new Data(object);
     }
 
-    getUserIri() {
-        return new Node(this.getUserIriPart());
+    getUserIri(userIriString) {
+        return new Node(userIriString);
+    }
+
+    async createUserIriIdentifier() {
+        const classPrefix = PREFIXES.coursesData + (PREFIXES.coursesData.lastIndexOf("/") === (PREFIXES.coursesData.length - 1) ? "" : "/") + "user/";
+        return getNewNode(classPrefix);
     }
 
 }
