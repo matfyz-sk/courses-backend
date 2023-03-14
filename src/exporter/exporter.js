@@ -22,6 +22,7 @@ export const PREFIXES = {
 };
 
 const CREATED_PROPERTY = "created";
+const COURSES_CREATED_PROPERTY = "createdAt";
 
 export class Exporter {
 
@@ -80,7 +81,7 @@ export class Exporter {
                 }
             }
             if (model.props) {
-                ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className)); // Add prop created to the given class
+                ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className)); // Add prop created to the given class
 
                 Object.entries(model.props).map(([propertyName, propertyObject]) => {
                     ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className));
@@ -106,7 +107,7 @@ export class Exporter {
             }
         });
 
-        properties.add(CREATED_PROPERTY);
+        properties.add(COURSES_CREATED_PROPERTY);
         for (const item of properties.values()) {
             ontologyArray.push(this.getTriple(PREFIXES.courses, item, PREFIXES.rdf, "type", PREFIXES.rdf, "Property"));
         }
@@ -114,10 +115,10 @@ export class Exporter {
         return ontologyArray;
     }
 
-    addResourceCreated(ontologyArray){
-        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "DatatypeProperty"));
-        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.rdfs, "subClassOf", PREFIXES.dc, CREATED_PROPERTY));
-        ontologyArray.push(this.getTriple(PREFIXES.courses, CREATED_PROPERTY, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, "dateTime")); //TODO add proper type
+    addResourceCreated(ontologyArray) {
+        ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "DatatypeProperty"));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdfs, "subPropertyOf", PREFIXES.dc, CREATED_PROPERTY));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, "dateTime"));
     }
 
 
