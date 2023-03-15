@@ -16,7 +16,7 @@ export const peerReviewQuestionAnswer = {
         score: {
             required: false,
             multiple: false,
-            dataType: "integer",
+            dataType: "decimal",
         },
     },
 };

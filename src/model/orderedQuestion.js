@@ -31,7 +31,7 @@ export const orderedQuestion = {
         score: {
             required: false,
             multiple: false,
-            dataType: "integer",
+            dataType: "decimal",
         },
         comment: {
             required: false,

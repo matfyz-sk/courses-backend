@@ -10,7 +10,7 @@ export const selfQuizTake = {
         score: {
             required: false,
             multiple: false,
-            dataType: "float"
+            dataType: "decimal"
         },
         orderedQuestion: {
             required: true,
