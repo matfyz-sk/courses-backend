@@ -124,7 +124,7 @@ export class Exporter {
 
     getScalarTypes() {
         //If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField
-        return ["integer", "string", "boolean", "float", "dateTime"];
+        return ["integer", "string", "boolean", "float", "dateTime", "decimal", "long", "short"];
     }
 
     async getUserOntology() {
