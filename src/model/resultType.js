@@ -9,7 +9,7 @@ export const resultType = {
         minPoints: {
             required: false,
             multiple: false,
-            dataType: "float",
+            dataType: "decimal",
         },
         description: {
             required: false,

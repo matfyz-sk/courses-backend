@@ -9,7 +9,7 @@ export const courseGrading = {
         minPoints: {
             required: false,
             multiple: false,
-            dataType: "integer",
+            dataType: "decimal",
         },
     },
 };

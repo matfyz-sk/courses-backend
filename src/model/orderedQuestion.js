@@ -26,7 +26,7 @@ export const orderedQuestion = {
         points: {
             required: true,
             multiple: false,
-            dataType: "integer",
+            dataType: "decimal",
         },
         score: {
             required: false,
