@@ -26,7 +26,7 @@ export const quizTake = {
         score: {
             required: false,
             multiple: false,
-            dataType: "float"
+            dataType: "decimal"
         },
         quizAssignment: {
             required: true,

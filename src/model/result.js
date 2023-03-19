@@ -28,7 +28,7 @@ export const result = {
         points: {
             required: false,
             multiple: false,
-            dataType: "float",
+            dataType: "decimal",
         },
         description: {
             required: false,

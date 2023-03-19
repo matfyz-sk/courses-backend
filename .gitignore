@@ -5,7 +5,8 @@ run.sh
 remove-none.sh
 velocity.log
 
-
+/src/ultragraphql/config.json
+/src/ultragraphql/model.json
 
 .idea
 .env*

@@ -9,7 +9,7 @@ export const userAnswer = {
         score: {
             required: false,
             multiple: false,
-            dataType: "float",
+            dataType: "decimal",
         },
     },
 };

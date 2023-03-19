@@ -2,6 +2,7 @@ import {GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 import {Client, Data, Node, Triple} from "virtuoso-sparql-client";
 import {Exporter, PREFIXES} from './exporter';
 import chalk from "chalk";
+import _ from "lodash";
 import {dateTime, getNewNode} from "../helpers";
 
 
@@ -58,7 +59,7 @@ export class ExporterSparql extends Exporter {
         return new Triple(userIri, new Node(PREFIXES.courses + fieldName), this.getSchemaLiteral(fieldValue))
     }
 
-    getLiteralTriple(sprefix, s, pprefix, p,field){
+    getLiteralTriple(sprefix, s, pprefix, p, field) {
         return new Triple(new Node(sprefix + s), new Node(pprefix + p), this.getSchemaLiteral(field))
     }
 
@@ -67,10 +68,24 @@ export class ExporterSparql extends Exporter {
     }
 
     getSchemaLiteral(object) {
-        if (typeof object == "boolean") {
+        if (_.isBoolean(object)) {
             return new Data(object, 'xsd:boolean');
         }
-        //TODO add new types
+        if (_.isString(object)) {
+            return new Data(object, 'xsd:string');
+        }
+
+        if (_.isDate(object)) {
+            return new Data(object, 'xsd:dateTime');
+        }
+
+        if (_.isFloat(object)) {
+            return new Data(object, 'xsd:float');
+        }
+
+        if (_.isNumber(object)) {
+            return new Data(object, 'xsd:integer');
+        }
         return new Data(object);
     }
 
