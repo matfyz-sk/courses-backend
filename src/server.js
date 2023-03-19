@@ -48,7 +48,7 @@ app.listen(port, () => {
 
             /* Start UltraGraphQL */
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
-            const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.6-exe.jar --config ' + ultraGraphQLConfig;
+            const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.1.7-exe.jar --config ' + ultraGraphQLConfig;
             const ultraGraphQLProcess = exec(ultraGraphQLCommand);
             ultraGraphQLProcess.stdout.on('data', function (data) {
                 console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL ${data}`);
