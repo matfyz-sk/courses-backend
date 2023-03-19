@@ -98,9 +98,11 @@ export class Exporter {
                         if (propertyObject.dataType) {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
                         }
-                        if (propertyObject.multiple) {
-                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.rdf, "List"));
+                        if (!propertyObject.multiple) {
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
+                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, propertyObject.objectClass ? "FunctionalObjectProperty" : "FunctionalDataProperty"));
                         }
+
                         ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.xsd, "use", propertyObject?.required ? "required" : "optional"));
                     }
                 });
@@ -117,6 +119,8 @@ export class Exporter {
 
     addResourceCreated(ontologyArray) {
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "DatatypeProperty"));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalDataProperty"));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdfs, "subPropertyOf", PREFIXES.dc, CREATED_PROPERTY));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, "dateTime"));
     }
