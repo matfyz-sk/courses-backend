@@ -193,10 +193,6 @@ export class Exporter {
         throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
     }
 
-    getLiteralTriple(sprefix, s, pprefix, p, field) {
-        throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, field)' must be implemented.");
-    }
-
     getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType) {
         throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType)' must be implemented.");
     }
