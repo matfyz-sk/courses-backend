@@ -74,7 +74,7 @@ export class ExporterSparql extends Exporter {
         if (_.isNumber(object)) {
             return new Data(object, 'xsd:integer');
         }
-        if (_.isDate(object)) {
+        if (_.isDate(object) || this.isIsoDate(object)) {
             return new Data(object, 'xsd:dateTime');
         }
         if (this.isFloat(object)) {
