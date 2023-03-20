@@ -56,11 +56,15 @@ export class ExporterSparql extends Exporter {
     }
 
     getAdminTriple(userIri, fieldName, fieldValue) {
-        return new Triple(userIri, new Node(PREFIXES.courses + fieldName), this.getSchemaLiteral(fieldValue))
+        return new Triple(userIri, new Node(PREFIXES.courses + fieldName), this.getSchemaLiteral(fieldValue));
     }
 
     getLiteralTriple(sprefix, s, pprefix, p, field) {
-        return new Triple(new Node(sprefix + s), new Node(pprefix + p), this.getSchemaLiteral(field))
+        return new Triple(new Node(sprefix + s), new Node(pprefix + p), this.getSchemaLiteral(field));
+    }
+
+    getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType) {
+        return new Triple(new Node(sprefix + s), new Node(pprefix + p), new Data(literalValue, literalType));
     }
 
     getPrefixes() {
@@ -71,20 +75,17 @@ export class ExporterSparql extends Exporter {
         if (_.isBoolean(object)) {
             return new Data(object, 'xsd:boolean');
         }
-        if (_.isString(object)) {
-            return new Data(object, 'xsd:string');
+        if (_.isNumber(object)) {
+            return new Data(object, 'xsd:integer');
         }
-
         if (_.isDate(object)) {
             return new Data(object, 'xsd:dateTime');
         }
-
-        if (_.isFloat(object)) {
+        if (this.isFloat(object)) {
             return new Data(object, 'xsd:float');
         }
-
-        if (_.isNumber(object)) {
-            return new Data(object, 'xsd:integer');
+        if (_.isString(object)) {
+            return new Data(object, 'xsd:string');
         }
         return new Data(object);
     }

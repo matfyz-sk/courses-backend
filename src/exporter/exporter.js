@@ -102,8 +102,7 @@ export class Exporter {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, propertyObject.objectClass ? "FunctionalObjectProperty" : "FunctionalDataProperty"));
                         }
-
-                        ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.xsd, "use", propertyObject?.required ? "required" : "optional"));
+                        ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.owl, "minCardinality", propertyObject.required ? 1 : 0, "xsd:nonNegativeInteger"));
                     }
                 });
             }
@@ -196,6 +195,14 @@ export class Exporter {
 
     getLiteralTriple(sprefix, s, pprefix, p, field) {
         throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, field)' must be implemented.");
+    }
+
+    getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType) {
+        throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType)' must be implemented.");
+    }
+
+    isFloat(num) {
+        return Number(num) === num && num % 1 !== 0;
     }
 
 }
