@@ -127,7 +127,7 @@ export class Exporter {
 
 
     getScalarTypes() {
-        //If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField
+        /* If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField */
         return ["integer", "string", "boolean", "float", "dateTime", "decimal", "long", "short"];
     }
 
@@ -145,12 +145,11 @@ export class Exporter {
         return userArray;
     }
 
-    //string, datetime, boolean, float, integer, node
     getTypeOfProperty(dataType) {
         if (dataType === "node") {
             return "ObjectProperty";
         }
-        return "DatatypeProperty";
+        return "DatatypeProperty"; /* Scalar type - integer, string, boolean, float, dateTime, decimal, long, short */
     }
 
     firstLetterToUppercase(value) {
@@ -191,7 +190,7 @@ export class Exporter {
     }
 
     createUserIriIdentifier() {
-        throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
+        throw new Error("Method 'createUserIriIdentifier()' must be implemented.");
     }
 
     getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType) {

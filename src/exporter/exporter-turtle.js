@@ -1,8 +1,9 @@
 import {Exporter, PREFIXES} from "./exporter";
 import {generate} from "../lib/virtuoso-uid";
+import _ from "lodash";
 
-//npm install && npm install -g babel-cli
-//npx babel-node src/exporter/exporter-turtle.js
+/* npm install && npm install -g babel-cli
+   npx babel-node src/exporter/exporter-turtle.js */
 
 export class ExporterTurtle extends Exporter {
 
@@ -27,7 +28,7 @@ export class ExporterTurtle extends Exporter {
     }
 
     getTriple(sprefix, s, pprefix, p, oprefix, o) {
-        return sprefix + s + " " + pprefix + p + " " + oprefix + o + " .";
+        return "<" +sprefix + s + "> <" + pprefix + p + "> <" + oprefix + o + "> .";
     }
 
     getUserTypeTriple(userIri) {
@@ -35,7 +36,15 @@ export class ExporterTurtle extends Exporter {
     }
 
     getAdminTriple(userIri, fieldName, fieldValue) {
-        return userIri + " " + PREFIXES.courses + fieldName + " " + this.getSchemaLiteral(fieldValue) + " .";
+        return userIri + " <" + PREFIXES.courses + fieldName + "> " + this.getSchemaLiteral(fieldValue) + " .";
+    }
+
+    getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType) {
+        return sprefix + s + " " + pprefix + p + " " + this.getFormattedLiteral(literalValue, literalType) + " .";
+    }
+
+    getFormattedLiteral(literalValue, literalType) {
+        return "\"" + literalValue.toString() + "\"^^<" + PREFIXES.xsd + literalType + ">";
     }
 
     getPrefixes() {
@@ -46,9 +55,25 @@ export class ExporterTurtle extends Exporter {
 
     getSchemaLiteral(object) {
         if (typeof object == "boolean") {
-            return "\"" + object.toString() + "\"^^" + "<" + PREFIXES.xsd + "boolean>";
+            return this.getScalarLiteral(object, "boolean");
         }
-        return "\"" + object + "\"";
+        if (this.isFloat(object)) {
+            return this.getScalarLiteral(object, "decimal"); /* In case of floats just return it as decimal */
+        }
+        if (_.isNumber(object)) {
+            return this.getScalarLiteral(object, "integer");
+        }
+        if (_.isDate(object) || this.isIsoDate(object)) {
+            return this.getScalarLiteral(object, "dateTime");
+        }
+        if (_.isString(object)) {
+            return this.getScalarLiteral(object, "string");
+        }
+        return "\"" + object.toString() + "\"";
+    }
+
+    getScalarLiteral(object, scalarType) {
+        return "\"" + object.toString() + "\"^^" + "<" + PREFIXES.xsd + scalarType + ">";
     }
 
     getUserIri(userIriString) {

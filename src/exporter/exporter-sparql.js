@@ -71,14 +71,14 @@ export class ExporterSparql extends Exporter {
         if (_.isBoolean(object)) {
             return new Data(object, 'xsd:boolean');
         }
+        if (this.isFloat(object)) {
+            return new Data(object, 'xsd:decimal'); /* In case of floats just return it as decimal */
+        }
         if (_.isNumber(object)) {
             return new Data(object, 'xsd:integer');
         }
         if (_.isDate(object) || this.isIsoDate(object)) {
             return new Data(object, 'xsd:dateTime');
-        }
-        if (this.isFloat(object)) {
-            return new Data(object, 'xsd:float');
         }
         if (_.isString(object)) {
             return new Data(object, 'xsd:string');
