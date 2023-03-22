@@ -5,6 +5,8 @@ import _ from "lodash";
 /* npm install && npm install -g babel-cli
    npx babel-node src/exporter/exporter-turtle.js */
 
+const COLUMN_SIZE = 70;
+
 export class ExporterTurtle extends Exporter {
 
     async exportOntology() {
@@ -27,29 +29,35 @@ export class ExporterTurtle extends Exporter {
         );
     }
 
+    prettifyColumn(column) {
+        if (COLUMN_SIZE - column?.length > 0) {
+            return column + " ".repeat(COLUMN_SIZE - column.length);
+        }
+    }
+
     getTriple(sprefix, s, pprefix, p, oprefix, o) {
-        return "<" +sprefix + s + "> <" + pprefix + p + "> <" + oprefix + o + "> .";
+        return this.prettifyColumn(`<${sprefix}${s}>`) + " " + this.prettifyColumn(`<${pprefix}${p}>`) + " " + `<${oprefix}${o}> .`;
     }
 
     getUserTypeTriple(userIri) {
-        return userIri + " " + PREFIXES.rdf + "type" + " " + PREFIXES.courses + "User" + " .";
+        return this.prettifyColumn(userIri) + " " + this.prettifyColumn(`<${PREFIXES.rdf}type>`) + `<${PREFIXES.courses}User> .`;
     }
 
     getAdminTriple(userIri, fieldName, fieldValue) {
-        return userIri + " <" + PREFIXES.courses + fieldName + "> " + this.getSchemaLiteral(fieldValue) + " .";
+        return this.prettifyColumn(userIri) + " " + this.prettifyColumn(`<${PREFIXES.courses}${fieldName}>`) + " " + this.getSchemaLiteral(fieldValue) + " .";
     }
 
     getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType) {
-        return sprefix + s + " " + pprefix + p + " " + this.getFormattedLiteral(literalValue, literalType) + " .";
+        return this.prettifyColumn(`<${sprefix}${s}>`) + " " + this.prettifyColumn(`<${pprefix}${p}>`) + " " + this.getFormattedLiteral(literalValue, literalType) + " .";
     }
 
     getFormattedLiteral(literalValue, literalType) {
-        return "\"" + literalValue.toString() + "\"^^<" + PREFIXES.xsd + literalType + ">";
+        return `"${literalValue.toString()}"^^<${PREFIXES.xsd}${literalType}>`;
     }
 
     getPrefixes() {
         Object.entries(PREFIXES).map(([prefixName, prefixUri]) => {
-            console.log("@PREFIX " + prefixName + ": <" + prefixUri + "> .");
+            console.log(`@PREFIX ${prefixName}: <${prefixUri}> .`);
         });
     }
 
@@ -69,15 +77,15 @@ export class ExporterTurtle extends Exporter {
         if (_.isString(object)) {
             return this.getScalarLiteral(object, "string");
         }
-        return "\"" + object.toString() + "\"";
+        return `"${object.toString()}"`;
     }
 
     getScalarLiteral(object, scalarType) {
-        return "\"" + object.toString() + "\"^^" + "<" + PREFIXES.xsd + scalarType + ">";
+        return `"${object.toString()}"^^<${PREFIXES.xsd}${scalarType}>`;
     }
 
     getUserIri(userIriString) {
-        return "<" + userIriString + ">";
+        return `<${userIriString}>`;
     }
 
     createUserIriIdentifier() {
