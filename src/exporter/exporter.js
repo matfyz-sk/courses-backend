@@ -51,6 +51,7 @@ export class Exporter {
             allowContact: false,
             nickNameTeamException: true,
             isSuperAdmin: true,
+            createdAt: new Date().toISOString()
         }
     };
 
@@ -102,8 +103,7 @@ export class Exporter {
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
                             ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, propertyObject.objectClass ? "FunctionalObjectProperty" : "FunctionalDataProperty"));
                         }
-
-                        ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.xsd, "use", propertyObject?.required ? "required" : "optional"));
+                        ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.owl, "minCardinality", propertyObject.required ? 1 : 0, "xsd:nonNegativeInteger"));
                     }
                 });
             }
@@ -127,7 +127,7 @@ export class Exporter {
 
 
     getScalarTypes() {
-        //If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField
+        /* If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField */
         return ["integer", "string", "boolean", "float", "dateTime", "decimal", "long", "short"];
     }
 
@@ -145,12 +145,11 @@ export class Exporter {
         return userArray;
     }
 
-    //string, datetime, boolean, float, integer, node
     getTypeOfProperty(dataType) {
         if (dataType === "node") {
             return "ObjectProperty";
         }
-        return "DatatypeProperty";
+        return "DatatypeProperty"; /* Scalar type - integer, string, boolean, float, dateTime, decimal, long, short */
     }
 
     firstLetterToUppercase(value) {
@@ -191,11 +190,21 @@ export class Exporter {
     }
 
     createUserIriIdentifier() {
-        throw new Error("Method 'getSchemaLiteral(object)' must be implemented.");
+        throw new Error("Method 'createUserIriIdentifier()' must be implemented.");
     }
 
-    getLiteralTriple(sprefix, s, pprefix, p, field) {
-        throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, field)' must be implemented.");
+    getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType) {
+        throw new Error("Method 'getLiteralTriple(sprefix, s, pprefix, p, literalValue, literalType)' must be implemented.");
+    }
+
+    isFloat(num) {
+        return Number(num) === num && num % 1 !== 0;
+    }
+
+    isIsoDate(str) {
+        if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+        const d = new Date(str);
+        return d instanceof Date && !isNaN(d) && d.toISOString() === str; //is valid ISO date
     }
 
 }
