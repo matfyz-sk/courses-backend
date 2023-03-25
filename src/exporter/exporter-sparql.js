@@ -21,20 +21,26 @@ export class ExporterSparql extends Exporter {
         const commonOntology = this.getCommonOntology();
         store.bulk(commonOntology);
 
+        try {
+            await client.store(true);
+            console.log(chalk.green(`[${dateTime()}] Export of the ontology finished successfully.`));
+        } catch (e) {
+            throw new Error(chalk.red(`[${dateTime()}] Export of the ontology was not successful. ` + e));
+        }
+
+        /* Adding admin must be called separately because otherwise the xsd type is wrongly set in the graph (for the boolean it is using nonNegativeInteger) causing issues in the UGQL. */
         const superAdminExists = await this.superAdminExists(client);
         if (!superAdminExists) {
             const userOntology = await this.getUserOntology();
             store.bulk(userOntology);
-        }
 
-        try {
-            await client.store(true);
-        } catch (e) {
-            console.log(e);
-            console.log(chalk.red(`[${dateTime()}]`), `Export of the ontology was not successful.`);
-            return;
+            try {
+                await client.store(true);
+                console.log(chalk.green(`[${dateTime()}] Export of the super admin settings was finished successfully.`));
+            } catch (e) {
+                throw new Error(chalk.red(`[${dateTime()}] Export of the super admin settings was not successful. ` + e));
+            }
         }
-        console.log(chalk.green(`[${dateTime()}]`), `Export of the ontology finished successfully.`);
     }
 
     async superAdminExists(client) {
