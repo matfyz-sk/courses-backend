@@ -16,7 +16,7 @@ jobs:
     with:
       BRANCH: master
       BASE_BACKEND_PORT: 3030
-      VIRTUOSO_PORT: 8890
+      VIRTUOSO_PORT: 8880
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
