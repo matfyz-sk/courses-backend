@@ -77,6 +77,12 @@ export const user = {
             dataType: "node",
             objectClass: "teamInstance",
         },
+        instructorOf: {
+            required: false,
+            multiple: true,
+            dataType: "node",
+            objectClass: "courseInstance",
+        },
         requests: {
             required: false,
             multiple: true,
