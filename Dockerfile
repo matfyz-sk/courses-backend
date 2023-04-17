@@ -1,6 +1,6 @@
 FROM node:18
 
-RUN apt-get update && apt-get install default-jre -y
+RUN apt-get update && apt-get install openjdk-17-jre-headless -y
 
 WORKDIR /usr/src/courses
 
