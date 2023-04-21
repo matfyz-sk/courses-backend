@@ -7,11 +7,20 @@ on:
 
 jobs:
   remove-frontend-directory:
-    if: ${{ github.event.label.name == 'no frontend' }}
+    if: ${{ github.event.label.name == 'master frontend' }}
     uses: matfyz-sk/courses-frontend/.github/workflows/remove-destination.yml@master
     with:
       FRONTEND_PATH: /home/www/devcourses3.matfyz.sk/
       PR_BRANCH: ${GITHUB_HEAD_REF}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+  clean-apache:
+    if: contains(github.event.pull_request.labels.*.name, 'master frontend')
+    uses: matfyz-sk/courses-frontend/.github/workflows/clean-apache.yml@master
+    with:
+      BRANCH: ${GITHUB_HEAD_REF}
     secrets:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_HOST: ${{ secrets.SSH_HOST }}

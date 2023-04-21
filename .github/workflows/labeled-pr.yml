@@ -7,7 +7,7 @@ on:
 
 jobs:
   create-frontend-directory:
-    if: ${{ github.event.label.name == 'no frontend' }}
+    if: ${{ github.event.label.name == 'master frontend' }}
     uses: matfyz-sk/courses-frontend/.github/workflows/create-destination.yml@master
     with:
       FRONTEND_PATH: /home/www/devcourses3.matfyz.sk/
@@ -18,7 +18,7 @@ jobs:
       SSH_USER: ${{ secrets.SSH_USER }}
   deploy-master-frontend:
     needs: create-frontend-directory
-    if: ${{ github.event.label.name == 'no frontend' }}
+    if: ${{ github.event.label.name == 'master frontend' }}
     uses: matfyz-sk/courses-frontend/.github/workflows/deploy.yml@master
     with:
       BRANCH: master
@@ -31,3 +31,14 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_USER: ${{ secrets.SSH_USER }}
       WEBSITE: ${{ secrets.WEBSITE }}
+  config-apache:
+    if: contains(github.event.pull_request.labels.*.name, 'master frontend')
+    needs: [create-frontend-directory, deploy-master-frontend]
+    uses: matfyz-sk/courses-frontend/.github/workflows/apache.yml@master
+    with:
+      BRANCH: ${GITHUB_HEAD_REF}
+      PR_NUMBER: ${{ github.event.number }}
+    secrets:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
