@@ -24,10 +24,10 @@ export const PREFIXES = {
 const CREATED_PROPERTY = "created";
 const COURSES_CREATED_PROPERTY = "createdAt";
 
-export class Exporter {
+export class SchemaExporter {
 
     constructor() {
-        if (this.constructor === Exporter) {
+        if (this.constructor === SchemaExporter) {
             throw new Error("Abstract classes can't be instantiated.");
         }
     }

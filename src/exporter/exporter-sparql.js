@@ -1,12 +1,12 @@
 import {GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 import {Client, Data, Node, Triple} from "virtuoso-sparql-client";
-import {Exporter, PREFIXES} from './exporter';
+import {SchemaExporter, PREFIXES} from './schema-exporter';
 import chalk from "chalk";
 import _ from "lodash";
 import {dateTime, getNewNode} from "../helpers";
 
 
-export class ExporterSparql extends Exporter {
+export class ExporterSparql extends SchemaExporter {
 
     async exportOntology() {
         const client = new Client(SPARQL_ENDPOINT);

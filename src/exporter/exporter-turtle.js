@@ -1,4 +1,4 @@
-import {Exporter, PREFIXES} from "./exporter";
+import {SchemaExporter, PREFIXES} from "./schema-exporter";
 import {generate} from "../lib/virtuoso-uid";
 import _ from "lodash";
 
@@ -7,7 +7,7 @@ import _ from "lodash";
 
 const COLUMN_SIZE = 70;
 
-export class ExporterTurtle extends Exporter {
+export class ExporterTurtle extends SchemaExporter {
 
     async exportOntology() {
         this.getPrefixes();
