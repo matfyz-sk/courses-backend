@@ -6,7 +6,7 @@ import _ from "lodash";
 import {dateTime, getNewNode} from "../helpers";
 
 
-export class ExporterSparql extends SchemaExporter {
+export class SparqlSchemaExporter extends SchemaExporter {
 
     async exportOntology() {
         const client = new Client(SPARQL_ENDPOINT);

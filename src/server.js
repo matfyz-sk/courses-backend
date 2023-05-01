@@ -7,7 +7,7 @@ import authRouter from "./routes/auth";
 import {errorHandler} from "./middleware";
 import {dateTime} from "./helpers";
 import {logger} from "./middleware/logger";
-import {ExporterSparql} from "./exporter/exporter-sparql";
+import {SparqlSchemaExporter} from "./exporter/sparql-schema-exporter";
 import {exec} from 'child_process';
 import url from 'url';
 import proxy from 'express-http-proxy';
@@ -30,7 +30,7 @@ app.use(errorHandler);
 
 app.listen(port, () => {
         console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${port}`);
-        new ExporterSparql().exportOntology().then(() => {
+        new SparqlSchemaExporter().exportOntology().then(() => {
 
             /* UltraGraphQLConfiguration */
             console.log(chalk.green(`[${dateTime()}]`), `Creating UltraGraphQL config.`);
