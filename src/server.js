@@ -12,7 +12,7 @@ import {exec} from 'child_process';
 import url from 'url';
 import proxy from 'express-http-proxy';
 import {JsonExporter} from "./exporter/json-exporter";
-import {UltraGraphQLExporter} from "./exporter/ugql-exporter";
+import {UltraGraphQLConfigurationExporter} from "./exporter/ugql-exporter";
 
 const fs = require('fs');
 
@@ -34,7 +34,7 @@ app.listen(port, () => {
 
             /* UltraGraphQLConfiguration */
             console.log(chalk.green(`[${dateTime()}]`), `Creating UltraGraphQL config.`);
-            const ultraGraphQLConfigStringJson = new UltraGraphQLExporter().getConfiguration();
+            const ultraGraphQLConfigStringJson = new UltraGraphQLConfigurationExporter().getConfiguration();
             fs.writeFileSync('./src/ultragraphql/config.json', ultraGraphQLConfigStringJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), ultraGraphQLConfigStringJson);
             console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL config was created.`);

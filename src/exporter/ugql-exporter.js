@@ -1,6 +1,6 @@
 import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 
-export class UltraGraphQLExporter {
+export class UltraGraphQLConfigurationExporter {
 
     getConfiguration() {
         return JSON.stringify({
