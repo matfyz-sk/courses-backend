@@ -3,11 +3,11 @@ import {generate} from "../lib/virtuoso-uid";
 import _ from "lodash";
 
 /* npm install && npm install -g babel-cli
-   npx babel-node src/exporter/exporter-turtle.js */
+   npx babel-node src/exporter/turtle-schema-exporter.js */
 
 const COLUMN_SIZE = 70;
 
-export class ExporterTurtle extends SchemaExporter {
+export class TurtleSchemaExporter extends SchemaExporter {
 
     async exportOntology() {
         this.getPrefixes();
@@ -94,5 +94,5 @@ export class ExporterTurtle extends SchemaExporter {
 
 }
 
-let exporterTurtle = new ExporterTurtle();
+let exporterTurtle = new TurtleSchemaExporter();
 exporterTurtle.exportOntology();
