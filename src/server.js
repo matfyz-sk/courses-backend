@@ -17,9 +17,11 @@ import {UltraGraphQLConfigurationExporter} from "./exporter/ugql-exporter";
 const fs = require('fs');
 
 const app = express();
-const port = 3010;
-const UGQL_FILE_CONFIG_PATH = "./src/ultragraphql/config.json";
-const HOST = '127.0.0.1:';
+const PORT = 3010;
+const UGQL_JAR_FILE_PATH = "./src/ultragraphql/ultragraphql-exe.jar";
+const UGQL_CONFIG_FILE_PATH = "./src/ultragraphql/config.json";
+const UGQL_MODEL_FILE_PATH = "./src/ultragraphql/model.json";
+const HOST = "127.0.0.1:";
 
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true}));
 app.use(bodyParser.json({limit: "50mb"}));
@@ -29,8 +31,8 @@ app.use("/data", dataRouter);
 app.use("/auth", authRouter);
 app.use(errorHandler);
 
-app.listen(port, () => {
-        console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${port}`);
+app.listen(PORT, () => {
+        console.log(chalk.green(`[${dateTime()}]`), `Server running on port ${PORT}`);
         new SparqlSchemaExporter().exportOntology().then(() => {
 
             /* UltraGraphQLConfiguration */
@@ -40,7 +42,7 @@ app.listen(port, () => {
             const ultraGraphQLConfiguration = ultraGraphQLConfigurationExporter.getConfiguration();
             const ultraGraphQLConfigStringJson = ultraGraphQLConfigurationExporter.getJsonConfiguration(ultraGraphQLConfiguration);
 
-            fs.writeFileSync('./src/ultragraphql/config.json', ultraGraphQLConfigStringJson, {flag: 'w'});
+            fs.writeFileSync(UGQL_CONFIG_FILE_PATH, ultraGraphQLConfigStringJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), ultraGraphQLConfigStringJson);
             console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL config was created.`);
 
@@ -48,12 +50,12 @@ app.listen(port, () => {
             console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
             const modelJson = new JsonExporter().getAllModelsToJson();
             console.log(chalk.green(`[${dateTime()}]`), modelJson);
-            fs.writeFileSync('./src/ultragraphql/model.json', modelJson, {flag: 'w'});
+            fs.writeFileSync(UGQL_MODEL_FILE_PATH, modelJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), `All models converted to JSON.`);
 
             /* Start UltraGraphQL */
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
-            const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-exe.jar --config ' + UGQL_FILE_CONFIG_PATH;
+            const ultraGraphQLCommand = 'java -jar ' + UGQL_JAR_FILE_PATH + ' --config ' + UGQL_CONFIG_FILE_PATH;
             const ultraGraphQLProcess = exec(ultraGraphQLCommand);
             ultraGraphQLProcess.stdout.on('data', function (data) {
                 console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL ${data}`);
