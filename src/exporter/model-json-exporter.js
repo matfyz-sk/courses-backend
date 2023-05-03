@@ -1,6 +1,6 @@
 import * as models from "../model";
 
-export class JsonExporter {
+export class ModelJsonExporter {
 
     replacer(key, value) {
         if (key === "subclassOf" && typeof value === "object") {

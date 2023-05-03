@@ -11,7 +11,7 @@ import {SparqlSchemaExporter} from "./exporter/sparql-schema-exporter";
 import {exec} from 'child_process';
 import url from 'url';
 import proxy from 'express-http-proxy';
-import {JsonExporter} from "./exporter/json-exporter";
+import {ModelJsonExporter} from "./exporter/model-json-exporter";
 import {UltraGraphQLConfigurationExporter} from "./exporter/ugql-exporter";
 
 const fs = require('fs');
@@ -48,7 +48,7 @@ app.listen(PORT, () => {
 
             /* Converting backend models to json */
             console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
-            const modelJson = new JsonExporter().getAllModelsToJson();
+            const modelJson = new ModelJsonExporter().getAllModelsToJson();
             console.log(chalk.green(`[${dateTime()}]`), modelJson);
             fs.writeFileSync(UGQL_MODEL_FILE_PATH, modelJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), `All models converted to JSON.`);
