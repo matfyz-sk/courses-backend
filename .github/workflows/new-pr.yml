@@ -7,10 +7,10 @@ on:
 
 jobs:
   deploy-backend:
-    uses: matfyz-sk/courses-backend/.github/workflows/old-deploy.yml@master
+    uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
     with:
       BRANCH: ${GITHUB_HEAD_REF}
-      BASE_BACKEND_PORT: 6000
+      BASE_BACKEND_PORT: 9000
       VIRTUOSO_PORT: 8890
       PR_NUMBER: ${{ github.event.number }}
     secrets:

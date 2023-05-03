@@ -12,7 +12,7 @@ on:
 
 jobs:
   release:
-    uses: matfyz-sk/courses-backend/.github/workflows/old-deploy.yml@master
+    uses: matfyz-sk/courses-backend/.github/workflows/deploy.yml@master
     with:
       BRANCH: master
       BASE_BACKEND_PORT: 3030
