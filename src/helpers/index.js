@@ -19,6 +19,8 @@ export function getTripleObjectType(objectTypeName, objectValue) {
             return new Data(objectValue, "xsd:boolean");
         case "dateTime":
             return new Data(objectValue, "xsd:dateTimeStamp");
+        case "decimal":
+            return new Data(objectValue, "xsd:decimal");
         case "string":
             return new Text(objectValue);
         default:

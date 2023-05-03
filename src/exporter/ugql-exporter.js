@@ -1,9 +1,13 @@
 import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 
-export class UltraGraphQLExporter {
+export class UltraGraphQLConfigurationExporter {
+
+    getJsonConfiguration(configuration) {
+        return JSON.stringify(configuration, null, "\t");
+    }
 
     getConfiguration() {
-        return JSON.stringify({
+        return {
             "name": "matfyz-graphql-config",
             "extraction": true,
             "mutations": true,
@@ -32,6 +36,6 @@ export class UltraGraphQLExporter {
                 "owl": "http://www.w3.org/2002/07/owl#",
                 "xsd": "http://www.w3.org/2001/XMLSchema#"
             }
-        }, null, "\t");
+        }
     }
 }
