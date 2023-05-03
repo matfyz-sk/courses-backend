@@ -18,7 +18,8 @@ const fs = require('fs');
 
 const app = express();
 const port = 3010;
-const ultraGraphQLConfig = "./src/ultragraphql/config.json";
+const UGQL_FILE_CONFIG_PATH = "./src/ultragraphql/config.json";
+const HOST = '127.0.0.1:';
 
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true}));
 app.use(bodyParser.json({limit: "50mb"}));
@@ -34,7 +35,11 @@ app.listen(port, () => {
 
             /* UltraGraphQLConfiguration */
             console.log(chalk.green(`[${dateTime()}]`), `Creating UltraGraphQL config.`);
-            const ultraGraphQLConfigStringJson = new UltraGraphQLConfigurationExporter().getConfiguration();
+
+            const ultraGraphQLConfigurationExporter = new UltraGraphQLConfigurationExporter();
+            const ultraGraphQLConfiguration = ultraGraphQLConfigurationExporter.getConfiguration();
+            const ultraGraphQLConfigStringJson = ultraGraphQLConfigurationExporter.getJsonConfiguration(ultraGraphQLConfiguration);
+
             fs.writeFileSync('./src/ultragraphql/config.json', ultraGraphQLConfigStringJson, {flag: 'w'});
             console.log(chalk.green(`[${dateTime()}]`), ultraGraphQLConfigStringJson);
             console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL config was created.`);
@@ -48,7 +53,7 @@ app.listen(port, () => {
 
             /* Start UltraGraphQL */
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
-            const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-1.2.0-exe.jar --config ' + ultraGraphQLConfig;
+            const ultraGraphQLCommand = 'java -jar ./src/ultragraphql/ultragraphql-exe.jar --config ' + UGQL_FILE_CONFIG_PATH;
             const ultraGraphQLProcess = exec(ultraGraphQLCommand);
             ultraGraphQLProcess.stdout.on('data', function (data) {
                 console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL ${data}`);
@@ -60,24 +65,20 @@ app.listen(port, () => {
                 console.log(chalk.red(`[${dateTime()}]`), `UltraGraphQL ${data}`);
             });
 
-            const configFileParsed = JSON.parse(fs.readFileSync(ultraGraphQLConfig));
-
-            if (!configFileParsed?.server?.port || !configFileParsed?.server?.graphql || !configFileParsed?.server?.graphiql) {
+            if (!ultraGraphQLConfiguration?.server?.port || !ultraGraphQLConfiguration?.server?.graphql || !ultraGraphQLConfiguration?.server?.graphiql) {
                 throw new Error("Cannot start UltraGraphQL endpoint. UltraGraphQL server configuration is missing. Please specify the UltraGraphQL port, graphql and graphiql url.");
             }
 
-            const ultraGraphQLServerConfig = configFileParsed.server;
-
             /* Setting UltraGraphQL proxies */
-            const graphqlApiProxy = proxy('127.0.0.1:' + ultraGraphQLServerConfig.port + '/', {
+            const graphqlApiProxy = proxy(HOST + ultraGraphQLConfiguration.server.port + '/', {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
 
-            const graphqlApiProxyInterface = proxy('127.0.0.1:' + ultraGraphQLServerConfig.port + ultraGraphQLServerConfig.graphql, {
+            const graphqlApiProxyInterface = proxy(HOST + ultraGraphQLConfiguration.server.port + ultraGraphQLConfiguration.server.graphql, {
                 proxyReqPathResolver: req => url.parse(req.baseUrl).path
             });
-            app.use(ultraGraphQLServerConfig.graphql, graphqlApiProxy);
-            app.use(ultraGraphQLServerConfig.graphiql, graphqlApiProxyInterface);
+            app.use(ultraGraphQLConfiguration.server.graphql, graphqlApiProxy);
+            app.use(ultraGraphQLConfiguration.server.graphiql, graphqlApiProxyInterface);
         });
     }
 )
