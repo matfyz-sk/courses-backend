@@ -18,7 +18,7 @@ export const PREFIXES = {
     schema: "http://schema.org/",
     owl: "http://www.w3.org/2002/07/owl#",
     xsd: "http://www.w3.org/2001/XMLSchema#",
-    dc: "http://purl.org/dc/terms/"
+    dcterms: "http://purl.org/dc/terms/"
 };
 
 const CREATED_PROPERTY = "created";
@@ -121,7 +121,7 @@ export class SchemaExporter {
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "DatatypeProperty"));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalDataProperty"));
-        ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdfs, "subPropertyOf", PREFIXES.dc, CREATED_PROPERTY));
+        ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdfs, "subPropertyOf", PREFIXES.dcterms, CREATED_PROPERTY));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, "dateTime"));
     }
 

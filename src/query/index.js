@@ -1,5 +1,5 @@
 import sparqlTransformer from "sparql-transformer";
-import {DC_TERMS_IRI, DEBUG_QUERIES, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
+import {DEBUG_QUERIES, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 import {
     className,
     classPrefix,
@@ -9,6 +9,7 @@ import {
     getResourceShowRules,
 } from "../helpers";
 import RequestError from "../helpers/RequestError";
+import {PREFIXES} from "../exporter/schema-exporter";
 
 const options = {
     context: ONTOLOGY_IRI,
@@ -18,7 +19,7 @@ const options = {
 
 const prefixes = {
     courses: ONTOLOGY_IRI,
-    dc: DC_TERMS_IRI,
+    dc: PREFIXES.dcterms,
 };
 
 function generateQuery(resource, filters, user) {
