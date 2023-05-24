@@ -1,6 +1,6 @@
 import {GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
 import {Client, Data, Node, Triple} from "virtuoso-sparql-client";
-import {SchemaExporter, PREFIXES} from './schema-exporter';
+import {PREFIXES, SCALAR_TYPE, SchemaExporter} from './schema-exporter';
 import chalk from "chalk";
 import _ from "lodash";
 import {dateTime, getNewNode} from "../helpers";
@@ -20,13 +20,15 @@ export class SparqlSchemaExporter extends SchemaExporter {
         const commonOntology = this.getCommonOntology();
         store.bulk(commonOntology);
 
-        const superAdminExists = await this.superAdminExists(client);
-        if (!superAdminExists) {
-            const userOntology = await this.getUserOntology();
-            store.bulk(userOntology);
-        }
         try {
             await client.store(true);
+            /* Do not call the userOntology together with the rest of the query, otherwise boolean will be represented as nonNegativeInteger */
+            const superAdminExists = await this.superAdminExists(client);
+            if (!superAdminExists) {
+                const userOntology = await this.getUserOntology();
+                store.bulk(userOntology);
+                await client.store(true);
+            }
             console.log(chalk.green(`[${dateTime()}] Export of the ontology finished successfully.`));
         } catch (e) {
             throw new Error(chalk.red(`[${dateTime()}] Export of the ontology was not successful. ` + e));
@@ -35,7 +37,7 @@ export class SparqlSchemaExporter extends SchemaExporter {
 
     async superAdminExists(client) {
         try {
-            const r = await client.query(`SELECT ?superAdmin WHERE {?superAdmin <${ONTOLOGY_IRI}isSuperAdmin> "true"}`);
+            const r = await client.query(`SELECT ?superAdmin WHERE {?superAdmin <${ONTOLOGY_IRI}isSuperAdmin> true}`);
             return r && r.results && r.results.bindings && r.results.bindings.length > 0;
         } catch (e) {
             console.log(e);
@@ -64,25 +66,26 @@ export class SparqlSchemaExporter extends SchemaExporter {
     }
 
     getSchemaLiteral(object) {
-        return new Data(object);
-
         /* This is a proper way how to put triple into database, however Virtuoso has probably some kind of issue making it impossible to use types, therefore just return everything as a string. */
         if (_.isBoolean(object)) {
-            return new Data(object, 'xsd:boolean');
+            return new Data(object, this.scalarTypeToIRI(SCALAR_TYPE.boolean));
         }
         if (this.isFloat(object)) {
-            return new Data(object, 'xsd:decimal'); /* In case of floats just return it as decimal */
+            return new Data(object, this.scalarTypeToIRI(SCALAR_TYPE.decimal)); /* In case of floats just return it as decimal */
         }
         if (_.isNumber(object)) {
-            return new Data(object, 'xsd:integer');
+            return new Data(object, this.scalarTypeToIRI(SCALAR_TYPE.integer));
         }
         if (_.isDate(object) || this.isIsoDate(object)) {
-            return new Data(object, 'xsd:dateTime');
+            return new Data(object, this.scalarTypeToIRI(SCALAR_TYPE.dateTime));
         }
         if (_.isString(object)) {
-            return new Data(object, 'xsd:string');
+            return new Data(object);
         }
-        return new Data(object);
+    }
+
+    scalarTypeToIRI(scalarType) {
+        return `<${scalarType}>`;
     }
 
     getUserIri(userIriString) {

@@ -21,6 +21,17 @@ export const PREFIXES = {
     dcterms: "http://purl.org/dc/terms/"
 };
 
+export const SCALAR_TYPE = {
+    string: PREFIXES.xsd + "string",
+    boolean: PREFIXES.xsd + "boolean",
+    integer: PREFIXES.xsd + "integer",
+    dateTime: PREFIXES.xsd + "dateTime",
+    float: PREFIXES.xsd + "float",
+    decimal: PREFIXES.xsd + "decimal",
+    long: PREFIXES.xsd + "long",
+    short: PREFIXES.xsd + "short"
+}
+
 const CREATED_PROPERTY = "created";
 const COURSES_CREATED_PROPERTY = "createdAt";
 
