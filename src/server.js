@@ -47,11 +47,11 @@ app.listen(PORT, () => {
             console.log(chalk.green(`[${dateTime()}]`), `UltraGraphQL config was created.`);
 
             /* Converting backend models to json */
-            console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
+            //console.log(chalk.green(`[${dateTime()}]`), `Converting all models to JSON.`);
             const modelJson = new ModelJsonExporter().getAllModelsToJson();
-            console.log(chalk.green(`[${dateTime()}]`), modelJson);
+            //console.log(chalk.green(`[${dateTime()}]`), modelJson);
             fs.writeFileSync(UGQL_MODEL_FILE_PATH, modelJson, {flag: 'w'});
-            console.log(chalk.green(`[${dateTime()}]`), `All models converted to JSON.`);
+            //console.log(chalk.green(`[${dateTime()}]`), `All models converted to JSON.`);
 
             /* Start UltraGraphQL */
             console.log(chalk.green(`[${dateTime()}]`), `Starting UltraGraphQL`);
