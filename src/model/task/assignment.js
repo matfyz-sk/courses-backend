@@ -84,7 +84,7 @@ export const assignment = {
             multiple: false,
             dataType: "integer",
         },
-        reviewedByTeam: {
+        isReviewedByTeam: {
             required: false,
             multiple: false,
             dataType: "boolean",
