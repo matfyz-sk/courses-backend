@@ -13,8 +13,7 @@ import url from 'url';
 import proxy from 'express-http-proxy';
 import {ModelJsonExporter} from "./exporter/model-json-exporter";
 import {UltraGraphQLConfigurationExporter} from "./exporter/ugql-exporter";
-
-const fs = require('fs');
+import fs from 'fs';
 
 const app = express();
 const PORT = 3010;
