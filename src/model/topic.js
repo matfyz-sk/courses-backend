@@ -12,7 +12,7 @@ export const topic = {
             multiple: false,
             dataType: "string",
         },
-        hasPrerequisite: {
+        topicPrerequisite: {
             required: false,
             multiple: false,
             dataType: "node",
