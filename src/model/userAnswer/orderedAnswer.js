@@ -9,7 +9,7 @@ export const orderedAnswer = {
             multiple: false,
             dataType: "integer"
         },
-        userChoice: {
+        isUserChoice: {
             required: true,
             multiple: false,
             dataType: "boolean"
