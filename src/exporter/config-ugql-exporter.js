@@ -1,4 +1,4 @@
-import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT, SPARQL_PASSWORD, SPARQL_USER} from "../constants";
+import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT, SPARQL_PASSWORD, SPARQL_USER, VIRTUOSO_JDBC_PORT} from "../constants";
 
 export class UltraGraphQLConfigurationExporter {
 
@@ -13,6 +13,7 @@ export class UltraGraphQLConfigurationExporter {
             "mutations": true,
             "mutationService": "matfyz-graphql",
             "modelJson": "./src/ultragraphql/model.json",
+            "jdbcPort": VIRTUOSO_JDBC_PORT,
             "server": {
                 "port": 8080,
                 "graphql": "/graphql",

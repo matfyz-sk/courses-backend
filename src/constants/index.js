@@ -4,6 +4,7 @@ export const SPARQL_USER = process.env.SPARQL_USER ?? "SPARQL";
 export const SPARQL_PASSWORD = process.env.SPARQL_PASSWORD ?? "123456";
 export const BASE_IRI = process.env.BASE_IRI ?? "http://www.courses.matfyz.sk/";
 export const GRAPH_IRI = process.env.GRAPH_IRI ?? BASE_IRI;
+export const VIRTUOSO_JDBC_PORT = process.env.VIRTUOSO_JDBC_PORT ?? "1111"; /* Needed for the VirtGraph in UGQL used for transaction calls https://docs.openlinksw.com/virtuoso/jdbcurl4mat/ */
 export const ONTOLOGY_IRI = BASE_IRI + "ontology#";
 export const SUPER_ADMIN_NAME = process.env.SUPER_ADMIN_NAME ?? "Admin";
 export const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL ?? "admin@matfyz.sk";
