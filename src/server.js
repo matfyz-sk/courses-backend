@@ -12,7 +12,7 @@ import {exec} from 'child_process';
 import url from 'url';
 import proxy from 'express-http-proxy';
 import {ModelJsonExporter} from "./exporter/model-json-exporter";
-import {UltraGraphQLConfigurationExporter} from "./exporter/ugql-exporter";
+import {UltraGraphQLConfigurationExporter} from "./exporter/config-ugql-exporter";
 import fs from 'fs';
 
 const app = express();

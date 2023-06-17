@@ -1,4 +1,4 @@
-import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
+import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT, SPARQL_PASSWORD, SPARQL_USER} from "../constants";
 
 export class UltraGraphQLConfigurationExporter {
 
@@ -24,7 +24,8 @@ export class UltraGraphQLConfigurationExporter {
                     "type": "SPARQLEndpointService",
                     "url": SPARQL_ENDPOINT,
                     "graph": GRAPH_IRI,
-                    "user": "SPARQL"
+                    "user": SPARQL_USER,
+                    "password": SPARQL_PASSWORD
                 }
             ],
             "prefixes": {
