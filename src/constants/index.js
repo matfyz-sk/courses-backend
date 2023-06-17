@@ -1,7 +1,7 @@
 export const AUTH_SECRET = process.env.AUTH_SECRET ?? "courses";
 export const SPARQL_ENDPOINT = process.env.SPARQL_ENDPOINT ?? "http://127.0.0.1:8890/sparql";
 export const SPARQL_USER = process.env.SPARQL_USER ?? "SPARQL";
-export const SPARQL_PASSWORD = process.env.SPARQL_PASSWORD ?? "";
+export const SPARQL_PASSWORD = process.env.SPARQL_PASSWORD ?? "123456";
 export const BASE_IRI = process.env.BASE_IRI ?? "http://www.courses.matfyz.sk/";
 export const GRAPH_IRI = process.env.GRAPH_IRI ?? BASE_IRI;
 export const ONTOLOGY_IRI = BASE_IRI + "ontology#";
