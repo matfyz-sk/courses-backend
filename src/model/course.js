@@ -19,7 +19,7 @@ export const course = {
             multiple: false,
             dataType: "string",
         },
-        hasPrerequisite: {
+        coursePrerequisite: {
             required: false,
             multiple: true,
             dataType: "node",
