@@ -4,7 +4,7 @@ export const orderingUserAnswer = {
     type: ["orderingUserAnswer"],
     subclassOf: userAnswer,
     props: {
-        userChoice: {
+        userChoiceNumber: {
             required: true,
             multiple: false,
             dataType: "integer"
