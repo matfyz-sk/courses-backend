@@ -6,7 +6,7 @@ export const courseInstance = {
     create: ["admin"],
     show: ["all"],
     props: {
-        instanceOf: {
+        course: {
             required: true,
             multiple: false,
             dataType: "node",
