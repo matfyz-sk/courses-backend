@@ -9,7 +9,7 @@ export const teamInstance = {
             multiple: false,
             dataType: "boolean",
         },
-        instanceOf: {
+        team: {
             required: true,
             multiple: false,
             dataType: "node",
