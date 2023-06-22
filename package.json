@@ -1,58 +1,66 @@
 {
-   "name": "courses-backend",
-   "version": "1.1.0",
-   "description": "Backend of web application",
-   "nodemonConfig": {
-      "ignore": ["./src/ultragraphql/model.json", "./src/ultragraphql/config.json"]
-   },
-   "repository": {
-      "type": "git",
-      "url": "https://github.com/matfyz-sk/courses-backend"
-   },
-   "main": "src/server.js",
-   "scripts": {
-      "build": "rm -rf dist/ && babel src -d dist",
-      "prod": "node dist/server.js",
-      "dev": "nodemon --exec babel-node src/server.js",
-      "debug": "nodemon --inspect --exec babel-node  src/server.js"
-   },
-   "author": "Milan Cifra",
-   "license": "ISC",
-   "dependencies": {
-      "axios": "^1.4.0",
-      "bcrypt": "^5.1.0",
-      "body-parser": "^1.20.2",
-      "chalk": "^4.1.2",
-      "cors": "^2.8.5",
-      "express": "^4.18.2",
-      "express-fileupload": "^1.4.0",
-      "express-http-proxy": "^1.6.3",
-      "express-jwt": "^8.4.1",
-      "express-validator": "^7.0.1",
-      "jsonwebtoken": "^9.0.0",
-      "lodash": "^4.17.21",
-      "moment": "^2.29.4",
-      "moment-timezone": "^0.5.43",
-      "sparql-transformer": "^2.9.0",
-      "virtuoso-sparql-client": "^0.2.2"
-   },
-   "devDependencies": {
-      "@babel/cli": "^7.22.5",
-      "@babel/core": "^7.22.5",
-      "@babel/node": "^7.22.5",
-      "@babel/preset-env": "^7.22.5",
-      "nodemon": "^2.0.22"
-   },
-   "babel": {
-      "presets": [
-         [
-            "@babel/preset-env",
-            {
-               "targets": {
-                  "node": "current"
-               }
-            }
-         ]
+  "name": "courses-backend",
+  "version": "1.1.0",
+  "description": "Backend of MatFyz Courses 3 web application",
+  "nodemonConfig": {
+    "ignore": [
+      "./src/ultragraphql/model.json",
+      "./src/ultragraphql/config.json"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matfyz-sk/courses-backend"
+  },
+  "main": "src/server.js",
+  "scripts": {
+    "build": "rm -rf dist/ && babel src -d dist",
+    "prod": "node dist/server.js",
+    "dev": "nodemon --exec babel-node src/server.js",
+    "debug": "nodemon --inspect --exec babel-node  src/server.js"
+  },
+  "author": "Milan Cifra",
+  "contributors": [
+    {
+      "name": "Miroslav Baluch"
+    }
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "express-http-proxy": "^1.6.3",
+    "express-jwt": "^8.4.1",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
+    "sparql-transformer": "^2.9.0",
+    "virtuoso-sparql-client": "^0.2.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/node": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "nodemon": "^2.0.22"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
       ]
-   }
+    ]
+  }
 }
