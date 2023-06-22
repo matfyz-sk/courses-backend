@@ -14,6 +14,7 @@ import proxy from 'express-http-proxy';
 import {ModelJsonExporter} from "./exporter/model-json-exporter";
 import {UltraGraphQLConfigurationExporter} from "./exporter/config-ugql-exporter";
 import fs from 'fs';
+import {URL} from 'url';
 
 const app = express();
 const PORT = 3010;
@@ -72,11 +73,11 @@ app.listen(PORT, () => {
 
             /* Setting UltraGraphQL proxies */
             const graphqlApiProxy = proxy(HOST + ultraGraphQLConfiguration.server.port + '/', {
-                proxyReqPathResolver: req => url.parse(req.baseUrl).path
+                proxyReqPathResolver: req => new URL(req.baseUrl).pathname
             });
 
             const graphqlApiProxyInterface = proxy(HOST + ultraGraphQLConfiguration.server.port + ultraGraphQLConfiguration.server.graphql, {
-                proxyReqPathResolver: req => url.parse(req.baseUrl).path
+                proxyReqPathResolver: req => new URL(req.baseUrl).pathname
             });
             app.use(ultraGraphQLConfiguration.server.graphql, graphqlApiProxy);
             app.use(ultraGraphQLConfiguration.server.graphiql, graphqlApiProxyInterface);
