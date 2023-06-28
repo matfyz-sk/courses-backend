@@ -9,7 +9,6 @@ import {dateTime} from "./helpers";
 import {logger} from "./middleware/logger";
 import {SparqlSchemaExporter} from "./exporter/sparql-schema-exporter";
 import {exec} from 'child_process';
-import url from 'url';
 import proxy from 'express-http-proxy';
 import {ModelJsonExporter} from "./exporter/model-json-exporter";
 import {UltraGraphQLConfigurationExporter} from "./exporter/config-ugql-exporter";
@@ -72,13 +71,14 @@ app.listen(PORT, () => {
             }
 
             /* Setting UltraGraphQL proxies */
-            const graphqlApiProxy = proxy(HOST + ultraGraphQLConfiguration.server.port + '/', {
-                proxyReqPathResolver: req => new URL(req.baseUrl).pathname
-            });
+            const graphqlApiProxy = proxy(HOST + ultraGraphQLConfiguration.server.port + '/', {proxyReqPathResolver: req => formProxySuffix(req)});
+            const graphqlApiProxyInterface = proxy(HOST + ultraGraphQLConfiguration.server.port + ultraGraphQLConfiguration.server.graphql, {proxyReqPathResolver: req => formProxySuffix(req)});
 
-            const graphqlApiProxyInterface = proxy(HOST + ultraGraphQLConfiguration.server.port + ultraGraphQLConfiguration.server.graphql, {
-                proxyReqPathResolver: req => new URL(req.baseUrl).pathname
-            });
+            const formProxySuffix = (req) => {
+                const baseUrl = `${req.protocol}://${req.get('host')}`;
+                return new URL(req.originalUrl, baseUrl).pathname
+            }
+
             app.use(ultraGraphQLConfiguration.server.graphql, graphqlApiProxy);
             app.use(ultraGraphQLConfiguration.server.graphiql, graphqlApiProxyInterface);
         });
