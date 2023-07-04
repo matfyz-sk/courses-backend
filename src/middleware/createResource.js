@@ -1,6 +1,6 @@
-import {DataController} from "../controllers";
-import {prepareResource} from "./prepareResource";
-import {responseHandler} from "./responseHandler";
+import {DataController} from "../controllers/index.js";
+import {prepareResource} from "./prepareResource.js";
+import {responseHandler} from "./responseHandler.js";
 
 async function _createResource(req, res, next) {
     try {

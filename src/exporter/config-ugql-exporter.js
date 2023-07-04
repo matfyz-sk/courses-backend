@@ -6,7 +6,7 @@ import {
     SPARQL_PASSWORD,
     SPARQL_USER,
     VIRTUOSO_JDBC_PORT
-} from "../constants";
+} from "../constants/index.js";
 
 export class UltraGraphQLConfigurationExporter {
 

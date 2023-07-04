@@ -1,9 +1,9 @@
-import {GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
+import {GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants/index.js";
 import {Client, Data, Node, Triple} from "virtuoso-sparql-client";
-import {PREFIXES, SCALAR_TYPE, SchemaExporter} from './schema-exporter';
+import {PREFIXES, SCALAR_TYPE, SchemaExporter} from './schema-exporter.js';
 import chalk from "chalk";
 import _ from "lodash";
-import {dateTime, getNewNode} from "../helpers";
+import {dateTime, getNewNode} from "../helpers/index.js";
 
 
 export class SparqlSchemaExporter extends SchemaExporter {

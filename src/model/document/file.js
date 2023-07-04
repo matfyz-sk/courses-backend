@@ -1,4 +1,4 @@
-import {document} from "./document";
+import {document} from "./document.js";
 
 export const file = {
     type: ["file"],

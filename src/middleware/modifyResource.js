@@ -1,7 +1,7 @@
-import {DataController} from "../controllers";
-import {prepareResource} from "./prepareResource";
-import {fetchResource} from "./fetchResource";
-import {responseHandler} from "./responseHandler";
+import {DataController} from "../controllers/index.js";
+import {prepareResource} from "./prepareResource.js";
+import {fetchResource} from "./fetchResource.js";
+import {responseHandler} from "./responseHandler.js";
 
 async function _modifyResource(req, res, next) {
     const resource = res.locals.resource;

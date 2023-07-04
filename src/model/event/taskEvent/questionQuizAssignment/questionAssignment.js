@@ -1,4 +1,4 @@
-import {questionQuizAssignment} from "./questionQuizAssignment";
+import {questionQuizAssignment} from "./questionQuizAssignment.js";
 
 export const questionAssignment = {
     type: ["questionAssignment"],

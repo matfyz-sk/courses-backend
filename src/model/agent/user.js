@@ -1,4 +1,4 @@
-import {agent} from "./agent";
+import {agent} from "./agent.js";
 
 export const user = {
     type: ["user"],

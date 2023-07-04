@@ -1,4 +1,4 @@
-import {taskEvent} from "../taskEvent";
+import {taskEvent} from "../taskEvent.js";
 
 export const questionQuizAssignment = {
     type: ["questionQuizAssignment"],

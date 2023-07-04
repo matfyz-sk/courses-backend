@@ -1,10 +1,10 @@
 import {Client, Data, Node, Text} from "virtuoso-sparql-client";
-import * as ID from "../lib/virtuoso-uid";
-import * as Resources from "../model";
+import * as ID from "../lib/virtuoso-uid.js";
+import * as Resources from "../model/index.js";
 import moment from "moment-timezone";
-import RequestError from "./RequestError";
+import RequestError from "./RequestError.js";
 import jwt from "jsonwebtoken";
-import {AUTH_SECRET, DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
+import {AUTH_SECRET, DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants/index.js";
 import _ from "lodash";
 
 export function getTripleObjectType(objectTypeName, objectValue) {

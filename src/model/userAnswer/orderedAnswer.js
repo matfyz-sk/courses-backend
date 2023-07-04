@@ -1,4 +1,4 @@
-import {userAnswer} from "./userAnswer";
+import {userAnswer} from "./userAnswer.js";
 
 export const orderedAnswer = {
     type: ["orderedAnswer"],

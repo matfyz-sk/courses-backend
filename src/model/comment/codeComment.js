@@ -1,4 +1,4 @@
-import {comment} from "./comment";
+import {comment} from "./comment.js";
 
 export const codeComment = {
     type: ["codeComment"],

@@ -1,4 +1,4 @@
-import {event} from "../event";
+import {event} from "../event.js";
 
 export const session = {
     type: ["session"],

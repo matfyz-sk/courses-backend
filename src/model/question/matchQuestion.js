@@ -1,4 +1,4 @@
-import {question} from "./question";
+import {question} from "./question.js";
 
 export const matchQuestion = {
     type: ["matchQuestion"],

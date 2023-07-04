@@ -1,6 +1,6 @@
-import RequestError from "../helpers/RequestError";
-import {DataController} from "../controllers";
-import {classPrefix, client, getResourceObject, uri2className} from "../helpers";
+import RequestError from "../helpers/RequestError.js";
+import {DataController} from "../controllers/index.js";
+import {classPrefix, client, getResourceObject, uri2className} from "../helpers/index.js";
 import _ from "lodash";
 
 async function resolveResource(req, res, next) {

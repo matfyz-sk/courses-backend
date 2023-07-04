@@ -1,7 +1,7 @@
-import runQuery from "../query";
-import {ONTOLOGY_IRI} from "../constants";
-import RequestError from "../helpers/RequestError";
-import {changeFirstCharCase, getResourceObject} from "../helpers";
+import runQuery from "../query/index.js";
+import {ONTOLOGY_IRI} from "../constants/index.js";
+import RequestError from "../helpers/RequestError.js";
+import {changeFirstCharCase, getResourceObject} from "../helpers/index.js";
 
 export async function createResource(resource, data) {
     if (resource.resource.subclasses != undefined) {

@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import * as models from "../model";
+import * as models from "../model/index.js";
 import {
     DATA_IRI,
     ONTOLOGY_IRI,
@@ -7,7 +7,7 @@ import {
     SUPER_ADMIN_EMAIL,
     SUPER_ADMIN_NAME,
     SUPER_ADMIN_PASSWORD
-} from "../constants";
+} from "../constants/index.js";
 import _ from "lodash";
 
 export const PREFIXES = {

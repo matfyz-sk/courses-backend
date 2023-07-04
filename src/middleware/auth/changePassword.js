@@ -1,8 +1,8 @@
 import {body} from "express-validator";
 import bcrypt from "bcrypt";
-import {client} from "../../helpers";
-import {DATA_IRI, GRAPH_IRI, PASSWORD_SALT} from "../../constants";
-import {checkValidation} from "./checkValidation";
+import {client} from "../../helpers/index.js";
+import {DATA_IRI, GRAPH_IRI, PASSWORD_SALT} from "../../constants/index.js";
+import {checkValidation} from "./checkValidation.js";
 
 const bodyValidation = [body("password").exists().isString().isLength({min: 6})];
 

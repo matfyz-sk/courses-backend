@@ -1,4 +1,4 @@
-import {examinationEvent} from "./examinationEvent";
+import {examinationEvent} from "./examinationEvent.js";
 
 export const oralExam = {
     type: ["oralExam"],

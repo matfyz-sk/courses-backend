@@ -1,5 +1,5 @@
-import Resource from "../resource";
-import {getResourceObject} from "../helpers";
+import Resource from "../resource/index.js";
+import {getResourceObject} from "../helpers/index.js";
 
 export function prepareResource(req, res, next) {
     try {

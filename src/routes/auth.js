@@ -1,4 +1,4 @@
-import {changePassword, githubLogin, login, register} from "../middleware";
+import {changePassword, githubLogin, login, register} from "../middleware/index.js";
 import express from "express";
 
 export const authRouter = express.Router();

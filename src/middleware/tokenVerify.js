@@ -1,6 +1,6 @@
 import {expressjwt} from "express-jwt";
-import {AUTH_SECRET} from "../constants";
-import {client} from "../helpers";
+import {AUTH_SECRET} from "../constants/index.js";
+import {client} from "../helpers/index.js";
 
 async function setSuperAdmin(req, res, next) {
     if (!req.auth) {

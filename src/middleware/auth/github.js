@@ -1,8 +1,8 @@
 import axios from "axios";
-import {user} from "../../model";
-import runQuery from "../../query";
-import Resource from "../../resource";
-import {generateToken, uri2id} from "../../helpers";
+import {user} from "../../model/index.js";
+import runQuery from "../../query/index.js";
+import Resource from "../../resource/index.js";
+import {generateToken, uri2id} from "../../helpers/index.js";
 
 const GITHUB_GET_TOKEN_URL = "https://github.com/login/oauth/access_token";
 const GITHUB_GET_USER_URL = "https://api.github.com/user";

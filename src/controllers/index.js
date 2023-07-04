@@ -1,1 +1,1 @@
-export * as DataController from "./data";
+export * as DataController from "./data.js";

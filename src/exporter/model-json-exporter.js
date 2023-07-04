@@ -1,4 +1,4 @@
-import * as models from "../model";
+import * as models from "../model/index.js";
 
 export class ModelJsonExporter {
 

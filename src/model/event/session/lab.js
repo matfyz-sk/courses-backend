@@ -1,4 +1,4 @@
-import {session} from "./session";
+import {session} from "./session.js";
 
 export const lab = {
     type: ["lab"],

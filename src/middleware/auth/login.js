@@ -1,10 +1,10 @@
 import {body} from "express-validator";
 import bcrypt from "bcrypt";
-import runQuery from "../../query";
-import {user} from "../../model";
-import {generateToken, uri2id} from "../../helpers";
-import {checkValidation} from "./checkValidation";
-import {IMPERSONATION_PASSWORD} from "../../constants";
+import runQuery from "../../query/index.js";
+import {user} from "../../model/index.js";
+import {generateToken, uri2id} from "../../helpers/index.js";
+import {checkValidation} from "./checkValidation.js";
+import {IMPERSONATION_PASSWORD} from "../../constants/index.js";
 
 const bodyValidation = [
     body("email").exists().isEmail(),

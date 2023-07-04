@@ -1,5 +1,5 @@
 import sparqlTransformer from "sparql-transformer";
-import {DEBUG_QUERIES, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants";
+import {DEBUG_QUERIES, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT} from "../constants/index.js";
 import {
     className,
     classPrefix,
@@ -7,9 +7,9 @@ import {
     getResourceCourseInstance,
     getResourceObject,
     getResourceShowRules,
-} from "../helpers";
-import RequestError from "../helpers/RequestError";
-import {PREFIXES} from "../exporter/schema-exporter";
+} from "../helpers/index.js";
+import RequestError from "../helpers/RequestError.js";
+import {PREFIXES} from "../exporter/schema-exporter.js";
 
 const options = {
     context: ONTOLOGY_IRI,

@@ -8,8 +8,8 @@ import {
     getResourceCreateRules,
     getResourceObject,
     getTripleObjectType,
-} from "../helpers";
-import RequestError from "../helpers/RequestError";
+} from "../helpers/index.js";
+import RequestError from "../helpers/RequestError.js";
 import _ from "lodash";
 
 const IMPLICIT_CREATE = ["admin", "superAdmin", "teacher"];

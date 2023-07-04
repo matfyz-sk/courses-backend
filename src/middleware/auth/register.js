@@ -1,11 +1,11 @@
-import Resource from "../../resource";
+import Resource from "../../resource/index.js";
 import {body} from "express-validator";
 import bcrypt from "bcrypt";
-import runQuery from "../../query";
-import {user as userObj} from "../../model";
-import {generateToken, uri2id} from "../../helpers";
-import {checkValidation} from "./checkValidation";
-import {PASSWORD_SALT} from "../../constants";
+import runQuery from "../../query/index.js";
+import {user as userObj} from "../../model/index.js";
+import {generateToken, uri2id} from "../../helpers/index.js";
+import {checkValidation} from "./checkValidation.js";
+import {PASSWORD_SALT} from "../../constants/index.js";
 
 const bodyValidation = [
     body("user").exists(),

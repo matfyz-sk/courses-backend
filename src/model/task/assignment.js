@@ -1,4 +1,4 @@
-import {task} from "./task";
+import {task} from "./task.js";
 
 export const assignment = {
     type: ["assignment"],
