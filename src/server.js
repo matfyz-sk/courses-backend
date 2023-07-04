@@ -2,8 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import chalk from "chalk";
-import dataRouter from "./routes/data";
-import authRouter from "./routes/auth";
 import {errorHandler} from "./middleware";
 import {dateTime} from "./helpers";
 import {logger} from "./middleware/logger";
@@ -14,6 +12,8 @@ import {ModelJsonExporter} from "./exporter/model-json-exporter";
 import {UltraGraphQLConfigurationExporter} from "./exporter/config-ugql-exporter";
 import fs from 'fs';
 import {URL} from 'url';
+import {dataRouter} from "./routes/data.js";
+import {authRouter} from "./routes/auth.js";
 
 const app = express();
 const PORT = 3010;

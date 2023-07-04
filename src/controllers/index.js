@@ -1,5 +1,1 @@
-import * as DataController from "./data";
-
-module.exports = {
-    DataController,
-};
+export * as DataController from "./data";
