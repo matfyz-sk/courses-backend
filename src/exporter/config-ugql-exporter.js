@@ -1,4 +1,12 @@
-import {DATA_IRI, GRAPH_IRI, ONTOLOGY_IRI, SPARQL_ENDPOINT, SPARQL_PASSWORD, SPARQL_USER, VIRTUOSO_JDBC_PORT} from "../constants";
+import {
+    DATA_IRI,
+    GRAPH_IRI,
+    ONTOLOGY_IRI,
+    SPARQL_ENDPOINT,
+    SPARQL_PASSWORD,
+    SPARQL_USER,
+    VIRTUOSO_JDBC_PORT
+} from "../constants";
 
 export class UltraGraphQLConfigurationExporter {
 

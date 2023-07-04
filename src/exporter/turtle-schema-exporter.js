@@ -1,4 +1,4 @@
-import {SchemaExporter, PREFIXES} from "./schema-exporter";
+import {PREFIXES, SchemaExporter} from "./schema-exporter";
 import {generate} from "../lib/virtuoso-uid";
 import _ from "lodash";
 
