@@ -235,7 +235,7 @@ function nodesToArray(obj) {
 }
 
 async function run(query) {
-    const data = await sparqlTransformer.default(query, options);
+    const data = await sparqlTransformer(query, options);
     nodesToArray(data["@graph"]);
     return data;
 }
