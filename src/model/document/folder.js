@@ -6,7 +6,7 @@ export const folder = {
     create: ["all"],
     show: ["all"],
     props: {
-        content: {
+        fileContent: {
             required: false,
             multiple: true,
             dataType: "node",
