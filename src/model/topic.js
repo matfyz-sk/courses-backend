@@ -14,13 +14,13 @@ export const topic = {
         },
         topicPrerequisite: {
             required: false,
-            multiple: false,
+            multiple: true,
             dataType: "node",
             objectClass: "topic",
         },
         subtopicOf: {
             required: false,
-            multiple: false,
+            multiple: true,
             dataType: "node",
             objectClass: "topic",
         },
