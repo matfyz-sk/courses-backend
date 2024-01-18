@@ -25,7 +25,7 @@ export const question = {
             dataType: "string",
         },
         ofTopic: {
-            required: true,
+            required: false,
             multiple: false,
             dataType: "node",
             objectClass: "topic",
