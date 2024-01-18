@@ -4,7 +4,7 @@ export const orderingQuestion = {
     type: ["orderingQuestion"],
     subclassOf: question,
     props: {
-        hasOrderingAnswer: {
+        hasAnswer: {
             required: true,
             multiple: true,
             dataType: "node",
