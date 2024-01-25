@@ -4,7 +4,7 @@ export const questionWithPredefinedAnswer = {
     type: ["questionWithPredefinedAnswer"],
     subclassOf: question,
     props: {
-        hasAnswer: {
+        hasPredefinedAnswer: {
             required: true,
             multiple: true,
             dataType: "node",

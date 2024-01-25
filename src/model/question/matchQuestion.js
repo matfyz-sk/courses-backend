@@ -4,7 +4,7 @@ export const matchQuestion = {
     type: ["matchQuestion"],
     subclassOf: question,
     props: {
-        hasAnswer: {
+        hasMatchPairAnswer: {
             required: true,
             multiple: true,
             dataType: "node",
