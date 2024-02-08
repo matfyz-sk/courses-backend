@@ -3,7 +3,7 @@ export const documentReference = {
     create: ["all"],
     show: ["all"],
     props: {
-        hasDocument: {
+        document: {
             required: true,
             multiple: false,
             dataType: 'node',

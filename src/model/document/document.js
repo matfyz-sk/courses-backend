@@ -3,22 +3,12 @@ import {fsObject} from "./fsObject.js";
 export const document = {
     type: ["document"],
     subclassOf: fsObject,
-    subclasses: ['internalDocument', 'externalDocument', 'file'],
+    subclasses: ['internaldocument', 'externaldocument', 'file'],
     create: ["all"],
     show: ["all"],
     props: {
         name: {
             required: true,
-            multiple: false,
-            dataType: "string"
-        },
-        shortName: {
-            required: false,
-            multiple: false,
-            dataType: "string"
-        },
-        slug: {
-            required: false,
             multiple: false,
             dataType: "string"
         },
@@ -32,22 +22,8 @@ export const document = {
             multiple: false,
             dataType: "dateTime",
         },
-        // author: {
-        //     required: false,
-        //     multiple: true,
-        //     dataType: "node",
-        //     objectClass: "user",
-        //     change: ["teacher"],
-        // },
-        // owner: {
-        //     required: false,
-        //     multiple: false,
-        //     dataType: "node",
-        //     objectClass: "user",
-        //     change: ["teacher"],
-        // },
-        courseInstance: {
-            required: true,
+        courseInstances: {
+            required: false,
             multiple: true,
             dataType: "node",
             objectClass: "courseInstance",

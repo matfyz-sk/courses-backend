@@ -5,7 +5,7 @@ export const file = {
     subclassOf: document,
     props: {
         filename: {
-            required: true,
+            required: false,
             multiple: false,
             dataType: 'string',
         },
@@ -14,11 +14,10 @@ export const file = {
             multiple: false,
             dataType: 'string',
         },
-        payload: {
-            required: true,
+        rawContent: {
+            required: false,
             multiple: false,
-            dataType: 'node',
-            objectClass: 'payload',
+            dataType: 'string',
         }
     },
 };
