@@ -3,7 +3,7 @@ import {fsObject} from "./fsObject.js";
 export const document = {
     type: ["document"],
     subclassOf: fsObject,
-    subclasses: ['internaldocument', 'externaldocument', 'file'],
+    subclasses: ['internalDocument', 'externalDocument', 'file'],
     create: ["all"],
     show: ["all"],
     props: {
@@ -28,19 +28,19 @@ export const document = {
             dataType: "node",
             objectClass: "courseInstance",
         },
-        previousVersion: {
+        previousDocumentVersion: {
             required: false,
             multiple: false,
             dataType: "node",
             objectClass: "document",
         },
-        nextVersion: {
+        nextDocumentVersion: {
             required: false,
             multiple: false,
             dataType: "node",
             objectClass: "document",
         },
-        historicVersion: {
+        historicDocumentVersions: {
             required: false,
             multiple: true,
             dataType: "node",

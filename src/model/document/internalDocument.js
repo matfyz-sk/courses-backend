@@ -1,7 +1,7 @@
 import {document} from "./document.js";
 
-export const internaldocument = {
-    type: ["internaldocument"],
+export const internalDocument = {
+    type: ["internalDocument"],
     subclassOf: document,
     props: {
         mimeType: {
@@ -13,12 +13,6 @@ export const internaldocument = {
             required: true,
             multiple: false,
             dataType: 'string',
-        },
-        // payload: {
-        //     required: true,
-        //     multiple: false,
-        //     dataType: 'node',
-        //     objectClass: 'payload',
-        // }
+        }
     },
 };
