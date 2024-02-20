@@ -61,5 +61,11 @@ export const question = {
             objectClass: "courseInstance",
             change: ["admin", "superAdmin"],
         },
+        questionSubmittedBy: {
+            required: true,
+            multiple: false,
+            dataType: "node",
+            objectClass: "user",
+        },
     },
 };
