@@ -9,6 +9,8 @@ import {dateTime, getNewNode} from "../helpers/index.js";
 export class SparqlSchemaExporter extends SchemaExporter {
 
     async exportOntology() {
+        const echo = false;
+
         const client = new Client(SPARQL_ENDPOINT);
         client.setOptions(
             "application/json",
@@ -21,13 +23,13 @@ export class SparqlSchemaExporter extends SchemaExporter {
         store.bulk(commonOntology);
 
         try {
-            await client.store(true);
+            await client.store(echo);
             /* Do not call the userOntology together with the rest of the query, otherwise boolean will be represented as nonNegativeInteger */
             const superAdminExists = await this.superAdminExists(client);
             if (!superAdminExists) {
                 const userOntology = await this.getUserOntology();
                 store.bulk(userOntology);
-                await client.store(true);
+                await client.store(echo);
             }
             console.log(chalk.green(`[${dateTime()}] Export of the ontology finished successfully.`));
         } catch (e) {

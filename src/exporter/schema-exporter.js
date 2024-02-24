@@ -9,6 +9,12 @@ import {
     SUPER_ADMIN_PASSWORD
 } from "../constants/index.js";
 import _ from "lodash";
+import chalk from "chalk";
+import {className, dateTime} from "../helpers/index.js";
+
+function warning(data, ...args) {
+    console.warn(chalk.yellow(`[${dateTime()}] Warning: `) + data, ...args);
+}
 
 export const PREFIXES = {
     courses: ONTOLOGY_IRI,
@@ -73,16 +79,20 @@ export class SchemaExporter {
     getCommonOntology() {
         let ontologyArray = [];
 
-        const properties = new Set();
+        const properties = new Map();
 
         this.addResourceCreated(ontologyArray);
+        properties.set(COURSES_CREATED_PROPERTY,
+            [{ classes: [], spec: { dataType: 'dateTime', required: true } }]);
 
         Object.values(models).map((model) => {
-            let className;
-            if (model.type) {
-                className = this.firstLetterToUppercase(model.type);
-                ontologyArray.push(this.getTriple(PREFIXES.courses, className, PREFIXES.rdf, "type", PREFIXES.rdfs, "Class"));
+            if (!model.type) {
+                // It makes no sense to continue with this class
+                warning(`Model without the type field: ${chalk.bold(model)}`);
+                return;
             }
+            const className = this.firstLetterToUppercase(model.type);
+            ontologyArray.push(this.getTriple(PREFIXES.courses, className, PREFIXES.rdf, "type", PREFIXES.rdfs, "Class"));
             if (model.subclassOf && model.subclassOf.type) {
                 ontologyArray.push(this.getTriple(PREFIXES.courses, className, PREFIXES.rdfs, "subClassOf", PREFIXES.courses, this.firstLetterToUppercase(model.subclassOf.type)));
             }
@@ -94,35 +104,67 @@ export class SchemaExporter {
             }
             if (model.props) {
                 ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className)); // Add prop created to the given class
+                properties.get(COURSES_CREATED_PROPERTY)[0].classes.push(className);
 
                 Object.entries(model.props).map(([propertyName, propertyObject]) => {
                     ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "domainIncludes", PREFIXES.courses, className));
-                    if (propertyObject) {
-                        properties.add(propertyName);
+                    if (!propertyObject) {
+                        warning(`Unspecified property: ${chalk.bold(className)}.${chalk.bold(propertyName)}`);
+                        return;
+                    }
 
-                        if (propertyObject?.dataType && this.getScalarTypes().includes(propertyObject.dataType)) {
-                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, propertyObject.dataType));
-                        }
+                    const spec = {};
 
-                        if (propertyObject.objectClass) {
-                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
-                        }
-                        if (propertyObject.dataType) {
-                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
-                        }
-                        if (!propertyObject.multiple) {
-                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
-                            ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, propertyObject.objectClass ? "FunctionalObjectProperty" : "FunctionalDataProperty"));
-                        }
-                        ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.owl, "minCardinality", propertyObject.required ? 1 : 0, "xsd:nonNegativeInteger"));
+                    if (propertyObject.dataType && this.getScalarTypes().includes(propertyObject.dataType)) {
+                        spec.dataType = propertyObject.dataType;
+                        ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, propertyObject.dataType));
+                    }
+
+                    if (propertyObject.objectClass) {
+                        spec.objectClass = propertyObject.objectClass;
+                        ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
+                    }
+                    // FIXME: This is wrong! But UGQL needs to be checked.
+                    if (propertyObject.dataType) {
+                        ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
+                    }
+                    spec.multiple = propertyObject.multiple;
+                    if (!propertyObject.multiple) {
+                        ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
+                        ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, propertyObject.objectClass ? "FunctionalObjectProperty" : "FunctionalDataProperty"));
+                    }
+                    spec.required = propertyObject.required;
+                    // FIXME: This is wrong! But UGQL needs to be fixed, too.
+                    ontologyArray.push(this.getLiteralTriple(PREFIXES.courses, propertyName, PREFIXES.owl, "minCardinality", propertyObject.required ? 1 : 0, "xsd:nonNegativeInteger"));
+
+                    const prevSpecs = properties.has(propertyName)
+                        ? properties.get(propertyName)
+                        : [];
+                    const same = prevSpecs.filter(
+                        (prevClassesSpec) => _.isEqual(spec, prevClassesSpec.spec)
+                    );
+                    if (same.length > 0) {
+                        same[0].classes.push(className);
+                    } else {
+                        prevSpecs.push({ classes: [className], spec });
+                        properties.set(propertyName, prevSpecs);
                     }
                 });
             }
         });
 
-        properties.add(COURSES_CREATED_PROPERTY);
-        for (const item of properties.values()) {
-            ontologyArray.push(this.getTriple(PREFIXES.courses, item, PREFIXES.rdf, "type", PREFIXES.rdf, "Property"));
+        for (const prop of Array.from(properties.keys()).toSorted()) {
+            ontologyArray.push(this.getTriple(PREFIXES.courses, prop, PREFIXES.rdf, "type", PREFIXES.rdf, "Property"));
+
+            const equivSpecs = properties.get(prop);
+            if (equivSpecs.length > 1) {
+                equivSpecs.sort((cs1, cs2) => cs1.classes.length - cs2.classes.length)
+                warning(`Property ${chalk.bold(prop)} specified differently in ${
+                    equivSpecs.map((cs) =>
+                        `{${cs.classes.map(cls => chalk.bold(cls)).join(', ')}}`
+                    ).join(' than in ')
+                }`);
+            }
         }
 
         return ontologyArray;
