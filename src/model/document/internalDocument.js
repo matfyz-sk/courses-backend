@@ -9,16 +9,10 @@ export const internalDocument = {
             multiple: false,
             dataType: 'string',
         },
-        // content: {
-        //     required: true,
-        //     multiple: false,
-        //     dataType: 'string',
-        // }
-        payload: {
+        editorContent: { // Markdown or HTML -> based on mimeType
             required: true,
             multiple: false,
-            dataType: 'node',
-            objectClass: 'payload',
+            dataType: 'string',
         }
     },
 };

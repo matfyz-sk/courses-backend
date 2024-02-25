@@ -12,16 +12,6 @@ export const document = {
             multiple: false,
             dataType: "string"
         },
-        shortName: {
-            required: false,
-            multiple: false,
-            dataType: "string"
-        },
-        slug: {
-            required: false,
-            multiple: false,
-            dataType: "string"
-        },
         isDeleted: {
             required: false,
             multiple: false,
@@ -32,39 +22,25 @@ export const document = {
             multiple: false,
             dataType: "dateTime",
         },
-        // author: {
-        //     required: false,
-        //     multiple: true,
-        //     dataType: "node",
-        //     objectClass: "user",
-        //     change: ["teacher"],
-        // },
-        // owner: {
-        //     required: false,
-        //     multiple: false,
-        //     dataType: "node",
-        //     objectClass: "user",
-        //     change: ["teacher"],
-        // },
-        courseInstance: {
-            required: true,
+        courseInstances: {
+            required: false,
             multiple: true,
             dataType: "node",
             objectClass: "courseInstance",
         },
-        previousVersion: {
+        previousDocumentVersion: {
             required: false,
             multiple: false,
             dataType: "node",
             objectClass: "document",
         },
-        nextVersion: {
+        nextDocumentVersion: {
             required: false,
             multiple: false,
             dataType: "node",
             objectClass: "document",
         },
-        historicVersion: {
+        historicDocumentVersions: {
             required: false,
             multiple: true,
             dataType: "node",
