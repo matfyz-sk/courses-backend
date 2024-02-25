@@ -151,7 +151,9 @@ export class SchemaExporter {
             }
         });
 
-        for (const prop of Array.from(properties.keys()).toSorted()) {
+        const propNames = Array.from(properties.keys());
+        propNames.sort();
+        for (const prop of propNames) {
             ontologyArray.push(this.getTriple(PREFIXES.courses, prop, PREFIXES.rdf, "type", PREFIXES.rdf, "Property"));
 
             const equivSpecs = properties.get(prop);
