@@ -3,6 +3,7 @@ import * as models from "../model/index.js";
 import {
     DATA_IRI,
     ONTOLOGY_IRI,
+    ONTOLOGY_VERSION,
     PASSWORD_SALT,
     SUPER_ADMIN_EMAIL,
     SUPER_ADMIN_NAME,
@@ -77,13 +78,11 @@ export class SchemaExporter {
     }
 
     getCommonOntology() {
-        let ontologyArray = [];
-
+        const ontologyArray = [];
         const properties = new Map();
 
-        this.addResourceCreated(ontologyArray);
-        properties.set(COURSES_CREATED_PROPERTY,
-            [{ classes: [], spec: { dataType: 'dateTime', required: true } }]);
+        this.addOntologyMetadata(ontologyArray);
+        this.addResourceCreated(ontologyArray, properties);
 
         Object.values(models).map((model) => {
             if (!model.type) {
@@ -124,7 +123,6 @@ export class SchemaExporter {
                         spec.objectClass = propertyObject.objectClass;
                         ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
                     }
-                    // FIXME: This is wrong! But UGQL needs to be checked.
                     if (propertyObject.dataType) {
                         ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
                     }
@@ -170,14 +168,29 @@ export class SchemaExporter {
         return ontologyArray;
     }
 
-    addResourceCreated(ontologyArray) {
+    addOntologyMetadata(ontologyArray) {
+        const ontologyIRI = ONTOLOGY_IRI.endsWith('#') || ONTOLOGY_IRI.endsWith('/')
+            ? ONTOLOGY_IRI.slice(0, ONTOLOGY_IRI.length - 1)
+            : ONTOLOGY_IRI;
+        ontologyArray.push(this.getTriple(ontologyIRI, "", PREFIXES.rdf, "type", PREFIXES.owl, "Ontology"));
+        ontologyArray.push(this.getLiteralTriple(ontologyIRI, "", PREFIXES.owl, "versionInfo", ONTOLOGY_VERSION, null));
+    }
+
+    addResourceCreated(ontologyArray, properties) {
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "DatatypeProperty"));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalDataProperty"));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.rdfs, "subPropertyOf", PREFIXES.dcterms, CREATED_PROPERTY));
         ontologyArray.push(this.getTriple(PREFIXES.courses, COURSES_CREATED_PROPERTY, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, "dateTime"));
+        properties.set(COURSES_CREATED_PROPERTY, [{
+            classes: [],
+            spec: {
+                required: false,
+                multiple: false,
+                dataType: 'dateTime'
+            }
+        }]);
     }
-
 
     getScalarTypes() {
         /* If a new type is added here then it must be also added into UltraGraphQL @see RDFtoHGQL#buildField */
