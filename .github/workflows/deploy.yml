@@ -96,10 +96,15 @@ jobs:
           script: |
             TMP=$(mktemp -d tmpXXX)
             cd ${TMP}
-            git clone --branch ${BRANCH} https://github.com/matfyz-sk/courses-backend.git
+            git clone --branch "${BRANCH}" https://github.com/matfyz-sk/courses-backend.git
             docker build -t ${TAG} courses-backend
             docker stop ${CONTAINER}
             docker rm -f ${CONTAINER}
+            ~virtuoso/bin/backup-graph.sh \
+              "https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
+              "https://courses3.matfyz.sk/ontology" \
+              "https://courses3.matfyz.sk/data" \
+              "${GRAPH_IRI_PREFIX}courses3"
             docker run --detach \
               --env "SPARQL_ENDPOINT=http://${SPARQL_HOST}:${VIRTUOSO_PORT}/sparql" \
               --env "SPARQL_USER=${SPARQL_USER}" \
