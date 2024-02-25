@@ -22,5 +22,15 @@ export const resultType = {
             dataType: "node",
             objectClass: "resultType",
         },
+        aggregationType: {
+            required: false,
+            multiple: false,
+            dataType: "string",
+        },
+        numberOfAggregatedResults: {
+            required: false,
+            multiple: false,
+            dataType: "integer",
+        },
     },
 };
