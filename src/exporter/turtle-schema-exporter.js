@@ -1,5 +1,5 @@
 import {PREFIXES, SchemaExporter} from "./schema-exporter.js";
-import {generate} from "../lib/virtuoso-uid";
+import {generate} from "../lib/virtuoso-uid.js";
 import _ from "lodash";
 
 /* npm install && npm install -g babel-cli
@@ -52,36 +52,36 @@ export class TurtleSchemaExporter extends SchemaExporter {
     }
 
     getFormattedLiteral(literalValue, literalType) {
-        return `"${literalValue.toString()}"^^<${PREFIXES.xsd}${literalType}>`;
+        let lit = `"${literalValue.toString()}"`;
+        if (literalType !== null) {
+            lit += `^^${literalType}`;
+        }
+        return lit;
     }
 
     getPrefixes() {
         Object.entries(PREFIXES).map(([prefixName, prefixUri]) => {
-            console.log(`@PREFIX ${prefixName}: <${prefixUri}> .`);
+            console.log(`@prefix ${prefixName}: <${prefixUri}> .`);
         });
     }
 
     getSchemaLiteral(object) {
         if (typeof object == "boolean") {
-            return this.getScalarLiteral(object, "boolean");
+            return this.getFormattedLiteral(object, "xsd:boolean");
         }
         if (this.isFloat(object)) {
-            return this.getScalarLiteral(object, "decimal"); /* In case of floats just return it as decimal */
+            return this.getFormattedLiteral(object, "xsd:decimal"); /* In case of floats just return it as decimal */
         }
         if (_.isNumber(object)) {
-            return this.getScalarLiteral(object, "integer");
+            return this.getFormattedLiteral(object, "xsd:integer");
         }
         if (_.isDate(object) || this.isIsoDate(object)) {
-            return this.getScalarLiteral(object, "dateTime");
+            return this.getFormattedLiteral(object, "xsd:dateTime");
         }
         if (_.isString(object)) {
-            return this.getScalarLiteral(object, "string");
+            return this.getFormattedLiteral(object, "xsd:string");
         }
         return `"${object.toString()}"`;
-    }
-
-    getScalarLiteral(object, scalarType) {
-        return `"${object.toString()}"^^<${PREFIXES.xsd}${scalarType}>`;
     }
 
     getUserIri(userIriString) {
