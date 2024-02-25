@@ -114,18 +114,19 @@ export class SchemaExporter {
 
                     const spec = {};
 
+                    if (propertyObject.dataType) {
+                        ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
+                    }
+                    spec.dataType = propertyObject.dataType;
+
                     if (propertyObject.dataType && this.getScalarTypes().includes(propertyObject.dataType)) {
-                        spec.dataType = propertyObject.dataType;
                         ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.xsd, propertyObject.dataType));
                     }
-
                     if (propertyObject.objectClass) {
                         spec.objectClass = propertyObject.objectClass;
                         ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.schema, "rangeIncludes", PREFIXES.courses, this.firstLetterToUppercase(propertyObject.objectClass)));
                     }
-                    if (propertyObject.dataType) {
-                        ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, this.getTypeOfProperty(propertyObject.dataType)));
-                    }
+
                     spec.multiple = propertyObject.multiple;
                     if (!propertyObject.multiple) {
                         ontologyArray.push(this.getTriple(PREFIXES.courses, propertyName, PREFIXES.rdf, "type", PREFIXES.owl, "FunctionalProperty"));
@@ -160,10 +161,15 @@ export class SchemaExporter {
             if (equivSpecs.length > 1) {
                 equivSpecs.sort((cs1, cs2) => cs1.classes.length - cs2.classes.length)
                 warning(`Property ${chalk.bold(prop)} specified differently in ${
-                    equivSpecs.map((cs) =>
-                        `{${cs.classes.map(cls => chalk.bold(cls)).join(', ')}}`
+                    equivSpecs.map(({classes}) =>
+                        `{${classes.map(cls => chalk.bold(cls)).join(', ')}}`
                     ).join(' than in ')
                 }`);
+                const dataPropIn = equivSpecs.filter(({spec}) => spec.dataType != 'node').flatMap(({classes}) => classes);
+                const objPropIn = equivSpecs.filter(({spec}) => spec.dataType == 'node').flatMap(({classes}) => classes);
+                if (dataPropIn.length > 0 && objPropIn.length > 0) {
+                    warning(chalk.red(`${chalk.bold(prop)} is a data property in {${dataPropIn.map(cls => chalk.bold(cls)).join(', ')}} and an object property in {${objPropIn.map(cls => chalk.bold(cls)).join(', ')}}`));
+                }
             }
         }
 
