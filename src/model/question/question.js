@@ -54,6 +54,11 @@ export const question = {
             dataType: "node",
             objectClass: "question",
         },
+        hasNewerVersion: {
+            required: false,
+            multiple: false,
+            dataType: "boolean"
+        },
         courseInstance: {
             required: true,
             multiple: false,
