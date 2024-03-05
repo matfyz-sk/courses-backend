@@ -79,7 +79,7 @@ jobs:
               --env "SPARQL_ENDPOINT=http://172.17.42.1:${VIRTUOSO_PORT}/sparql" \
               --env "AUTH_SECRET=${AUTH_SECRET}" \
               --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
-              --env "BASE_IRI=https://courses3.matfyz.sk/" \
+              --env "BASE_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
               --name=${CONTAINER} \
               --publish ${BACKEND_PORT}:3010 \
               --restart=unless-stopped \
