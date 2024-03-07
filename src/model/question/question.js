@@ -54,12 +54,23 @@ export const question = {
             dataType: "node",
             objectClass: "question",
         },
+        hasNewerVersion: {
+            required: false,
+            multiple: false,
+            dataType: "boolean"
+        },
         courseInstance: {
             required: true,
             multiple: false,
             dataType: "node",
             objectClass: "courseInstance",
             change: ["admin", "superAdmin"],
+        },
+        questionSubmittedBy: {
+            required: true,
+            multiple: false,
+            dataType: "node",
+            objectClass: "user",
         },
     },
 };
