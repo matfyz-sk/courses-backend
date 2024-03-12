@@ -33,7 +33,7 @@ export const orderedQuestion = {
             multiple: false,
             dataType: "decimal",
         },
-        comment: {
+        orderedQuestionComment: {
             required: false,
             multiple: false,
             dataType: "string",

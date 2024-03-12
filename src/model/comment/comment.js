@@ -22,5 +22,11 @@ export const comment = {
             objectClass: "comment",
             change: ["superAdmin"],
         },
+        commentCreatedBy: {
+            required: true,
+            multiple: false,
+            dataType: "node",
+            objectClass: "user"
+        }
     },
 };
