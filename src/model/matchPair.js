@@ -1,6 +1,6 @@
 export const matchPair = {
     type: ["matchPair"],
-    courseInstance: "^hasAnswer/courseInstance",
+    courseInstance: "^hasMatchPairAnswer/courseInstance",
     create: ["[matchPair]"],
     props: {
         prompt: {
