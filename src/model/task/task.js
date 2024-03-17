@@ -1,5 +1,8 @@
+import { topicRelated } from "../topicRelated.js";
+
 export const task = {
     type: ["task"],
+    subclassOf: topicRelated,
     subclasses: ["assignment"],
     create: ["teacher"],
     props: {
@@ -12,24 +15,6 @@ export const task = {
             required: false,
             multiple: false,
             dataType: "string",
-        },
-        covers: {
-            required: false,
-            multiple: true,
-            dataType: "node",
-            objectClass: "topic",
-        },
-        mentions: {
-            required: false,
-            multiple: true,
-            dataType: "node",
-            objectClass: "topic",
-        },
-        requires: {
-            required: false,
-            multiple: true,
-            dataType: "node",
-            objectClass: "topic",
         },
         courseInstance: {
             required: true,
