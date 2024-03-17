@@ -1,21 +1,26 @@
+import { topicRelated } from "./topicRelated.js";
+
 export const material = {
     type: ["material"],
+    subclassOf: topicRelated,
     props: {
-        name: {
-            required: true,
-            multiple: false,
-            dataType: "string",
-        },
-        covers: {
+        isAlternativeTo: {
             required: false,
-            multiple: false,
+            multiple: true,
             dataType: "node",
-            objectClass: "topic",
+            objectClass: "material",
         },
-        URL: {
+        refersTo: {
             required: false,
-            multiple: false,
-            dataType: "string",
+            multiple: true,
+            dataType: "node",
+            objectClass: "material",
+        },
+        generalizes: {
+            required: false,
+            multiple: true,
+            dataType: "node",
+            objectClass: "material",
         },
     },
 };

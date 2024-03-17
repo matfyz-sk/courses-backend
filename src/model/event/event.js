@@ -1,5 +1,8 @@
+import { topicRelated } from "../topicRelated.js";
+
 export const event = {
     type: ["event"],
+    subclassOf: topicRelated,
     subclasses: ["courseInstance", "block", "session", "taskEvent"],
     create: ["teacher"],
     props: {
@@ -45,24 +48,6 @@ export const event = {
             multiple: true,
             dataType: "node",
             objectClass: "documentReference",
-        },
-        covers: {
-            required: false,
-            multiple: true,
-            dataType: "node",
-            objectClass: "topic",
-        },
-        mentions: {
-            required: false,
-            multiple: true,
-            dataType: "node",
-            objectClass: "topic",
-        },
-        requires: {
-            required: false,
-            multiple: true,
-            dataType: "node",
-            objectClass: "topic",
         },
         courseInstance: {
             required: false,
