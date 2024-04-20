@@ -14,6 +14,11 @@ export const question = {
             multiple: false,
             dataType: "string",
         },
+        image: {
+            required: false,
+            multiple: false,
+            dataType: "string"
+        },
         visibilityIsRestricted: {
             required: false,
             multiple: false,
