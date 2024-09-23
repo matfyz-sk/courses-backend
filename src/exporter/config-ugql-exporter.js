@@ -5,7 +5,8 @@ import {
     SPARQL_ENDPOINT,
     SPARQL_PASSWORD,
     SPARQL_USER,
-    VIRTUOSO_JDBC_PORT
+    VIRTUOSO_JDBC_PORT,
+    UGQL_SERVER_CONFIG
 } from "../constants/index.js";
 
 export class UltraGraphQLConfigurationExporter {
@@ -22,11 +23,7 @@ export class UltraGraphQLConfigurationExporter {
             "mutationService": "matfyz-graphql",
             "modelJson": "./src/ultragraphql/model.json",
             "jdbcPort": VIRTUOSO_JDBC_PORT,
-            "server": {
-                "port": 8080,
-                "graphql": "/graphql",
-                "graphiql": "/graphiql"
-            },
+            "server": UGQL_SERVER_CONFIG,
             "services": [
                 {
                     "id": "matfyz-graphql",

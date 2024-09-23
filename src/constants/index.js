@@ -5,6 +5,12 @@ export const SPARQL_PASSWORD = process.env.SPARQL_PASSWORD ?? "123456";
 export const BASE_IRI = process.env.BASE_IRI ?? "http://www.courses.matfyz.sk/";
 export const GRAPH_IRI = process.env.GRAPH_IRI ?? BASE_IRI;
 export const VIRTUOSO_JDBC_PORT = process.env.VIRTUOSO_JDBC_PORT ?? "1111"; /* Needed for the VirtGraph in UGQL used for transaction calls https://docs.openlinksw.com/virtuoso/jdbcurl4mat/ */
+export const UGQL_SERVER_CONFIG = {
+    "port": 8080,
+    "graphql": "/graphql",
+    "graphiql": "/graphiql"    
+};
+export const UGQL_ENDPOINT = `http://localhost:${UGQL_SERVER_CONFIG.port}${UGQL_SERVER_CONFIG.graphql}`
 export const ONTOLOGY_IRI = BASE_IRI + "ontology#";
 export const ONTOLOGY_VERSION = "0.1.0";
 export const SUPER_ADMIN_NAME = process.env.SUPER_ADMIN_NAME ?? "Admin";

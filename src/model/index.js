@@ -49,3 +49,4 @@ export {resultType} from "./resultType.js";
 export {courseGrading} from "./courseGrading.js";
 export {coursePersonalSettings} from "./coursePersonalSettings.js";
 export * from "./document/index.js";
+export * from "./badge/index.js";

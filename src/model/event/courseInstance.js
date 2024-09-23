@@ -57,5 +57,11 @@ export const courseInstance = {
             dataType: "node",
             objectClass: "coursePersonalSettings",
         },
+        hasBadgeType: {
+            required: false,
+            multiple: true,
+            dataType: "node",
+            objectClass: "courseBadgeType",
+        },
     },
 };

@@ -14,6 +14,7 @@ import {ModelJsonExporter} from "./exporter/model-json-exporter.js";
 import {errorHandler} from "./middleware/index.js";
 import {dataRouter} from "./routes/data.js";
 import {authRouter} from "./routes/auth.js";
+import { jobsRouter } from "./routes/jobs.js";
 
 const app = express();
 const PORT = 3010;
@@ -26,8 +27,11 @@ app.use(bodyParser.urlencoded({limit: "50mb", extended: true}));
 app.use(bodyParser.json({limit: "50mb"}));
 app.use(cors());
 app.use(logger);
+
 app.use("/data", dataRouter);
 app.use("/auth", authRouter);
+app.use("/jobs", jobsRouter);
+
 app.use(errorHandler);
 
 app.listen(PORT, () => {
@@ -84,4 +88,6 @@ app.listen(PORT, () => {
         });
     }
 )
+
+
 
