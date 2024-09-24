@@ -102,8 +102,8 @@ jobs:
             docker rm -f ${CONTAINER}
             ~virtuoso/bin/backup-graph.sh \
               "https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
-              "https://courses3.matfyz.sk/ontology" \
-              "https://courses3.matfyz.sk/data" \
+              "https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/ontology" \
+              "https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/data" \
               "${GRAPH_IRI_PREFIX}courses3"
             docker run --detach \
               --env "SPARQL_ENDPOINT=http://${SPARQL_HOST}:${VIRTUOSO_PORT}/sparql" \
@@ -111,7 +111,7 @@ jobs:
               --env "SPARQL_PASSWORD=${SPARQL_PASSWORD}" \
               --env "AUTH_SECRET=${AUTH_SECRET}" \
               --env "GRAPH_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
-              --env "BASE_IRI=https://courses3.matfyz.sk/" \
+              --env "BASE_IRI=https://${GRAPH_IRI_PREFIX}courses3.matfyz.sk/" \
               --env "IMPERSONATION_PASSWORD=${IMPERSONATION_PASSWORD}" \
               --env "SUPER_ADMIN_NAME=${SUPER_ADMIN_NAME}" \
               --env "SUPER_ADMIN_EMAIL=${SUPER_ADMIN_EMAIL}" \
