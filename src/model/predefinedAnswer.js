@@ -19,5 +19,10 @@ export const predefinedAnswer = {
             multiple: false,
             dataType: "boolean",
         },
+        image: {
+            required: true,
+            multiple: false,
+            dataType: "string"
+        }
     },
 };

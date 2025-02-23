@@ -27,6 +27,6 @@ export const comment = {
             multiple: false,
             dataType: "node",
             objectClass: "user"
-        }
+        },
     },
 };
