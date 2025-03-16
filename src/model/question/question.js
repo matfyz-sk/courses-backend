@@ -14,6 +14,11 @@ export const question = {
             multiple: false,
             dataType: "string",
         },
+        image: {
+            required: false,
+            multiple: false,
+            dataType: "string"
+        },
         visibilityIsRestricted: {
             required: false,
             multiple: false,
@@ -60,6 +65,12 @@ export const question = {
             dataType: "node",
             objectClass: "courseInstance",
             change: ["admin", "superAdmin"],
+        },
+        questionSubmittedBy: {
+            required: true,
+            multiple: false,
+            dataType: "node",
+            objectClass: "user",
         },
     },
 };

@@ -1,6 +1,6 @@
 export const predefinedAnswer = {
     type: ["predefinedAnswer"],
-    courseInstance: "^hasAnswer/courseInstance",
+    courseInstance: "^hasPredefinedAnswer/courseInstance",
     create: ["[questionWithPredefinedAnswer]"],
     props: {
         text: {
@@ -10,7 +10,7 @@ export const predefinedAnswer = {
             change: ["teacher"],
         },
         position: {
-            required: true,
+            required: false,
             multiple: false,
             dataType: "integer",
         },
@@ -19,5 +19,10 @@ export const predefinedAnswer = {
             multiple: false,
             dataType: "boolean",
         },
+        image: {
+            required: true,
+            multiple: false,
+            dataType: "string"
+        }
     },
 };

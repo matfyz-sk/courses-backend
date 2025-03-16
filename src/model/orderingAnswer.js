@@ -1,6 +1,6 @@
 export const orderingAnswer = {
     type: ["orderingAnswer"],
-    courseInstance: "^hasAnswer/courseInstance",
+    courseInstance: "^hasOrderingAnswer/courseInstance",
     create: ["[orderingQuestion]"],
     props: {
         text: {
